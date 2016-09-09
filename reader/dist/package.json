@@ -1,0 +1,30 @@
+{
+  "name": "@neuroviewer/reader",
+  "version": "0.0.1",
+  "description": "Neuroviewer data reading classes",
+  "main": "index.js",
+  "scripts": {
+    "postinstall": "typings install",
+    "tsc": "tsc",
+    "tsc:w": "tsc -w",
+    "clean": "gulp clean",
+    "build": "npm run clean && npm run tsc",
+    "package": "npm run build && npm run dts && gulp copy",
+    "dts" : "tsc -d"
+  },
+  "repository": {},
+  "keywords": [],
+  "author": "Luis Rodriguez-Lujan <luis.rodriguezl@upm.es>",
+  "license": "MIT",
+  "dependencies": {},
+  "devDependencies": {
+    "concurrently": "^2.2.0",
+    "gulp": "^3.9.1",
+    "del": "^2.2.2",
+    "run-sequence": "^1.2.2",
+    "typescript": "^2.0.0"
+  },
+  "peerDependencies": {
+    "@neuroviewer/core" : "^0.0.1"
+  }
+}
