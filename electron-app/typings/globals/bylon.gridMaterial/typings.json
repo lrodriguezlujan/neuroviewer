@@ -1,0 +1,8 @@
+{
+  "resolution": "main",
+  "tree": {
+    "src": "https://raw.githubusercontent.com/BabylonJS/Babylon.js/7173e8c34a401961095796b7ca0c64e582524d36/materialsLibrary/dist/dts/babylon.gridMaterial.d.ts",
+    "raw": "github:BabylonJS/Babylon.js/materialsLibrary/dist/dts/babylon.gridMaterial.d.ts#7173e8c34a401961095796b7ca0c64e582524d36",
+    "typings": "https://raw.githubusercontent.com/BabylonJS/Babylon.js/7173e8c34a401961095796b7ca0c64e582524d36/materialsLibrary/dist/dts/babylon.gridMaterial.d.ts"
+  }
+}
