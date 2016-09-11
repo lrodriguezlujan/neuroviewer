@@ -10,11 +10,12 @@ import {parserByFileExtension} from '@neuroviewer/reader'
 
 
 export class NeuroManagerItem{
-  constructor(public id:string, public origin: string, public neuron: Neuron){};
+  constructor(public id:number, public origin: string, public neuron: Neuron){};
 }
 
 export class NeuroManager {
 
+  private nextId = 1;
   constructor(private sender: Electron.WebContents){};
 
   private items : Array<NeuroManagerItem> = [];
@@ -59,7 +60,7 @@ export class NeuroManager {
         let parser = parserByFileExtension(pathdata.ext.slice(1));
         parser.readSync(pathdata.name, data);
         if(parser.neuron){
-          this.items.push({id:pathdata.name, origin:path, neuron: parser.neuron});
+          this.items.push({id:this.nextId++, origin:path, neuron: parser.neuron});
           this.sendEventUpdateList();
         } else {
           console.log(parser.error);
@@ -89,9 +90,9 @@ export class NeuroManager {
   }
 
   public listIds(){
-    let ids : string[] = [];
+    let ids : {id:number, name:string}[] = [];
     for(let el of this.items){
-      ids.push(el.id);
+      ids.push({id:el.id,name:el.neuron.id});
     }
     return ids;
   }

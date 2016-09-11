@@ -11,12 +11,14 @@ var __metadata = (this && this.__metadata) || function (k, v) {
 var core_1 = require('@angular/core');
 var electron_1 = require('electron');
 var BehaviorSubject_1 = require('rxjs/BehaviorSubject');
+var channels_1 = require('./channels');
 var NeuronService = (function () {
     function NeuronService() {
         var _this = this;
         // Async updates
         this._ids = new BehaviorSubject_1.BehaviorSubject([]);
         this.ids = this._ids.asObservable();
+        // Update callback function
         this.updateNLCallback = function (event, neurons) {
             console.log("GOT UPDATE EVENT");
             console.log(neurons);
@@ -25,33 +27,91 @@ var NeuronService = (function () {
         this.loadInitialData();
         this.bindToUpdates();
     }
-    NeuronService.prototype.getNeurons = function () {
+    /**
+     * Request the neuron list from the backend.
+     * Has a timetout parameter to reject the promise.
+     */
+    NeuronService.prototype.getNeuronList = function (timeoutts) {
+        if (timeoutts === void 0) { timeoutts = 5000; }
         // return Promise.resolve(TEST_NEURONS);
         return new Promise(function (resolve, reject) {
             // Send request
-            electron_1.ipcRenderer.send("getNL");
-            electron_1.ipcRenderer.once("getNLres", function (event, list) {
+            electron_1.ipcRenderer.send(channels_1.NeuronChannels.getNeuronListRequest);
+            electron_1.ipcRenderer.once(channels_1.NeuronChannels.getNeuronListResponse, function (event, list) {
                 resolve(list);
             });
             // Promise timeout
             window.setTimeout(function () {
                 reject("Timeout");
-            }, 5000);
+            }, timeoutts);
         }).catch(this.handleError);
     };
+    /**
+     * Request the neuron by id to the backend
+     * Timeout in millis
+     */
+    NeuronService.prototype.setActiveNeuron = function (id, timeoutts) {
+        var _this = this;
+        if (timeoutts === void 0) { timeoutts = 5000; }
+        return new Promise(function (resolve, reject) {
+            // Send request
+            electron_1.ipcRenderer.send(channels_1.NeuronChannels.getNeuronRequest, id);
+            electron_1.ipcRenderer.once(channels_1.NeuronChannels.getNeuronResponse, function (event, obj) {
+                if (obj) {
+                    // Update active neuron
+                    _this.activeNeuron = obj;
+                    // Resolve
+                    resolve(obj.neuron);
+                }
+                else {
+                    reject("empty");
+                }
+            });
+            // Timeout
+            window.setTimeout(function () {
+                reject("Timeout");
+            }, timeoutts);
+        }).catch(this.handleError);
+    };
+    ;
+    NeuronService.prototype.getActiveNeuron = function () {
+        if (this.activeNeuron)
+            return this.activeNeuron.neuron;
+        else
+            return undefined;
+    };
+    NeuronService.prototype.getActiveNeuronOrigin = function () {
+        if (this.activeNeuron)
+            return this.activeNeuron.origin;
+        else
+            return undefined;
+    };
+    NeuronService.prototype.getActiveNeuronId = function () {
+        if (this.activeNeuron)
+            return this.activeNeuron.id;
+        else
+            return undefined;
+    };
+    /**
+     * Gets the neuron list and updates the observable item
+     **/
     NeuronService.prototype.loadInitialData = function () {
         var _this = this;
-        this.getNeurons().then(function (neurons) { return _this._ids.next(neurons); })
+        this.getNeuronList().then(function (neurons) { return _this._ids.next(neurons); })
             .catch(this.handleError);
     };
+    /**
+     * Binfs to the updateNL channel to be triggered whenever the list changes
+     * in the backend
+     */
     NeuronService.prototype.bindToUpdates = function () {
-        electron_1.ipcRenderer.on("updNL", this.updateNLCallback);
+        electron_1.ipcRenderer.on(channels_1.NeuronChannels.updateNeuronList, this.updateNLCallback);
     };
-    /*getHeroes() : Promise<Hero[]> {
-      return Promise.resolve(HEROES);
-    }*/
+    /**
+     * Generic function to hande errors. ToDO (log service + notification)
+     */
     NeuronService.prototype.handleError = function (error) {
-        console.error('An error occurred', error); // for demo purposes only
+        console.error('An error occurred', error); // TODO
         return Promise.reject(error.message || error);
     };
     NeuronService = __decorate([
@@ -61,9 +121,4 @@ var NeuronService = (function () {
     return NeuronService;
 }());
 exports.NeuronService = NeuronService;
-var TEST_NEURONS = [
-    'First',
-    'Second',
-    'Third'
-];
 //# sourceMappingURL=neuron.service.js.map

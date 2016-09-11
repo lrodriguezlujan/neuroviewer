@@ -12,7 +12,7 @@ import {MdList, MdListItem} from '@angular2-material/list/list';
 })
 export class NeuronListComponent implements OnInit {
 
-  public neurons: Array<string> = [];
+  public neurons: Array<{id:number, name:string}> = [];
   private subscription :any;
 
   constructor(private neuronService: NeuronService, private zone: NgZone) {
@@ -22,14 +22,14 @@ export class NeuronListComponent implements OnInit {
     );
   }
 
-  private suscribeNeuronServiceUpds = (neurons : Array<string>) => {
+  private suscribeNeuronServiceUpds = (neurons : Array<{id:number, name:string}>) => {
     this.zone.run( () => {
       this.neurons = neurons.slice(0);
     })
   };
 
   ngOnInit(): void {
-    this.neuronService.getNeurons()
+    this.neuronService.getNeuronList()
       .then(neurons => {
         this.neurons = neurons.slice(0);;
       });

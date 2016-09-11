@@ -19,6 +19,7 @@ var NeuroManager = (function () {
     function NeuroManager(sender) {
         var _this = this;
         this.sender = sender;
+        this.nextId = 1;
         this.items = [];
         this.self = this;
         // Instance function. SAFE THIS
@@ -69,7 +70,7 @@ var NeuroManager = (function () {
                 var parser = reader_1.parserByFileExtension(pathdata.ext.slice(1));
                 parser.readSync(pathdata.name, data);
                 if (parser.neuron) {
-                    _this.items.push({ id: pathdata.name, origin: path, neuron: parser.neuron });
+                    _this.items.push({ id: _this.nextId++, origin: path, neuron: parser.neuron });
                     _this.sendEventUpdateList();
                 }
                 else {
@@ -94,7 +95,7 @@ var NeuroManager = (function () {
         var ids = [];
         for (var _i = 0, _a = this.items; _i < _a.length; _i++) {
             var el = _a[_i];
-            ids.push(el.id);
+            ids.push({ id: el.id, name: el.neuron.id });
         }
         return ids;
     };

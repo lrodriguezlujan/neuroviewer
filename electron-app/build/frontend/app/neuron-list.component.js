@@ -26,7 +26,7 @@ var NeuronListComponent = (function () {
     }
     NeuronListComponent.prototype.ngOnInit = function () {
         var _this = this;
-        this.neuronService.getNeurons()
+        this.neuronService.getNeuronList()
             .then(function (neurons) {
             _this.neurons = neurons.slice(0);
             ;
