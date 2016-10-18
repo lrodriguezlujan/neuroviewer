@@ -2,41 +2,41 @@
 var core_1 = require("@neuroviewer/core");
 /**
 *  SWCParser class
-*  Reads a SWC FILE and produces a Neuron
+*  Reads a SWC FILE and produces a Reconstruction
 */
 var JSONParser = (function () {
     function JSONParser() {
     }
-    JSONParser.prototype.readAsync = function (id, data, cb) {
+    JSONParser.prototype.readAsync = function (data, cb) {
         if (typeof data == "string" || data instanceof String) {
             // Convert to JSON
-            this.process(id, JSON.parse(data));
+            this.process(JSON.parse(data));
         }
         else {
-            this.process(id, data);
+            this.process(data);
         }
-        cb(this.neuron, this.error);
+        cb(this.rec, this.error);
     };
     ;
-    JSONParser.prototype.readSync = function (id, data) {
+    JSONParser.prototype.readSync = function (data) {
         if (typeof data == "string" || data instanceof String) {
             // Convert to JSON
-            this.process(id, JSON.parse(data));
+            this.process(JSON.parse(data));
         }
         else {
-            this.process(id, data);
+            this.process(data);
         }
         return this.error;
     };
     ;
-    JSONParser.prototype.initializeNeuron = function (id) {
-        this.neuron = new core_1.Neuron(id);
+    JSONParser.prototype.initialize = function () {
+        this.rec = new core_1.Reconstruction();
     };
-    JSONParser.prototype.process = function (id, data) {
+    JSONParser.prototype.process = function (data) {
         // Create empty neuron
-        this.initializeNeuron(id);
+        this.initialize();
         try {
-            this.neuron = core_1.Neuron.fromObject(data);
+            this.rec = core_1.Reconstruction.fromObject(data);
         }
         catch (e) {
             this.error = e;

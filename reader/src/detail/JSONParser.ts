@@ -1,52 +1,52 @@
-import {NeuronJSON,Neuron} from "@neuroviewer/core";
+import {ReconstructionJSON, Reconstruction} from "@neuroviewer/core";
 import {ParserInterface} from "./Parser";
 
   /**
   *  SWCParser class
-  *  Reads a SWC FILE and produces a Neuron
+  *  Reads a SWC FILE and produces a Reconstruction
   */
   export class JSONParser implements ParserInterface {
 
-      public neuron: Neuron;
+      public rec: Reconstruction;
 
       public error: Error;
 
       constructor(){}
 
-      public readAsync( id:string , data: NeuronJSON | string, cb:( n:Neuron, e?:Error) => void ){
+      public readAsync(data: ReconstructionJSON | string, cb:( n:Reconstruction, e?:Error) => void ){
 
         if(typeof data == "string" || data instanceof String){
           // Convert to JSON
-          this.process(id, JSON.parse(<string>data));
+          this.process(JSON.parse(<string>data));
         } else {
-          this.process(id, data);
+          this.process(data);
         }
 
-        cb(this.neuron,this.error);
+        cb(this.rec,this.error);
       };
 
-      public readSync(id:string, data: NeuronJSON | string){
+      public readSync(data: ReconstructionJSON | string){
 
         if(typeof data == "string" || data instanceof String){
           // Convert to JSON
-          this.process(id, JSON.parse(<string>data));
+          this.process(JSON.parse(<string>data));
         } else {
-          this.process(id, data);
+          this.process(data);
         }
 
         return this.error;
       };
 
-      private initializeNeuron(id : string){
-        this.neuron = new Neuron(id);
+      private initialize(){
+        this.rec = new Reconstruction();
       }
 
-      private process(id:string, data: NeuronJSON){
+      private process(data: ReconstructionJSON){
 
         // Create empty neuron
-        this.initializeNeuron(id);
+        this.initialize();
         try{
-          this.neuron = Neuron.fromObject(data)
+          this.rec = Reconstruction.fromObject(data)
         } catch ( e ) {
           this.error = e;
         }

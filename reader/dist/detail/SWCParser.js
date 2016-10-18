@@ -8,9 +8,9 @@ var core_1 = require("@neuroviewer/core");
 var SWCParser = (function () {
     function SWCParser() {
     }
-    SWCParser.prototype.readAsync = function (id, data, cb) {
-        this.process(id, data.split(/\r\n|\n/));
-        cb(this.neuron, this.error);
+    SWCParser.prototype.readAsync = function (data, cb) {
+        this.process(data.split(/\r\n|\n/));
+        cb(this.rec, this.error);
         /*let self = this;
         $.ajax({
           type: "GET",
@@ -26,7 +26,7 @@ var SWCParser = (function () {
         })*/
     };
     ;
-    SWCParser.prototype.readSync = function (id, data) {
+    SWCParser.prototype.readSync = function (data) {
         /*let self = this;
         $.ajax({
           type: "GET",
@@ -40,16 +40,16 @@ var SWCParser = (function () {
           },
           async: false
         });*/
-        this.process(id, data.split(/\r\n|\n/));
+        this.process(data.split(/\r\n|\n/));
         return this.error;
     };
     ;
     SWCParser.prototype.initializeNeuron = function (id) {
         this.neuron = new core_1.Neuron(id);
     };
-    SWCParser.prototype.process = function (id, data) {
+    SWCParser.prototype.process = function (data) {
         // Create empty neuron
-        this.initializeNeuron(id);
+        this.initializeNeuron("");
         // Initialize array
         this.tmpArray = [];
         try {
@@ -67,6 +67,9 @@ var SWCParser = (function () {
             this.createNeurites();
             // Fill soma
             this.addSoma();
+            // Put neuron in the rec
+            this.rec = new core_1.Reconstruction();
+            this.rec.addNeuron(this.neuron);
         }
         catch (e) {
             this.error = e;
