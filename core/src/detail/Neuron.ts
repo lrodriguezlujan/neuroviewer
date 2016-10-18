@@ -14,7 +14,6 @@ import{Drawer, DrawMaterialSet, DrawObject} from "./NvCoreInterfaces";
     soma: SomaJSON,
     neurites: Array<NeuriteJSON>,
     properties?: {[key:string]:any}
-
   };
 
 
@@ -84,7 +83,6 @@ import{Drawer, DrawMaterialSet, DrawObject} from "./NvCoreInterfaces";
       else
         this.properties[key] = [];
     }
-
 
     /**
      * Number of neurites in the neuron
@@ -210,6 +208,12 @@ import{Drawer, DrawMaterialSet, DrawObject} from "./NvCoreInterfaces";
       if(obj.properties){
         for(let key in obj.properties){
           n.addProperty(key,obj.properties[key]);
+        }
+      }
+
+      if(obj.contours){
+        for(let c of obj.contours){
+          n.addContour(Contour.fromObject(c));
         }
       }
 
