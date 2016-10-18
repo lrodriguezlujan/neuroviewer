@@ -415,6 +415,29 @@ import {BabylonMaterialPalette} from "./BabylonPalette";
       return mesh;
     }
 
+    // ATM we ignore fillcolor and opacity
+    public drawContour(points: Array<Point3D>, closed: boolean,
+      color: string, fillcolor: string, opacity: number) {
+
+        // Points to vector3
+        let points_b : Array<BABYLON.Vector3> = [];
+        for( let p of points){
+          points_b.push(new BABYLON.Vector3(p.x,p.y,p.z));
+        }
+
+        let lines : Array<Array<BABYLON.Vector3>>;
+        for(var i = 1; i<points_b.length; ++i){
+          lines.push([points_b[i-1],points_b[i]]);
+        }
+
+        let mesh = BABYLON.MeshBuilder.CreateLineSystem(null,
+          {lines: lines,
+          updatable : false},
+          this.scene);
+        mesh.color = BABYLON.Color3.FromHexString(color);
+        return mesh;
+    }
+
     public merge(meshes: Array<BABYLON.Mesh>) {
       return BABYLON.Mesh.MergeMeshes(meshes,true);
     }
