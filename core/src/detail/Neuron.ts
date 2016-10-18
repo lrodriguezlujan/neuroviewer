@@ -211,12 +211,6 @@ import{Drawer, DrawMaterialSet, DrawObject} from "./NvCoreInterfaces";
         }
       }
 
-      if(obj.contours){
-        for(let c of obj.contours){
-          n.addContour(Contour.fromObject(c));
-        }
-      }
-
       return n;
     }
   }
