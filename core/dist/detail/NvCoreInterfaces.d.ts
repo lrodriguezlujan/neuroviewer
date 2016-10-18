@@ -13,7 +13,7 @@ export interface Drawer {
     drawCylinder: (id: string, from: Point3D, to: Point3D, fromRadius: number, toRadius: number) => DrawObject;
     merge: (objs: Array<DrawObject>) => DrawObject;
     drawLineBox: (min: Point3D, lenx: number, leny: number, lenz: number) => DrawObject;
-    drawContour: (points: Array<Point3D>, lines: boolean, closed: boolean, color: string, fillcolor: string, opacity: number) => DrawObject;
+    drawContour: (points: Array<Point3D>, closed: boolean, color: string, fillcolor: string, opacity: number) => DrawObject;
     dispose: () => void;
 }
 export interface DrawMaterial {

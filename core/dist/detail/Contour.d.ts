@@ -49,9 +49,8 @@ export declare class Contour {
      * Draws the contour in the drawer
      *
      * @param  {Drawer} drawer drawer class
-     * @param  {bool} lines If true, contour lines are drawn
      */
-    draw(drawer: Drawer, lines?: boolean): void;
+    draw(drawer: Drawer): void;
     dispose(): void;
     /**
      * Creates a soma class from a JS object

@@ -42,12 +42,10 @@ var Contour = (function () {
      * Draws the contour in the drawer
      *
      * @param  {Drawer} drawer drawer class
-     * @param  {bool} lines If true, contour lines are drawn
      */
-    Contour.prototype.draw = function (drawer, lines) {
-        if (lines === void 0) { lines = true; }
+    Contour.prototype.draw = function (drawer) {
         // Just draw spheres and merge them
-        drawer.drawContour(this.points, lines, this.closed, this.face_color, this.back_color, this.fill);
+        drawer.drawContour(this.points, this.closed, this.face_color, this.back_color, this.fill);
     };
     Contour.prototype.dispose = function () {
         this.mesh.dispose();

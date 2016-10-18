@@ -76,13 +76,11 @@ export class Contour {
    * Draws the contour in the drawer
    *
    * @param  {Drawer} drawer drawer class
-   * @param  {bool} lines If true, contour lines are drawn
    */
-  public draw(drawer:Drawer, lines = true){
+  public draw(drawer:Drawer){
 
     // Just draw spheres and merge them
     drawer.drawContour(this.points,
-                       lines,
                        this.closed,
                        this.face_color,
                        this.back_color,
