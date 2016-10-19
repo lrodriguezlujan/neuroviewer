@@ -19,7 +19,7 @@ export interface Drawer {
     dispose: () => void;
 }
 export interface DrawMaterial {
-    diffuseColor: any;
+    diffuseColor?: any;
 }
 export interface DrawMaterialSet {
     standard: DrawMaterial;

@@ -22,7 +22,7 @@
   }; // Intended: NvDraw.BabylonDrawer
 
   export interface DrawMaterial {
-    diffuseColor: any;
+    diffuseColor?: any;
   };
 
   export interface DrawMaterialSet{
