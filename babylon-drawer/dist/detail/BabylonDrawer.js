@@ -144,6 +144,7 @@ var BabylonDrawer = (function () {
         }
         this.setCameraPosition(new BABYLON.Vector3(2.25, 2.25, 2.25));
         this.camera.minZ = 0;
+        this.camera.maxZ = 1E6;
         this.camera.attachControl(this.canvas);
     };
     BabylonDrawer.prototype.initUniversalCamera = function () {
@@ -258,7 +259,7 @@ var BabylonDrawer = (function () {
         return outputplane;
     };
     BabylonDrawer.prototype.drawSphere = function (name, position, radius) {
-        var tmp_sph = BABYLON.Mesh.CreateSphere(name, 16, radius * 2.05, this.scene);
+        var tmp_sph = BABYLON.Mesh.CreateSphere(name, 8, radius * 2.05, this.scene);
         // Move to location
         tmp_sph.position = new BABYLON.Vector3(position.x, position.y, position.z);
         return tmp_sph;
@@ -266,7 +267,7 @@ var BabylonDrawer = (function () {
     BabylonDrawer.prototype.drawCylinder = function (name, from_p, to_p, initRad, endRad) {
         var from = new BABYLON.Vector3(from_p.x, from_p.y, from_p.z);
         var to = new BABYLON.Vector3(to_p.x, to_p.y, to_p.z);
-        var tmp_cyl = BABYLON.Mesh.CreateCylinder(name, BABYLON.Vector3.Distance(from, to), endRad * 2, initRad * 2, 16, 1, this.scene);
+        var tmp_cyl = BABYLON.Mesh.CreateCylinder(name, BABYLON.Vector3.Distance(from, to), endRad * 2, initRad * 2, 8, 1, this.scene);
         // Compute rotation
         var vec = to.subtract(from);
         // Move to position (midpoint)
@@ -314,6 +315,42 @@ var BabylonDrawer = (function () {
         mesh.color = new BABYLON.Color3(1, 1, 0);
         return mesh;
     };
+    // ATM we ignore fillcolor and opacity
+    BabylonDrawer.prototype.drawContour = function (points, closed, color, fillcolor, opacity) {
+        // Points to vector3
+        var points_b = [];
+        for (var _i = 0, points_1 = points; _i < points_1.length; _i++) {
+            var p = points_1[_i];
+            points_b.push(new BABYLON.Vector3(p.x, p.y, p.z));
+        }
+        var lines = [];
+        for (var i = 1; i < points_b.length; ++i) {
+            lines.push([points_b[i - 1], points_b[i]]);
+        }
+        var mesh = BABYLON.MeshBuilder.CreateLineSystem(null, { lines: lines,
+            updatable: false }, this.scene);
+        mesh.color = BABYLON.Color3.FromHexString(color);
+        return mesh;
+    };
+    BabylonDrawer.prototype.drawLines = function (lines, color) {
+        // Points to vector3
+        var lines_v = [];
+        for (var _i = 0, lines_1 = lines; _i < lines_1.length; _i++) {
+            var l = lines_1[_i];
+            lines_v.push([new BABYLON.Vector3(l[0].x, l[0].y, l[0].z), new BABYLON.Vector3(l[1].x, l[1].y, l[1].z)]);
+        }
+        var mesh = BABYLON.MeshBuilder.CreateLineSystem(null, { lines: lines_v,
+            updatable: false }, this.scene);
+        mesh.color = BABYLON.Color3.FromHexString(color);
+        return mesh;
+    };
+    BabylonDrawer.prototype.drawLine = function (id, source, target, color) {
+        var mesh = BABYLON.MeshBuilder.CreateLines(id, { points: [new BABYLON.Vector3(source.x, source.y, source.z),
+                new BABYLON.Vector3(target.x, target.y, target.z)],
+            updatable: false }, this.scene);
+        mesh.color = BABYLON.Color3.FromHexString(color);
+        return mesh;
+    };
     BabylonDrawer.prototype.merge = function (meshes) {
         return BABYLON.Mesh.MergeMeshes(meshes, true);
     };
@@ -351,8 +388,8 @@ var BabylonDrawer = (function () {
         var scaling = new BABYLON.Vector3(scale, scale, scale);
         for (var _i = 0, _a = this.scene.meshes; _i < _a.length; _i++) {
             var mesh = _a[_i];
-            mesh.scaling = scaling;
             mesh.position.multiplyInPlace(scaling);
+            mesh.scaling = scaling;
         }
     };
     BabylonDrawer.prototype.normalizeScene = function () {

@@ -9,6 +9,8 @@ export declare class BabylonMaterialPaletteElement implements DrawMaterialSet {
     emmisive: BABYLON.StandardMaterial;
     highlight: BABYLON.StandardMaterial;
     constructor(name: string, color: BABYLON.Color3, scene: BABYLON.Scene);
+    getStandardHexcolor(): string;
+    getHighlightHexcolor(): string;
 }
 /**
 * Material Palette class

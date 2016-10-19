@@ -36,6 +36,14 @@ export class BabylonMaterialPaletteElement implements DrawMaterialSet {
       this.highlight.diffuseColor = new BABYLON.Color3(1,1,0);
       this.highlight.ambientColor = new BABYLON.Color3(0.7,0.7,0.7);
     }
+
+    public getStandardHexcolor() {
+      return this.standard.diffuseColor.toHexString();
+    }
+
+    public getHighlightHexcolor() {
+      return this.highlight.diffuseColor.toHexString();
+    }
 }
 
 

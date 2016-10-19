@@ -66,6 +66,9 @@ export declare class BabylonDrawer implements Drawer {
     drawSphere(name: string, position: Point3D, radius: number): BABYLON.Mesh;
     drawCylinder(name: string, from_p: Point3D, to_p: Point3D, initRad: number, endRad: number): BABYLON.Mesh;
     drawLineBox(root_p: Point3D, x: number, y: number, z: number): BABYLON.LinesMesh;
+    drawContour(points: Array<Point3D>, closed: boolean, color: string, fillcolor: string, opacity: number): BABYLON.LinesMesh;
+    drawLines(lines: Array<Array<Point3D>>, color: string): BABYLON.LinesMesh;
+    drawLine(id: string, source: Point3D, target: Point3D, color: string): BABYLON.LinesMesh;
     merge(meshes: Array<BABYLON.Mesh>): BABYLON.Mesh;
     private computeSceneNormalizationScale();
     /**

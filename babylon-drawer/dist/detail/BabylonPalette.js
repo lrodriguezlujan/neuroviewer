@@ -23,6 +23,12 @@ var BabylonMaterialPaletteElement = (function () {
         this.highlight.diffuseColor = new BABYLON.Color3(1, 1, 0);
         this.highlight.ambientColor = new BABYLON.Color3(0.7, 0.7, 0.7);
     }
+    BabylonMaterialPaletteElement.prototype.getStandardHexcolor = function () {
+        return this.standard.diffuseColor.toHexString();
+    };
+    BabylonMaterialPaletteElement.prototype.getHighlightHexcolor = function () {
+        return this.highlight.diffuseColor.toHexString();
+    };
     return BabylonMaterialPaletteElement;
 }());
 exports.BabylonMaterialPaletteElement = BabylonMaterialPaletteElement;
