@@ -120,12 +120,12 @@ export class Reconstruction {
    * @param  {type} drawer: Drawer description
    * @return {type}                description
    */
-  public draw(){
+  public draw(linear: boolean){
 
     // Draw each neuron
     if(this.neurons){
       for( let n of this.neurons){
-        n.draw();
+        n.draw(linear);
       }
     }
 

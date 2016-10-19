@@ -93,12 +93,12 @@ var Reconstruction = (function () {
      * @param  {type} drawer: Drawer description
      * @return {type}                description
      */
-    Reconstruction.prototype.draw = function () {
+    Reconstruction.prototype.draw = function (linear) {
         // Draw each neuron
         if (this.neurons) {
             for (var _i = 0, _a = this.neurons; _i < _a.length; _i++) {
                 var n = _a[_i];
-                n.draw();
+                n.draw(linear);
             }
         }
         // Draw contours

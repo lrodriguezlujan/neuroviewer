@@ -36,14 +36,37 @@ var BranchElement = (function () {
      * @param  {Drawer} drawer class
      * @public
      */
-    BranchElement.prototype.draw = function (drawer) {
-        // Create node
-        this.nodeMesh = drawer.drawSphere("N" + this.node.id + "@" + this.branch.idString() + "@" + this.branch.neurite.id, this.node, this.node.r);
-        // Create segment
-        this.segmentMesh = drawer.drawCylinder("C" + this.node.id + "@" + this.branch.idString() + "}@" + this.branch.neurite.id, this.prevNode, this.node, this.prevNode.r, this.node.r);
-        this.drawn = true;
-        // Set materials wrt status
-        this.updateMaterial();
+    BranchElement.prototype.draw = function (drawer, linear) {
+        if (linear === void 0) { linear = false; }
+        if (linear) {
+            if (this.nodeMesh) {
+                this.nodeMesh.dispose();
+                this.nodeMesh = null;
+            }
+            if (this.prevNode) {
+                this.segmentMesh = drawer.drawLine("C" + this.node.id + "@" + this.branch.idString() + "}@" + this.branch.neurite.id, this.prevNode, this.node, this.currentColor());
+            }
+            this.drawn = true;
+        }
+        else {
+            // Create node
+            this.nodeMesh = drawer.drawSphere("N" + this.node.id + "@" + this.branch.idString() + "@" + this.branch.neurite.id, this.node, this.node.r);
+            // Create segment
+            if (this.prevNode)
+                this.segmentMesh = drawer.drawCylinder("C" + this.node.id + "@" + this.branch.idString() + "}@" + this.branch.neurite.id, this.prevNode, this.node, this.prevNode.r, this.node.r);
+            // Set materials wrt status
+            this.drawn = true;
+            this.updateMaterial();
+        }
+    };
+    BranchElement.prototype.asLine = function () {
+        if (this.prevNode) {
+            return [{ x: this.prevNode.x, y: this.prevNode.y, z: this.prevNode.z },
+                { x: this.node.x, y: this.node.y, z: this.node.z }];
+        }
+        else {
+            return [];
+        }
     };
     /**
      * Changes the element status and updates the material in the meshes
@@ -55,6 +78,31 @@ var BranchElement = (function () {
     BranchElement.prototype.setStatus = function (status) {
         this.status = status;
         this.updateMaterial();
+    };
+    /**
+     * Gets current color
+     */
+    BranchElement.prototype.currentColor = function () {
+        var color;
+        if (this.branch.neurite.material != null) {
+            switch (this.status) {
+                case Status_1.Status.none:
+                    return this.branch.neurite.material.standard.diffuseColor.toHexString();
+                case Status_1.Status.invisible:
+                    return this.branch.neurite.material.hidden.diffuseColor.toHexString();
+                    ;
+                case Status_1.Status.selected:
+                    return this.branch.neurite.material.emmisive.diffuseColor.toHexString();
+                    ;
+                case Status_1.Status.hidden:
+                    return this.branch.neurite.material.disminished.diffuseColor.toHexString();
+                    ;
+                case Status_1.Status.highlighted:
+                    return this.branch.neurite.material.highlight.diffuseColor.toHexString();
+                    ;
+            }
+        }
+        return "#FFFFFF";
     };
     /**
      * Updates mesh material based on the status
@@ -87,7 +135,8 @@ var BranchElement = (function () {
                 mat = null;
             }
             this.nodeMesh.material = mat;
-            this.segmentMesh.material = mat;
+            if (this.segmentMesh)
+                this.segmentMesh.material = mat;
         }
     };
     /**
@@ -227,6 +276,26 @@ var Branch = (function () {
             }
         }
     };
+    Branch.prototype.asLineArray = function (recursive) {
+        if (recursive === void 0) { recursive = true; }
+        var lines = [];
+        for (var _i = 0, _a = this.nodes; _i < _a.length; _i++) {
+            var el = _a[_i];
+            var aux = el.asLine();
+            if (aux.length != 0)
+                lines.push(aux);
+        }
+        if (recursive && this.children) {
+            for (var _b = 0, _c = this.children; _b < _c.length; _b++) {
+                var ch = _c[_b];
+                var aux = ch.asLineArray();
+                if (aux.length != 0) {
+                    lines = lines.concat(aux);
+                }
+            }
+        }
+        return lines;
+    };
     /**
      * Updates the material of every element
      *
@@ -264,16 +333,17 @@ var Branch = (function () {
      * @param  {Drawer} drawer Class that draws the branch
      * @param  {bool} recursive Should branch descendants be drawn? (default: true)
      */
-    Branch.prototype.draw = function (drawer, recursive) {
+    Branch.prototype.draw = function (drawer, recursive, linear) {
         if (recursive === void 0) { recursive = false; }
+        if (linear === void 0) { linear = false; }
         for (var _i = 0, _a = this.nodes; _i < _a.length; _i++) {
             var el = _a[_i];
-            el.draw(drawer);
+            el.draw(drawer, linear);
         }
         if (recursive) {
             for (var _b = 0, _c = this.children; _b < _c.length; _b++) {
                 var ch = _c[_b];
-                ch.draw(drawer, true);
+                ch.draw(drawer, true, linear);
             }
         }
     };
@@ -283,7 +353,8 @@ var Branch = (function () {
      * @param  {Drawer} drawer Class that draws the branch
      */
     Branch.prototype.drawRoot = function (drawer) {
-        this.rootMesh = drawer.drawSphere("N0@" + this.idString(), this.root, this.root.r);
+        if (this.root)
+            this.rootMesh = drawer.drawSphere("N0@" + this.idString(), this.root, this.root.r);
     };
     /**
      * Set given branch as child of the current branch
@@ -321,7 +392,10 @@ var Branch = (function () {
      */
     Branch.fromObject = function (id, obj, neurite) {
         // Create nodes
-        var root = Node3D_1.Node3D.fromObj(obj.root);
+        var root = null;
+        if (obj.root) {
+            root = Node3D_1.Node3D.fromObj(obj.root);
+        }
         var nodes;
         nodes = [];
         for (var _i = 0, _a = obj.nodes; _i < _a.length; _i++) {

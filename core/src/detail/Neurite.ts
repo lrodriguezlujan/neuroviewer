@@ -2,7 +2,7 @@ import{BranchJSON, Branch, BranchElement} from "./Branch";
 import{Node3D} from "./Node3D";
 import{Neuron} from "./Neuron";
 import{Status} from "./Status";
-import{Drawer, DrawMaterialSet} from "./NvCoreInterfaces";
+import{Drawer, DrawMaterialSet, DrawObject} from "./NvCoreInterfaces";
 
 
   /**
@@ -37,6 +37,7 @@ import{Drawer, DrawMaterialSet} from "./NvCoreInterfaces";
    * Neurite's first branch
    */
   private firstBranch: Branch;
+  private lineDrawObj : DrawObject;
 
 
   /**
@@ -66,9 +67,19 @@ import{Drawer, DrawMaterialSet} from "./NvCoreInterfaces";
    *
    * @param  {Drawer} drawer Class that draws the neurite
    */
-  public draw(drawer:Drawer){
+  public draw(drawer:Drawer, linear:boolean = false){
     if(this.firstBranch)
-      this.firstBranch.draw(drawer,true);
+      this.firstBranch.draw(drawer,true, linear);
+  }
+
+  public lineDraw(drawer:Drawer){
+
+    if(this.firstBranch){
+      // Get neurite as a line array
+      let lines = this.firstBranch.asLineArray(true);
+      let color = this.material.getStandardHexcolor();
+      this.lineDrawObj = drawer.drawLines(lines, color);
+    }
   }
 
 
@@ -159,6 +170,7 @@ import{Drawer, DrawMaterialSet} from "./NvCoreInterfaces";
 
   public dispose(){
     if(this.firstBranch) this.firstBranch.dispose(true);
+    if(this.lineDrawObj) this.lineDrawObj.dispose();
   }
 
 } // Neurite class end

@@ -105,7 +105,8 @@ var Neuron = (function () {
      * @param  {type} drawer: Drawer description
      * @return {type}                description
      */
-    Neuron.prototype.draw = function () {
+    Neuron.prototype.draw = function (linear) {
+        if (linear === void 0) { linear = false; }
         // Draw soma
         if (this.soma) {
             this.soma.draw(this.drawer);
@@ -114,7 +115,7 @@ var Neuron = (function () {
         if (this.neurites) {
             for (var _i = 0, _a = this.neurites; _i < _a.length; _i++) {
                 var n = _a[_i];
-                n.draw(this.drawer);
+                n.draw(this.drawer, linear);
             }
         }
     };

@@ -33,6 +33,7 @@ export declare class Neurite {
      * Neurite's first branch
      */
     private firstBranch;
+    private lineDrawObj;
     /**
      * Neurite constructor
      *
@@ -53,7 +54,8 @@ export declare class Neurite {
      *
      * @param  {Drawer} drawer Class that draws the neurite
      */
-    draw(drawer: Drawer): void;
+    draw(drawer: Drawer, linear?: boolean): void;
+    lineDraw(drawer: Drawer): void;
     /**
      * Executes a function for each element in the neurite
      */

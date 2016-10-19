@@ -43,9 +43,18 @@ var Neurite = (function () {
      *
      * @param  {Drawer} drawer Class that draws the neurite
      */
-    Neurite.prototype.draw = function (drawer) {
+    Neurite.prototype.draw = function (drawer, linear) {
+        if (linear === void 0) { linear = false; }
         if (this.firstBranch)
-            this.firstBranch.draw(drawer, true);
+            this.firstBranch.draw(drawer, true, linear);
+    };
+    Neurite.prototype.lineDraw = function (drawer) {
+        if (this.firstBranch) {
+            // Get neurite as a line array
+            var lines = this.firstBranch.asLineArray(true);
+            var color = this.material.getStandardHexcolor();
+            this.lineDrawObj = drawer.drawLines(lines, color);
+        }
     };
     /**
      * Executes a function for each element in the neurite
@@ -122,6 +131,8 @@ var Neurite = (function () {
     Neurite.prototype.dispose = function () {
         if (this.firstBranch)
             this.firstBranch.dispose(true);
+        if (this.lineDrawObj)
+            this.lineDrawObj.dispose();
     };
     return Neurite;
 }());

@@ -67,7 +67,7 @@ export declare class Neuron {
      * @param  {type} drawer: Drawer description
      * @return {type}                description
      */
-    draw(): void;
+    draw(linear?: boolean): void;
     dispose(): void;
     hasCutbox(): any;
     drawCutbox(): void;

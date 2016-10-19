@@ -1,7 +1,7 @@
 import {NodeJSON, Node3D} from "./Node3D";
 import {Status} from "./Status";
 import {Neurite} from "./Neurite";
-import {Drawer, DrawObject, DrawMaterial} from "./NvCoreInterfaces";
+import {Point3D,Drawer, DrawObject, DrawMaterial} from "./NvCoreInterfaces";
 
 
   /**
@@ -75,21 +75,41 @@ import {Drawer, DrawObject, DrawMaterial} from "./NvCoreInterfaces";
      * @param  {Drawer} drawer class
      * @public
      */
-    public draw( drawer: Drawer) {
-      // Create node
-      this.nodeMesh = drawer.drawSphere(`N${this.node.id}@${this.branch.idString()}@${this.branch.neurite.id}`, this.node, this.node.r );
+    public draw( drawer: Drawer, linear:boolean = false ) {
+        if(linear) {
+          if(this.nodeMesh) {
+            this.nodeMesh.dispose();
+            this.nodeMesh = null;
+          }
+          if(this.prevNode){
+            this.segmentMesh = drawer.drawLine(`C${this.node.id}@${this.branch.idString()}}@${this.branch.neurite.id}`,
+                                                this.prevNode, this.node, this.currentColor());
+          }
+          this.drawn = true;
+        } else {
+          // Create node
+          this.nodeMesh = drawer.drawSphere(`N${this.node.id}@${this.branch.idString()}@${this.branch.neurite.id}`, this.node, this.node.r );
 
-      // Create segment
-      this.segmentMesh = drawer.drawCylinder(`C${this.node.id}@${this.branch.idString()}}@${this.branch.neurite.id}`,
-                                              this.prevNode, this.node,
-                                              this.prevNode.r,this.node.r );
+          // Create segment
+          if(this.prevNode)
+            this.segmentMesh = drawer.drawCylinder(`C${this.node.id}@${this.branch.idString()}}@${this.branch.neurite.id}`,
+                                                  this.prevNode, this.node,
+                                                  this.prevNode.r,this.node.r );
 
-      this.drawn = true;
-
-      // Set materials wrt status
-      this.updateMaterial();
+          // Set materials wrt status
+          this.drawn = true;
+          this.updateMaterial();
+        }
     }
 
+    public asLine() : Array<Point3D> {
+      if(this.prevNode){
+        return [{x: this.prevNode.x, y: this.prevNode.y, z: this.prevNode.z},
+                {x: this.node.x, y: this.node.y, z: this.node.z}];
+      } else {
+        return [];
+      }
+    }
 
     /**
      * Changes the element status and updates the material in the meshes
@@ -102,6 +122,29 @@ import {Drawer, DrawObject, DrawMaterial} from "./NvCoreInterfaces";
       this.status = status;
       this.updateMaterial();
     }
+
+    /**
+     * Gets current color
+     */
+     public currentColor() {
+       let color : string;
+       if( this.branch.neurite.material != null){
+         switch(this.status){
+           case Status.none:
+             return this.branch.neurite.material.standard.diffuseColor.toHexString();
+           case Status.invisible:
+             return this.branch.neurite.material.hidden.diffuseColor.toHexString();;
+           case Status.selected:
+             return this.branch.neurite.material.emmisive.diffuseColor.toHexString();;
+           case Status.hidden:
+             return this.branch.neurite.material.disminished.diffuseColor.toHexString();;
+           case Status.highlighted:
+             return this.branch.neurite.material.highlight.diffuseColor.toHexString();;
+         }
+     }
+     return "#FFFFFF";
+   }
+
 
 
     /**
@@ -134,7 +177,8 @@ import {Drawer, DrawObject, DrawMaterial} from "./NvCoreInterfaces";
           mat = null;
         }
         this.nodeMesh.material = mat;
-        this.segmentMesh.material = mat;
+        if(this.segmentMesh)
+          this.segmentMesh.material = mat;
       }
     }
 
@@ -310,6 +354,26 @@ export class Branch {
     }
   }
 
+  public asLineArray(recursive = true) : Array<Array<Point3D>> {
+    let lines :  Array<Array<Point3D>> = [];
+
+    for(let el of this.nodes){
+      let aux = el.asLine();
+      if(aux.length != 0)
+        lines.push(aux);
+    }
+
+    if(recursive && this.children){
+      for(let ch of this.children){
+        let aux = ch.asLineArray();
+        if(aux.length != 0){
+          lines = lines.concat(aux);
+        }
+      }
+    }
+    return lines;
+  }
+
 
   /**
    * Updates the material of every element
@@ -349,13 +413,13 @@ export class Branch {
    * @param  {Drawer} drawer Class that draws the branch
    * @param  {bool} recursive Should branch descendants be drawn? (default: true)
    */
-  public draw(drawer : Drawer, recursive = false){
+  public draw(drawer : Drawer, recursive = false, linear:boolean = false ){
     for(let el of this.nodes){
-      el.draw(drawer)
+      el.draw(drawer,linear)
     }
     if(recursive){
       for( let ch of this.children){
-        ch.draw(drawer,true);
+        ch.draw(drawer,true,linear);
       }
     }
   }
@@ -367,6 +431,7 @@ export class Branch {
    * @param  {Drawer} drawer Class that draws the branch
    */
   public drawRoot(drawer : Drawer){
+    if(this.root)
      this.rootMesh = drawer.drawSphere(`N0@${this.idString()}`,this.root, this.root.r );
   }
 
@@ -406,7 +471,10 @@ export class Branch {
    */
   public static fromObject( id:Array<number>, obj : BranchJSON, neurite?: Neurite ) {
     // Create nodes
-    let root = Node3D.fromObj(obj.root);
+    let root : Node3D = null;
+    if(obj.root){
+      root=Node3D.fromObj(obj.root);
+    }
     let nodes: Array<Node3D>;
     nodes = [];
 
