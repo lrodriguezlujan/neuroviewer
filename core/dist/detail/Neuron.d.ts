@@ -62,12 +62,18 @@ export declare class Neuron {
      */
     searchNode(nodeId: number, neurite?: number, soma?: boolean): any;
     /**
-     * Draws the neuron
+     * Draws the neuron (with collision capabilites)
      *
      * @param  {type} drawer: Drawer description
      * @return {type}                description
      */
     draw(linear?: boolean): void;
+    /**
+     * Draws the neuron merging all neurites in a single linesystem
+     *
+     * @return {Mesh}
+     */
+    drawLinear(): void;
     dispose(): void;
     hasCutbox(): any;
     drawCutbox(): void;

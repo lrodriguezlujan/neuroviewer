@@ -135,7 +135,7 @@ import{Drawer, DrawMaterialSet, DrawObject} from "./NvCoreInterfaces";
 
 
     /**
-     * Draws the neuron
+     * Draws the neuron (with collision capabilites)
      *
      * @param  {type} drawer: Drawer description
      * @return {type}                description
@@ -150,6 +150,26 @@ import{Drawer, DrawMaterialSet, DrawObject} from "./NvCoreInterfaces";
       if(this.neurites){
         for( let n of this.neurites){
           n.draw(this.drawer,linear);
+        }
+      }
+    }
+
+
+    /**
+     * Draws the neuron merging all neurites in a single linesystem
+     *
+     * @return {Mesh}  
+     */
+    public drawLinear(){
+      // Draw soma
+      if(this.soma){
+        this.soma.draw(this.drawer);
+      }
+
+      // Draw each neurite
+      if(this.neurites){
+        for( let n of this.neurites){
+          n.lineDraw(this.drawer);
         }
       }
     }

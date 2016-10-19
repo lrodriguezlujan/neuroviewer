@@ -137,6 +137,23 @@ export class Reconstruction {
     }
   }
 
+  public drawLinear(){
+
+    // Draw each neuron
+    if(this.neurons){
+      for( let n of this.neurons){
+        n.drawLinear();
+      }
+    }
+
+    // Draw contours
+    if(this.contours){
+      for( let c of this.contours){
+        c.draw(this.drawer);
+      }
+    }
+  }
+
   public dispose(){
     for( let n of this.neurons )
       n.dispose();

@@ -70,6 +70,7 @@ export declare class Reconstruction {
      * @return {type}                description
      */
     draw(linear: boolean): void;
+    drawLinear(): void;
     dispose(): void;
     /**
      * Creates a neuron instance from a JS object

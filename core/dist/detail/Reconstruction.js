@@ -109,6 +109,22 @@ var Reconstruction = (function () {
             }
         }
     };
+    Reconstruction.prototype.drawLinear = function () {
+        // Draw each neuron
+        if (this.neurons) {
+            for (var _i = 0, _a = this.neurons; _i < _a.length; _i++) {
+                var n = _a[_i];
+                n.drawLinear();
+            }
+        }
+        // Draw contours
+        if (this.contours) {
+            for (var _b = 0, _c = this.contours; _b < _c.length; _b++) {
+                var c = _c[_b];
+                c.draw(this.drawer);
+            }
+        }
+    };
     Reconstruction.prototype.dispose = function () {
         for (var _i = 0, _a = this.neurons; _i < _a.length; _i++) {
             var n = _a[_i];
