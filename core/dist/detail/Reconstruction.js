@@ -135,6 +135,12 @@ var Reconstruction = (function () {
             c.dispose();
         }
     };
+    Reconstruction.prototype.forEachElement = function (fn) {
+        for (var _i = 0, _a = this.neurons; _i < _a.length; _i++) {
+            var n = _a[_i];
+            n.forEachElement(fn);
+        }
+    };
     /**
      * Creates a neuron instance from a JS object
      *

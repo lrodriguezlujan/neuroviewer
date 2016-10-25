@@ -72,6 +72,7 @@ export declare class Reconstruction {
     draw(linear: boolean): void;
     drawLinear(): void;
     dispose(): void;
+    forEachElement(fn: (item: BranchElement) => void): void;
     /**
      * Creates a neuron instance from a JS object
      *

@@ -163,6 +163,12 @@ export class Reconstruction {
     }
   }
 
+  public forEachElement( fn:(item:BranchElement) => void){
+    for(let n  of this.neurons){
+      n.forEachElement(fn);
+    }
+  }
+
   /**
    * Creates a neuron instance from a JS object
    *
