@@ -17,6 +17,8 @@
   "license": "MIT",
   "dependencies": {
     "@neuroviewer/core": "^0.0.1",
+    "awesome-bootstrap-checkbox": "git+https://github.com/flatlogic/awesome-bootstrap-checkbox.git",
+    "bootstrap": "^3.3.7",
     "interact.js": "^1.2.6",
     "jquery": "^3.1.1"
   },

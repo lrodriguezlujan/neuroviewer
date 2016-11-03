@@ -1,6 +1,7 @@
 "use strict";
 var ControlPanel = (function () {
-    function ControlPanel(panelName, parentDiv) {
+    function ControlPanel(panelId, panelName, parentDiv) {
+        this.panelId = panelId;
         this.panelName = panelName;
         this.parentDiv = parentDiv;
         this.visible = false;
@@ -45,7 +46,7 @@ var ControlPanel = (function () {
     };
     ControlPanel.prototype.resize = function (x, y) {
         this.panelDiv.style.width = x + "px";
-        this.panelDiv.style.height = y + "px";
+        //this.panelDiv.style.height = y + "px";
     };
     ControlPanel.prototype.show = function () {
         this.visible = true;
@@ -70,15 +71,22 @@ var ControlPanel = (function () {
     ControlPanel.prototype.createHeaderDiv = function () {
         // Create div
         this.headerDiv = document.createElement("div");
+        this.headerDiv.id = this.panelId + "_header";
         // Add style
         this.headerDiv.classList.add("controlHeader");
         this.headerDiv.appendChild(document.createTextNode(this.panelName));
+        // Header collapse content
+        this.headerDiv.setAttribute("data-toggle", "collapse");
+        this.headerDiv.setAttribute("data-target", "#" + this.panelId + "_content");
+        this.headerDiv.setAttribute("cursor", "copy");
     };
     ControlPanel.prototype.createContentDiv = function () {
         // Create div
         this.contentDiv = document.createElement("div");
+        this.contentDiv.id = this.panelId + "_content";
         // Add style
         this.contentDiv.classList.add("controlContent");
+        this.contentDiv.classList.add("collapse");
     };
     ControlPanel.prototype.createPanelDiv = function () {
         // Create content and header div
@@ -108,8 +116,8 @@ var ControlPanel = (function () {
             enabled: true,
             edges: {
                 top: false,
-                bottom: true,
-                left: false,
+                bottom: false,
+                left: true,
                 right: true
             },
             restrict: {
@@ -117,9 +125,80 @@ var ControlPanel = (function () {
             },
             invert: 'reposition',
             square: false,
-            inertia: false
+            inertia: false,
+            axis: 'x'
         })
             .on('resizemove', this.resizeMoveListener);
+    };
+    // Static functions for the panels
+    ControlPanel.createSimpleRadioInput = function (id, name, value, selected) {
+        var input = document.createElement("input");
+        input.type = "radio";
+        input.name = id;
+        input.id = id;
+        input.name = name;
+        input.value = value;
+        input.checked = selected;
+        return input;
+    };
+    ControlPanel.createInputBox = function (id, type, value) {
+        var input = document.createElement("input");
+        input.type = type;
+        input.classList.add("form-control");
+        input.id = id;
+        if (value)
+            input.value = value;
+        return input;
+    };
+    ControlPanel.createLabelTag = function (id, text) {
+        var label = document.createElement("label");
+        label.htmlFor = id;
+        label.appendChild(document.createTextNode(text));
+        return label;
+    };
+    ControlPanel.createSet = function (id) {
+        var div = document.createElement("div");
+        div.classList.add("section");
+        div.id = id;
+        return div;
+    };
+    ControlPanel.createGlyphicon = function (id) {
+        var span = document.createElement("span");
+        span.classList.add("glyphicon");
+        span.classList.add(id);
+        span.setAttribute("aria-hidden", "true");
+        return span;
+    };
+    ControlPanel.createLegend = function (text) {
+        var legend = document.createElement("legend");
+        legend.appendChild(document.createTextNode(text));
+        return legend;
+    };
+    ControlPanel.createRadioBoxInput = function (id, name, value, label, selected, classes) {
+        var parent = document.createElement("div");
+        // this is mandatory
+        parent.classList.add("checkbox");
+        // Add additional classes if needed
+        if (classes) {
+            for (var _i = 0, classes_1 = classes; _i < classes_1.length; _i++) {
+                var c = classes_1[_i];
+                parent.classList.add(c);
+            }
+        }
+        // Add input
+        parent.appendChild(ControlPanel.createSimpleRadioInput(id, name, value, selected));
+        parent.appendChild(ControlPanel.createLabelTag(id, label));
+        return parent;
+    };
+    ControlPanel.createRadioBoxSelector = function (label, name, values, selected) {
+        var parent = document.createElement("fieldset");
+        parent.id = name + "_fs";
+        parent.appendChild(ControlPanel.createLabelTag(name + "_fs", label));
+        for (var k in values) {
+            var sel = selected && selected == k;
+            parent.appendChild(ControlPanel.createRadioBoxInput(k, name, k, values[k], sel));
+        }
+        return parent;
     };
     return ControlPanel;
 }());

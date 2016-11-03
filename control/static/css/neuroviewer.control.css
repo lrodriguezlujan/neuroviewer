@@ -13,11 +13,11 @@
 
   -webkit-transform: translate(0px, 0px);
           transform: translate(0px, 0px);
+  overflow-y: auto;
 }
 
 .controlHeader{
   text-align: right;
-  width: 100%;
   color: white;
   padding: 5px 5px 4px 0px;
   border-radius: 8px 8px 0px 0px;
@@ -30,8 +30,15 @@
 .controlContent{
   padding-top: 5px;
   padding-bottom: 5px;
-  height: 100%;
+  width: 100%;
   border-radius: 0px 0px 8px 8px;
+  color: white;
+  overflow-y: auto;
+}
+
+legend{
+  color: white !important;
+  margin-bottom: 5px !important;
 }
 
 .controlDrawingCanvas{
@@ -52,22 +59,20 @@
   background-color: rgba(222,0,0,0.7);
 }
 
-.optionsPanel .sectionHeader{
-  background-color: rgba(120,0,0,1.0);
-}
 
 .neuronPanel .controlHeader{
   background-color: rgba(0,0,222,0.7);
-}
-
-.neuronPanel .sectionHeader{
-  background-color: rgba(0,0,120,1.0);
 }
 
 .detailsPanel .controlHeader{
   background-color: rgba(0,222,0,0.7);
 }
 
-.detailsPanel .sectionHeader{
-  background-color: rgba(0,120,0,1.0);
+.controlContent .section {
+  margin-left:5px;
+  margin-right:5px;
+}
+
+.controlContent input {
+  max-width:  100px;
 }

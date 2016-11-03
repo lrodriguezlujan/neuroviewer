@@ -22,13 +22,16 @@ gulp.task('copy:package', function(){
 gulp.task('copy:vendor', function(){
   return gulp.src([
     'node_modules/interact.js/dist/interact.min.js',
-    'node_modules/jquery/dist/jquery.min.js'
+    'node_modules/jquery/dist/jquery.min.js',
+    'node_modules/bootstrap/dist/js/bootstrap.min.js'
   ]).pipe(gulp.dest('./dist/vendor'));
 });
 
 gulp.task('copy:static', function(){
   return gulp.src([
-    'static/css/*'
+    'static/css/*',
+    'node_modules/bootstrap/dist/css/bootstrap.min.css',
+    'node_modules/awesome-bootstrap-checkbox/awesome-bootstrap-checkbox.css'
   ]).pipe(gulp.dest('./dist/static/css'));
 });
 
