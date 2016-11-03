@@ -1,3 +1,4 @@
+import {CameraType} from "@neuroviewer/core";
 
   export interface EngineConfig {
     antialias?: boolean;
@@ -8,11 +9,6 @@
   export const default_config_engine : EngineConfig = {
     "antialias": true,
     "prserveDrawingBuffer": true
-  };
-
-  export enum CameraType{
-    universal,
-    pivot
   };
 
   export interface CameraConfig {

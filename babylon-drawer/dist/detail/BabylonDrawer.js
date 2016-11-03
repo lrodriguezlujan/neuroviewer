@@ -1,5 +1,6 @@
 "use strict";
 var babylonConfigs = require("./BabylonConfigs");
+var core_1 = require("@neuroviewer/core");
 var BabylonPalette_1 = require("./BabylonPalette");
 /**
 * Drawer class - scene management
@@ -59,7 +60,7 @@ var BabylonDrawer = (function () {
             if (_this.loopCallbackFunction)
                 _this.loopCallbackFunction(_this);
             // Control camera limits
-            if (_this.config.camera.type == babylonConfigs.CameraType.universal) {
+            if (_this.config.camera.type == core_1.CameraType.universal) {
                 BabylonDrawer.cameraLimits(_this.camera);
             }
             _this.scene.render();
@@ -151,7 +152,7 @@ var BabylonDrawer = (function () {
         this.camera = camera;
     };
     BabylonDrawer.prototype.initCamera = function () {
-        if (this.config.camera.type == babylonConfigs.CameraType.universal) {
+        if (this.config.camera.type == core_1.CameraType.universal) {
             this.initUniversalCamera();
         }
         else {
@@ -198,9 +199,32 @@ var BabylonDrawer = (function () {
             this.camera.setTarget(target);
         }
     };
+    BabylonDrawer.prototype.getCameraType = function () {
+        return this.config.camera.type;
+    };
+    BabylonDrawer.prototype.setCameraType = function (type) {
+        this.config.camera.type;
+        this.camera.dispose();
+        this.initCamera();
+    };
+    // Speed
+    BabylonDrawer.prototype.getCameraSpeed = function () {
+        if (this.initialized) {
+            return this.camera.speed;
+        }
+        else {
+            return undefined;
+        }
+    };
     BabylonDrawer.prototype.setCameraSpeed = function (speed) {
         if (speed && this.initialized) {
             this.camera.speed = speed;
+        }
+    };
+    // Inertia
+    BabylonDrawer.prototype.getCameraInertia = function () {
+        if (this.initialized) {
+            return this.camera.inertia;
         }
     };
     BabylonDrawer.prototype.setCameraInertia = function (inertia) {
@@ -208,9 +232,39 @@ var BabylonDrawer = (function () {
             this.camera.inertia = inertia;
         }
     };
+    // FOV
     BabylonDrawer.prototype.setCameraFOV = function (fov) {
         if (fov && this.initialized) {
             this.camera.fov = fov;
+        }
+    };
+    // Pan sensibility
+    BabylonDrawer.prototype.getCameraPanSensibility = function () {
+        if (this.camera && this.getCameraType() == core_1.CameraType.pivot) {
+            return (this.camera).panningSensibility;
+        }
+        else {
+            return undefined;
+        }
+    };
+    ;
+    BabylonDrawer.prototype.setCameraPanSensibility = function (v) {
+        if (this.camera && this.getCameraType() == core_1.CameraType.pivot) {
+            (this.camera).panningSensibility = v;
+        }
+    };
+    BabylonDrawer.prototype.getCameraWheelSensibility = function () {
+        if (this.camera && this.getCameraType() == core_1.CameraType.pivot) {
+            return (this.camera).wheelPrecision;
+        }
+        else {
+            return undefined;
+        }
+    };
+    ;
+    BabylonDrawer.prototype.setCameraWheelSensibility = function (v) {
+        if (this.camera && this.getCameraType() == core_1.CameraType.pivot) {
+            (this.camera).wheelPrecision = v;
         }
     };
     // Create scene grid

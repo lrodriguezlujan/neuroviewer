@@ -1,13 +1,10 @@
+import { CameraType } from "@neuroviewer/core";
 export interface EngineConfig {
     antialias?: boolean;
     prserveDrawingBuffer?: boolean;
     limitDeviceRatio?: number;
 }
 export declare const default_config_engine: EngineConfig;
-export declare enum CameraType {
-    universal = 0,
-    pivot = 1,
-}
 export interface CameraConfig {
     type: CameraType;
     initPos?: BABYLON.Vector3;

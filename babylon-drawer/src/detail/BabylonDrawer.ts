@@ -1,5 +1,5 @@
 import * as babylonConfigs from "./BabylonConfigs";
-import {Point3D, Drawer} from "@neuroviewer/core";
+import {Point3D, Drawer, CameraType} from "@neuroviewer/core";
 import {BabylonMaterialPalette} from "./BabylonPalette";
 
   /**
@@ -104,7 +104,7 @@ import {BabylonMaterialPalette} from "./BabylonPalette";
       this.engine.runRenderLoop( () => {
         if(this.loopCallbackFunction) this.loopCallbackFunction(this);
         // Control camera limits
-        if(this.config.camera.type == babylonConfigs.CameraType.universal){
+        if(this.config.camera.type == CameraType.universal){
           BabylonDrawer.cameraLimits(this.camera);
         }
 
@@ -214,7 +214,7 @@ import {BabylonMaterialPalette} from "./BabylonPalette";
     }
 
     private initCamera() {
-      if (this.config.camera.type == babylonConfigs.CameraType.universal) {
+      if (this.config.camera.type == CameraType.universal) {
         this.initUniversalCamera();
       } else {
         this.initPivotCamera();
@@ -274,9 +274,35 @@ import {BabylonMaterialPalette} from "./BabylonPalette";
       }
     }
 
+    public getCameraType(){
+      return this.config.camera.type;
+    }
+
+    public setCameraType(type: CameraType ){
+      this.config.camera.type;
+      this.camera.dispose();
+      this.initCamera();
+    }
+
+    // Speed
+    public getCameraSpeed(){
+      if(this.initialized){
+        return this.camera.speed;
+      } else {
+        return undefined;
+      }
+    }
+
     public setCameraSpeed(speed: number) {
       if (speed && this.initialized) {
         this.camera.speed = speed;
+      }
+    }
+
+    // Inertia
+    public getCameraInertia() {
+      if (this.initialized) {
+        return this.camera.inertia;
       }
     }
 
@@ -286,11 +312,40 @@ import {BabylonMaterialPalette} from "./BabylonPalette";
       }
     }
 
+    // FOV
     public setCameraFOV(fov: number) {
       if (fov && this.initialized) {
         this.camera.fov = fov;
       }
     }
+
+    // Pan sensibility
+    public getCameraPanSensibility(){
+      if(this.camera && this.getCameraType() == CameraType.pivot) {
+        return (<BABYLON.ArcRotateCamera>(this.camera)).panningSensibility;
+      }else{
+        return undefined;
+      }
+    };
+    public setCameraPanSensibility(v : number){
+      if(this.camera && this.getCameraType() == CameraType.pivot) {
+        (<BABYLON.ArcRotateCamera>(this.camera)).panningSensibility = v;
+      }
+    }
+
+    public getCameraWheelSensibility(){
+      if(this.camera && this.getCameraType() == CameraType.pivot) {
+        return (<BABYLON.ArcRotateCamera>(this.camera)).wheelPrecision;
+      }else{
+        return undefined;
+      }
+    };
+    public setCameraWheelSensibility(v : number){
+      if(this.camera && this.getCameraType() == CameraType.pivot) {
+        (<BABYLON.ArcRotateCamera>(this.camera)).wheelPrecision = v;
+      }
+    }
+
 
     // Create scene grid
     public createGrid(cfg:babylonConfigs.GridConfig){

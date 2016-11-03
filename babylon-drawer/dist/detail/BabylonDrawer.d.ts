@@ -1,5 +1,5 @@
 import * as babylonConfigs from "./BabylonConfigs";
-import { Point3D, Drawer } from "@neuroviewer/core";
+import { Point3D, Drawer, CameraType } from "@neuroviewer/core";
 import { BabylonMaterialPalette } from "./BabylonPalette";
 /**
 * Drawer class - scene management
@@ -61,9 +61,17 @@ export declare class BabylonDrawer implements Drawer {
     resetCamera(): void;
     setCameraPosition(pos: BABYLON.Vector3): void;
     setCameraTarget(target: BABYLON.Vector3): void;
+    getCameraType(): CameraType;
+    setCameraType(type: CameraType): void;
+    getCameraSpeed(): number;
     setCameraSpeed(speed: number): void;
+    getCameraInertia(): number;
     setCameraInertia(inertia: number): void;
     setCameraFOV(fov: number): void;
+    getCameraPanSensibility(): number;
+    setCameraPanSensibility(v: number): void;
+    getCameraWheelSensibility(): number;
+    setCameraWheelSensibility(v: number): void;
     createGrid(cfg: babylonConfigs.GridConfig): void;
     private createLabelText(id, text, position, textColor, backColor);
     drawSphere(name: string, position: Point3D, radius: number): BABYLON.Mesh;

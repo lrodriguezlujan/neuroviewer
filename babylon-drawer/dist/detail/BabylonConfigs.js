@@ -1,17 +1,12 @@
 "use strict";
+var core_1 = require("@neuroviewer/core");
 exports.default_config_engine = {
     "antialias": true,
     "prserveDrawingBuffer": true
 };
-(function (CameraType) {
-    CameraType[CameraType["universal"] = 0] = "universal";
-    CameraType[CameraType["pivot"] = 1] = "pivot";
-})(exports.CameraType || (exports.CameraType = {}));
-var CameraType = exports.CameraType;
-;
 ;
 exports.default_config_camera = {
-    "type": CameraType.pivot,
+    "type": core_1.CameraType.pivot,
     "initPos": new BABYLON.Vector3(1, 1, 1),
     "target": BABYLON.Vector3.Zero(),
     "inertia": 0,
