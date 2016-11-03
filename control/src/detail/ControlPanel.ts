@@ -23,8 +23,8 @@ export class ControlPanel {
     }
 
   public move(x: number, y:number){
-    this.panelDiv.style.top = x + "px";
-    this.panelDiv.style.left = y + "px";
+    this.panelDiv.style.left = x + "px";
+    this.panelDiv.style.top = y + "px";
   }
 
   public resize(x: number, y?:number){
@@ -174,7 +174,7 @@ export class ControlPanel {
   }
 
   // Static functions for the panels
-  protected static createSimpleRadioInput(id:string, name:string, value:string, selected:boolean){
+  protected static createSimpleRadioInput(id:string, name:string, value:string, selected:boolean, cb : (ev:Event) => any){
     let input = document.createElement("input");
     input.type = "radio";
     input.name = id;
@@ -182,14 +182,32 @@ export class ControlPanel {
     input.name = name;
     input.value = value
     input.checked = selected;
+    input.onchange = cb;
     return input;
   }
 
-  protected static createInputBox(id:string, type:string, value?:any){
+  protected static createSimpleCBInput(id:string, name:string, selected:boolean, cb : (ev:Event) => any){
+
+    let div = document.createElement("div");
+    div.classList.add("checkbox");
+
+    let input = document.createElement("input");
+    input.type = "checkbox";
+    input.classList.add("styled");
+    input.id = id;
+    input.checked = selected;
+    input.onchange = cb;
+    div.appendChild(input);
+    div.appendChild(ControlPanel.createLabelTag(id,name) );
+    return div;
+  }
+
+  protected static createInputBox(id:string, type:string,  cb : (ev:Event) => any, value?:any){
     let input = document.createElement("input");
     input.type = type;
     input.classList.add("form-control");
     input.id = id;
+    input.onchange = cb;
     if(value)
       input.value=value;
     return input;
@@ -224,7 +242,7 @@ export class ControlPanel {
     return legend;
   }
 
-  protected static createRadioBoxInput(id:string, name:string, value:string, label:string, selected:boolean, classes?:Array<string>){
+  protected static createRadioBoxInput(id:string, name:string, value:string, label:string, selected:boolean, cb : (ev:Event) => any, classes?:Array<string>){
     let parent = document.createElement("div");
     // this is mandatory
     parent.classList.add("checkbox");
@@ -235,19 +253,19 @@ export class ControlPanel {
       }
     }
     // Add input
-    parent.appendChild(ControlPanel.createSimpleRadioInput(id,name,value,selected));
+    parent.appendChild(ControlPanel.createSimpleRadioInput(id,name,value,selected,cb));
     parent.appendChild(ControlPanel.createLabelTag(id,label));
     return parent;
   }
 
-  protected static createRadioBoxSelector(label: string, name:string, values:{[key:string]:string}, selected?: string){
+  protected static createRadioBoxSelector(label: string, name:string, values:{[key:string]:string}, cb : (ev:Event) => any, selected?: string){
     let parent = document.createElement("fieldset");
     parent.id = name+"_fs";
 
     parent.appendChild(ControlPanel.createLabelTag(name+"_fs",label))
     for(let k in values){
       let sel = selected && selected == k;
-      parent.appendChild(ControlPanel.createRadioBoxInput(k,name,k,values[k],sel));
+      parent.appendChild(ControlPanel.createRadioBoxInput(k,name,k,values[k],sel,cb));
     }
 
     return parent;

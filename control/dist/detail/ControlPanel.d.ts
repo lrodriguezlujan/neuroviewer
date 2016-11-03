@@ -21,14 +21,15 @@ export declare class ControlPanel {
     private dragMoveListener;
     private makeResizable();
     private resizeMoveListener;
-    protected static createSimpleRadioInput(id: string, name: string, value: string, selected: boolean): HTMLInputElement;
-    protected static createInputBox(id: string, type: string, value?: any): HTMLInputElement;
+    protected static createSimpleRadioInput(id: string, name: string, value: string, selected: boolean, cb: (ev: Event) => any): HTMLInputElement;
+    protected static createSimpleCBInput(id: string, name: string, selected: boolean, cb: (ev: Event) => any): HTMLDivElement;
+    protected static createInputBox(id: string, type: string, cb: (ev: Event) => any, value?: any): HTMLInputElement;
     protected static createLabelTag(id: string, text: string): HTMLLabelElement;
     protected static createSet(id: string): HTMLDivElement;
     protected static createGlyphicon(id: string): HTMLSpanElement;
     protected static createLegend(text: string): HTMLLegendElement;
-    protected static createRadioBoxInput(id: string, name: string, value: string, label: string, selected: boolean, classes?: Array<string>): HTMLDivElement;
+    protected static createRadioBoxInput(id: string, name: string, value: string, label: string, selected: boolean, cb: (ev: Event) => any, classes?: Array<string>): HTMLDivElement;
     protected static createRadioBoxSelector(label: string, name: string, values: {
         [key: string]: string;
-    }, selected?: string): HTMLFieldSetElement;
+    }, cb: (ev: Event) => any, selected?: string): HTMLFieldSetElement;
 }

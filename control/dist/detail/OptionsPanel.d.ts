@@ -5,4 +5,5 @@ export declare class OptionsControlPanel extends ControlPanel {
     private static options_name;
     constructor(parentDiv: HTMLElement, drawer: Drawer);
     private createCameraOptions();
+    private createRendererOptions();
 }

@@ -37,4 +37,6 @@ export interface ControlInterface{
   triggerDetails: () => boolean; // Return status
   addToDetails: (c : HTMLElement) => void;
   emptyDetails: () => void;
+
+  // Callback functions
 }

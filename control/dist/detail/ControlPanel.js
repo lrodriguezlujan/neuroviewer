@@ -41,8 +41,8 @@ var ControlPanel = (function () {
         this.makeResizable();
     }
     ControlPanel.prototype.move = function (x, y) {
-        this.panelDiv.style.top = x + "px";
-        this.panelDiv.style.left = y + "px";
+        this.panelDiv.style.left = x + "px";
+        this.panelDiv.style.top = y + "px";
     };
     ControlPanel.prototype.resize = function (x, y) {
         this.panelDiv.style.width = x + "px";
@@ -131,7 +131,7 @@ var ControlPanel = (function () {
             .on('resizemove', this.resizeMoveListener);
     };
     // Static functions for the panels
-    ControlPanel.createSimpleRadioInput = function (id, name, value, selected) {
+    ControlPanel.createSimpleRadioInput = function (id, name, value, selected, cb) {
         var input = document.createElement("input");
         input.type = "radio";
         input.name = id;
@@ -139,13 +139,28 @@ var ControlPanel = (function () {
         input.name = name;
         input.value = value;
         input.checked = selected;
+        input.onchange = cb;
         return input;
     };
-    ControlPanel.createInputBox = function (id, type, value) {
+    ControlPanel.createSimpleCBInput = function (id, name, selected, cb) {
+        var div = document.createElement("div");
+        div.classList.add("checkbox");
+        var input = document.createElement("input");
+        input.type = "checkbox";
+        input.classList.add("styled");
+        input.id = id;
+        input.checked = selected;
+        input.onchange = cb;
+        div.appendChild(input);
+        div.appendChild(ControlPanel.createLabelTag(id, name));
+        return div;
+    };
+    ControlPanel.createInputBox = function (id, type, cb, value) {
         var input = document.createElement("input");
         input.type = type;
         input.classList.add("form-control");
         input.id = id;
+        input.onchange = cb;
         if (value)
             input.value = value;
         return input;
@@ -174,7 +189,7 @@ var ControlPanel = (function () {
         legend.appendChild(document.createTextNode(text));
         return legend;
     };
-    ControlPanel.createRadioBoxInput = function (id, name, value, label, selected, classes) {
+    ControlPanel.createRadioBoxInput = function (id, name, value, label, selected, cb, classes) {
         var parent = document.createElement("div");
         // this is mandatory
         parent.classList.add("checkbox");
@@ -186,17 +201,17 @@ var ControlPanel = (function () {
             }
         }
         // Add input
-        parent.appendChild(ControlPanel.createSimpleRadioInput(id, name, value, selected));
+        parent.appendChild(ControlPanel.createSimpleRadioInput(id, name, value, selected, cb));
         parent.appendChild(ControlPanel.createLabelTag(id, label));
         return parent;
     };
-    ControlPanel.createRadioBoxSelector = function (label, name, values, selected) {
+    ControlPanel.createRadioBoxSelector = function (label, name, values, cb, selected) {
         var parent = document.createElement("fieldset");
         parent.id = name + "_fs";
         parent.appendChild(ControlPanel.createLabelTag(name + "_fs", label));
         for (var k in values) {
             var sel = selected && selected == k;
-            parent.appendChild(ControlPanel.createRadioBoxInput(k, name, k, values[k], sel));
+            parent.appendChild(ControlPanel.createRadioBoxInput(k, name, k, values[k], sel, cb));
         }
         return parent;
     };

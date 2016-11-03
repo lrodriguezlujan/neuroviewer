@@ -1,5 +1,6 @@
 "use strict";
 var OptionsPanel_1 = require("./OptionsPanel");
+var NeuronPanel_1 = require("./NeuronPanel");
 var Control = (function () {
     function Control(drawer) {
         //this.canvasLayer = document.createElement("canvas");
@@ -13,6 +14,7 @@ var Control = (function () {
         this.createLayer();
         //this.controlLayer.appendChild(this.canvasLayer);
         this.optionsPanel = new OptionsPanel_1.OptionsControlPanel(this.controlLayer, this.drawer);
+        this.neuronPanel = new NeuronPanel_1.NeuronControlPanel(this.controlLayer, this.recData);
     }
     // Trigger display
     Control.prototype.show = function () {

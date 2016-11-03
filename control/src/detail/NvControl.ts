@@ -2,6 +2,7 @@ import {Drawer,Reconstruction} from "@neuroviewer/core";
 import {ControlInterface} from "./NvControlInterface";
 import {ControlPanel} from "./ControlPanel";
 import {OptionsControlPanel} from "./OptionsPanel";
+import {NeuronControlPanel} from "./NeuronPanel";
 
 
 export class Control {
@@ -25,7 +26,7 @@ export class Control {
     //this.controlLayer.appendChild(this.canvasLayer);
 
     this.optionsPanel = new OptionsControlPanel(this.controlLayer,this.drawer);
-
+    this.neuronPanel = new NeuronControlPanel(this.controlLayer,this.recData);
   }
 
   // Trigger display

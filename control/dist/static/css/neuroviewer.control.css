@@ -1,6 +1,6 @@
 
 .controlPanel{
-
+  position:absolute;
   border: 1px solid rgb(100,100,100);
   background: rgba(128,128,128,0.25);
   padding: 0px 0px 0px 5px;
@@ -14,6 +14,7 @@
   -webkit-transform: translate(0px, 0px);
           transform: translate(0px, 0px);
   overflow-y: auto;
+  max-height: 100%;
 }
 
 .controlHeader{
@@ -69,8 +70,7 @@ legend{
 }
 
 .controlContent .section {
-  margin-left:5px;
-  margin-right:5px;
+  margin: 10px;
 }
 
 .controlContent input {
