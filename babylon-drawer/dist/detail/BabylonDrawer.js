@@ -69,6 +69,19 @@ var BabylonDrawer = (function () {
             this.createInfoPanel(this.config.scene.info);
         }
     };
+    BabylonDrawer.prototype.getCanvasPosition = function () {
+        var bodyRect = document.body.getBoundingClientRect();
+        var canvasRect = this.canvas.getBoundingClientRect();
+        return [canvasRect.left - bodyRect.left, canvasRect.top - bodyRect.top];
+    };
+    BabylonDrawer.prototype.getCanvasSize = function () {
+        var bodyRect = document.body.getBoundingClientRect();
+        var canvasRect = this.canvas.getBoundingClientRect();
+        return [canvasRect.right - canvasRect.left, canvasRect.bottom - canvasRect.top];
+    };
+    BabylonDrawer.prototype.attachResizeListener = function (fn) {
+        this.canvas.addEventListener("resize", fn);
+    };
     BabylonDrawer.cameraLimits = function (camera) {
         if (camera.position.x > 3)
             camera.position.x = 3;

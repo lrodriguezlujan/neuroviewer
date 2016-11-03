@@ -36,6 +36,9 @@ export declare class BabylonDrawer implements Drawer {
     * @return none
     */
     init(): void;
+    getCanvasPosition(): number[];
+    getCanvasSize(): number[];
+    attachResizeListener(fn: () => void): void;
     private static cameraLimits(camera);
     /**
      * Releases resources allocated by the drawer

@@ -117,6 +117,22 @@ import {BabylonMaterialPalette} from "./BabylonPalette";
        }
     }
 
+    public getCanvasPosition(){
+      let bodyRect   = document.body.getBoundingClientRect();
+      let canvasRect = this.canvas.getBoundingClientRect();
+      return [canvasRect.left - bodyRect.left, canvasRect.top - bodyRect.top];
+    }
+
+    public getCanvasSize(){
+      let bodyRect   = document.body.getBoundingClientRect();
+      let canvasRect = this.canvas.getBoundingClientRect();
+      return [canvasRect.right - canvasRect.left, canvasRect.bottom - canvasRect.top];
+    }
+
+    public attachResizeListener( fn:() => void ){
+      this.canvas.addEventListener("resize",fn);
+    }
+
     private static cameraLimits(camera: BABYLON.Camera){
       if(camera.position.x > 3 )
         camera.position.x = 3;
