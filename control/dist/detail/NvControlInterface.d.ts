@@ -1,11 +1,9 @@
-import { Drawer } from "@neuroviewer/core";
+import { Drawer, Reconstruction } from "@neuroviewer/core";
 export interface ControlInterface {
     new (d: Drawer): ControlInterface;
-    position: (x: number, y: number) => void;
-    resize: (x: number, y: number) => void;
     show: () => void;
     hide: () => void;
-    attachDrawer: (d: Drawer) => void;
+    attachReconstruction: (r: Reconstruction) => void;
     dispose: () => void;
     showOptions: () => void;
     hideOptions: () => void;

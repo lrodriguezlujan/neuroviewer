@@ -26,7 +26,12 @@ gulp.task('copy:vendor', function(){
   ]).pipe(gulp.dest('./dist/vendor'));
 });
 
+gulp.task('copy:static', function(){
+  return gulp.src([
+    'static/css/*'
+  ]).pipe(gulp.dest('./dist/static/css'));
+});
 
 gulp.task('copy', function(done){
-    return runSeq(['copy:package','copy:vendor'], done);
+    return runSeq(['copy:package','copy:vendor', 'copy:static'], done);
 });

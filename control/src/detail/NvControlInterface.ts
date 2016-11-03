@@ -5,18 +5,18 @@ export interface ControlInterface{
   new(d: Drawer) : ControlInterface;
 
   // Change position and size to match drawer
-  position: (x:number, y:number) => void;
-  resize:   (x:number, y:number) => void;
+  // position: (x:number, y:number) => void;
+  // resize:   (x:number, y:number) => void;
 
   // Trigger display
   show: () => void;
   hide: () => void;
 
   // Add drawer to the control panel
-  attachDrawer: (d:Drawer) => void;
+  // attachDrawer: (d:Drawer) => void;
 
   // Add reconstruction
-  // attachReconstruction: (r:Reconstruction) => void;
+  attachReconstruction: (r:Reconstruction) => void;
 
   // Dispose (Destroy)
   dispose: () => void;

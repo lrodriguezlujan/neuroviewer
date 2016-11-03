@@ -2,12 +2,9 @@ export class ControlPanel {
 
   private visible = false;
 
-  private position: Position;
-  private size: Position;
-
-  private panelDiv: HTMLElement;
-  private headerDiv: HTMLElement;
-  private contentDiv: HTMLElement;
+  protected panelDiv: HTMLElement;
+  protected headerDiv: HTMLElement;
+  protected contentDiv: HTMLElement;
 
   public constructor(
     private panelName: string,
@@ -45,8 +42,19 @@ export class ControlPanel {
     this.panelDiv.style.visibility = "hidden";
   }
 
+  public trigger(){
+    this.visible = !this.visible;
+    if(!this.visible)
+      this.panelDiv.style.visibility = "hidden";
+    return this.visible;
+  }
+
   public add(c : HTMLElement){
     this.contentDiv.appendChild(c);
+  }
+
+  public dispose() {
+    this.panelDiv.remove();
   }
 
   protected createHeaderDiv(){
@@ -55,6 +63,8 @@ export class ControlPanel {
 
     // Add style
     this.headerDiv.classList.add("controlHeader");
+    this.headerDiv.appendChild(
+      document.createTextNode(this.panelName));
   }
 
   protected createContentDiv(){
@@ -85,16 +95,35 @@ export class ControlPanel {
   private makeDraggable(){
     interact(this.panelDiv)
     .draggable({
-      enabled: true,
       inertia: false,
       restrict: {
-        restriction: 'parent'
-      }
+        restriction: 'parent',
+      },
+      onmove: this.dragMoveListener
     })
   }
 
+  private dragMoveListener = (event:any)=>{
+    var target = event.target,
+    // keep the dragged position in the data-x/data-y attributes
+    x = (parseFloat(target.getAttribute('data-x')) || 0) + event.dx,
+    y = (parseFloat(target.getAttribute('data-y')) || 0) + event.dy;
+
+    // translate the element
+    target.style.webkitTransform =
+    target.style.transform =
+      'translate(' + x + 'px, ' + y + 'px)';
+
+    // update the posiion attributes
+    target.setAttribute('data-x', x);
+    target.setAttribute('data-y', y);
+
+    // console log
+    // console.log("POSITION: " + x + "," + y);
+  }
+
   private makeResizable(){
-    interact(this.panelDiv)
+   interact(this.panelDiv)
     .resizable({
       enabled : true,
       edges: {
@@ -103,13 +132,34 @@ export class ControlPanel {
         left: false,
         right: true
       },
-      invert: 'reposition',
       restrict: {
-        restriction: 'parent'
+        restriction: 'parent',
       },
+      invert: 'reposition',
       square: false,
       inertia: false
     })
+    .on('resizemove',this.resizeMoveListener);
+  }
+
+  private resizeMoveListener = (event: any)=>{
+    var target = event.target,
+            x = (parseFloat(target.getAttribute('data-x')) || 0),
+            y = (parseFloat(target.getAttribute('data-y')) || 0);
+
+        // update the element's style
+        target.style.width  = event.rect.width + 'px';
+        target.style.height = event.rect.height + 'px';
+
+        // translate when resizing from top or left edges
+        x += event.deltaRect.left;
+        y += event.deltaRect.top;
+
+        target.style.webkitTransform = target.style.transform =
+            'translate(' + x + 'px,' + y + 'px)';
+
+        target.setAttribute('data-x', x);
+        target.setAttribute('data-y', y);
   }
 
 }
