@@ -40,9 +40,6 @@ import {BabylonMaterialPalette} from "./BabylonPalette";
     // Lights
     protected lights: Array<BABYLON.Light>;
 
-    // Info panel
-    public infoPanel: BABYLON.ScreenSpaceCanvas2D;
-
     // loop callback function
     protected loopCallbackFunction: (instance:Drawer) => void;
 
@@ -110,11 +107,6 @@ import {BabylonMaterialPalette} from "./BabylonPalette";
 
          this.scene.render();
        });
-
-       // Set up info panel
-       if( this.config.scene.info ){
-         this.createInfoPanel(this.config.scene.info);
-       }
     }
 
     public getCanvasPosition(){
@@ -189,23 +181,6 @@ import {BabylonMaterialPalette} from "./BabylonPalette";
       if (this.initialized) {
         this.octtree = this.scene.createOrUpdateSelectionOctree(16, 3); // TODO: CONFIG
       }
-    }
-
-
-    // INFO PANEL
-    public createInfoPanel(cfg: babylonConfigs.InfoPanelConfig){
-
-      if(this.infoPanel) this.infoPanel.dispose();
-
-      if(cfg.enable){
-        this.infoPanel = new BABYLON.ScreenSpaceCanvas2D(this.scene,
-          {id: "infoPanel",
-          position: cfg.position,
-          size: cfg.size } );
-        this.infoPanel.isPickable = false;
-      }
-
-      return this.infoPanel;
     }
 
     // CAMERA
@@ -428,7 +403,7 @@ import {BabylonMaterialPalette} from "./BabylonPalette";
     }
 
     public drawSphere(name: string, position: Point3D, radius: number){
-      let tmp_sph = BABYLON.Mesh.CreateSphere(name , 8, radius * 2.05, this.scene);
+      let tmp_sph = BABYLON.Mesh.CreateSphere(name , this.config.draw.segmentsPerCircle, radius * 2.05, this.scene);
 
       // Move to location
       tmp_sph.position = new BABYLON.Vector3(position.x,position.y,position.z);
@@ -440,7 +415,9 @@ import {BabylonMaterialPalette} from "./BabylonPalette";
 
       let from = new BABYLON.Vector3(from_p.x,from_p.y,from_p.z);
       let to = new BABYLON.Vector3(to_p.x,to_p.y,to_p.z);
-      let tmp_cyl = BABYLON.Mesh.CreateCylinder(name, BABYLON.Vector3.Distance(from, to), endRad * 2, initRad * 2, 8, 1, this.scene);
+      let tmp_cyl = BABYLON.Mesh.CreateCylinder(name, BABYLON.Vector3.Distance(from, to),
+        endRad * 2, initRad * 2,
+        this.config.draw.segmentsPerCircle, 1, this.scene);
 
       // Compute rotation
       let vec = to.subtract(from);

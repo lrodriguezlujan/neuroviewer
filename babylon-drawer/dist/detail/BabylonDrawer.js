@@ -65,10 +65,6 @@ var BabylonDrawer = (function () {
             }
             _this.scene.render();
         });
-        // Set up info panel
-        if (this.config.scene.info) {
-            this.createInfoPanel(this.config.scene.info);
-        }
     };
     BabylonDrawer.prototype.getCanvasPosition = function () {
         var bodyRect = document.body.getBoundingClientRect();
@@ -134,18 +130,6 @@ var BabylonDrawer = (function () {
         if (this.initialized) {
             this.octtree = this.scene.createOrUpdateSelectionOctree(16, 3); // TODO: CONFIG
         }
-    };
-    // INFO PANEL
-    BabylonDrawer.prototype.createInfoPanel = function (cfg) {
-        if (this.infoPanel)
-            this.infoPanel.dispose();
-        if (cfg.enable) {
-            this.infoPanel = new BABYLON.ScreenSpaceCanvas2D(this.scene, { id: "infoPanel",
-                position: cfg.position,
-                size: cfg.size });
-            this.infoPanel.isPickable = false;
-        }
-        return this.infoPanel;
     };
     // CAMERA
     BabylonDrawer.prototype.setCamera = function (camera) {
@@ -335,7 +319,7 @@ var BabylonDrawer = (function () {
         return outputplane;
     };
     BabylonDrawer.prototype.drawSphere = function (name, position, radius) {
-        var tmp_sph = BABYLON.Mesh.CreateSphere(name, 8, radius * 2.05, this.scene);
+        var tmp_sph = BABYLON.Mesh.CreateSphere(name, this.config.draw.segmentsPerCircle, radius * 2.05, this.scene);
         // Move to location
         tmp_sph.position = new BABYLON.Vector3(position.x, position.y, position.z);
         return tmp_sph;
@@ -343,7 +327,7 @@ var BabylonDrawer = (function () {
     BabylonDrawer.prototype.drawCylinder = function (name, from_p, to_p, initRad, endRad) {
         var from = new BABYLON.Vector3(from_p.x, from_p.y, from_p.z);
         var to = new BABYLON.Vector3(to_p.x, to_p.y, to_p.z);
-        var tmp_cyl = BABYLON.Mesh.CreateCylinder(name, BABYLON.Vector3.Distance(from, to), endRad * 2, initRad * 2, 8, 1, this.scene);
+        var tmp_cyl = BABYLON.Mesh.CreateCylinder(name, BABYLON.Vector3.Distance(from, to), endRad * 2, initRad * 2, this.config.draw.segmentsPerCircle, 1, this.scene);
         // Compute rotation
         var vec = to.subtract(from);
         // Move to position (midpoint)

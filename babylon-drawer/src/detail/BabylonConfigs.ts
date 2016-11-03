@@ -34,16 +34,6 @@ import {CameraType} from "@neuroviewer/core";
     "beta" :Math.PI/4
   };
 
-  export interface InfoPanelConfig {
-    enable: boolean,
-    position?: BABYLON.Vector2,
-    size?: BABYLON.Size;
-  };
-
-  export const default_config_info : InfoPanelConfig = {
-    "enable" : false
-  };
-
   export interface GridConfig {
     enable: boolean,
     xGridColor?: BABYLON.Color3,
@@ -63,25 +53,42 @@ import {CameraType} from "@neuroviewer/core";
   export interface SceneConfig {
     bgColor?: BABYLON.Color3,
     ambientColor?: BABYLON.Color3,
-    info?: InfoPanelConfig,
     grid?: GridConfig
   };
 
   export const default_config_scene : SceneConfig = {
     "bgColor": BABYLON.Color3.Black(),
     "ambientColor": new BABYLON.Color3(0.1,0.1,0.1),
-    info: default_config_info
+    "grid": default_config_grid
+  };
+
+  export interface DrawConfig {
+    drawLinear?: boolean,
+    sphereNodes?: boolean,
+    singleMeshElements?: boolean,
+    optLevel?: number,
+    segmentsPerCircle: number
+  };
+
+  export const default_config_draw : DrawConfig = {
+    drawLinear: false,
+    sphereNodes: true,
+    singleMeshElements: false,
+    optLevel: 0,
+    segmentsPerCircle: 8
   };
 
   export interface DrawerConfig {
     engine?: EngineConfig;
     camera?: CameraConfig;
     scene?: SceneConfig;
+    draw?: DrawConfig;
   };
 
 
   export const default_config : DrawerConfig = {
     engine: default_config_engine,
     camera: default_config_camera,
-    scene: default_config_scene
+    scene: default_config_scene,
+    draw: default_config_draw
   };

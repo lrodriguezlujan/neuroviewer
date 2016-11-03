@@ -18,7 +18,6 @@ export declare class BabylonDrawer implements Drawer {
     protected octtree: BABYLON.Octree<BABYLON.AbstractMesh>;
     protected camera: BABYLON.TargetCamera;
     protected lights: Array<BABYLON.Light>;
-    infoPanel: BABYLON.ScreenSpaceCanvas2D;
     protected loopCallbackFunction: (instance: Drawer) => void;
     /**
     * Set loop function to be called before rendering
@@ -53,7 +52,6 @@ export declare class BabylonDrawer implements Drawer {
     setAmbientColor(col: BABYLON.Color3): void;
     setLoadingScreen(loader: BABYLON.ILoadingScreen): void;
     updateOcttree(): void;
-    createInfoPanel(cfg: babylonConfigs.InfoPanelConfig): BABYLON.ScreenSpaceCanvas2D;
     setCamera(camera: BABYLON.TargetCamera): void;
     private initCamera();
     private initUniversalCamera();

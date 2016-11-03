@@ -16,10 +16,6 @@ exports.default_config_camera = {
     "beta": Math.PI / 4
 };
 ;
-exports.default_config_info = {
-    "enable": false
-};
-;
 exports.default_config_grid = {
     "enable": true,
     xGridColor: new BABYLON.Color3(1, 0.75, 0.75),
@@ -31,12 +27,21 @@ exports.default_config_grid = {
 exports.default_config_scene = {
     "bgColor": BABYLON.Color3.Black(),
     "ambientColor": new BABYLON.Color3(0.1, 0.1, 0.1),
-    info: exports.default_config_info
+    "grid": exports.default_config_grid
+};
+;
+exports.default_config_draw = {
+    drawLinear: false,
+    sphereNodes: true,
+    singleMeshElements: false,
+    optLevel: 0,
+    segmentsPerCircle: 8
 };
 ;
 exports.default_config = {
     engine: exports.default_config_engine,
     camera: exports.default_config_camera,
-    scene: exports.default_config_scene
+    scene: exports.default_config_scene,
+    draw: exports.default_config_draw
 };
 //# sourceMappingURL=BabylonConfigs.js.map
