@@ -17,6 +17,9 @@ export interface Drawer {
     drawLines: (lines: Array<Array<Point3D>>, color: string) => DrawObject;
     drawLine: (id: string, source: Point3D, target: Point3D, color: string) => DrawObject;
     dispose: () => void;
+    getCanvasPosition: () => Array<number>;
+    getCanvasSize: () => Array<number>;
+    attachResizeListener: (fn: () => void) => void;
 }
 export interface DrawMaterial {
     diffuseColor?: any;
