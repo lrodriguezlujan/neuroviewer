@@ -33,6 +33,9 @@ var Node3D = (function () {
      * @return {Node3D}
      */
     Node3D.fromObj = function (obj) {
+        if (!(obj)) {
+            console.log("WTF");
+        }
         var node = new Node3D(obj.x, obj.y, obj.z, obj.r, obj.id);
         if (obj.properties) {
             for (var prop in obj.properties) {

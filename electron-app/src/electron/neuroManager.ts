@@ -90,9 +90,9 @@ export class NeuroManager {
   }
 
   public listIds(){
-    let ids : {id:number, name:string}[] = [];
+    let ids : {id:number,origin: string, name:string}[] = [];
     for(let el of this.items){
-      ids.push({id:el.id,name:el.neuron.id});
+      ids.push({id:el.id, origin: el.origin, name:el.neuron.id});
     }
     return ids;
   }

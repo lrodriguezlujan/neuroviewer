@@ -1,4 +1,4 @@
-import {Node3D, Branch, Neurite, NeuriteType, Neuron, Soma} from "@neuroviewer/core";
+import {Node3D, Branch, Neurite, NeuriteType, Neuron, Soma, Reconstruction} from "@neuroviewer/core";
 import {ParserInterface} from "./Parser";
 
 
@@ -15,6 +15,7 @@ import {ParserInterface} from "./Parser";
   */
   export class SWCParser implements ParserInterface {
 
+      public rec: Reconstruction;
       public neuron: Neuron;
 
       public error: Error;
@@ -31,9 +32,9 @@ import {ParserInterface} from "./Parser";
 
       constructor(){}
 
-      public readAsync(id:string, data : string, cb:( n:Neuron, e?:Error) => void ){
-        this.process(id, data.split(/\r\n|\n/));
-        cb(this.neuron,this.error);
+      public readAsync(data : string, cb:( n:Reconstruction, e?:Error) => void ){
+        this.process(data.split(/\r\n|\n/));
+        cb(this.rec,this.error);
         /*let self = this;
         $.ajax({
           type: "GET",
@@ -49,7 +50,7 @@ import {ParserInterface} from "./Parser";
         })*/
       };
 
-      public readSync(id:string, data : string){
+      public readSync(data : string){
         /*let self = this;
         $.ajax({
           type: "GET",
@@ -63,7 +64,7 @@ import {ParserInterface} from "./Parser";
           },
           async: false
         });*/
-        this.process(id, data.split(/\r\n|\n/));
+        this.process(data.split(/\r\n|\n/));
         return this.error;
       };
 
@@ -71,10 +72,10 @@ import {ParserInterface} from "./Parser";
         this.neuron = new Neuron(id);
       }
 
-      private process(id:string, data: Array<string>){
+      private process(data: Array<string>){
 
         // Create empty neuron
-        this.initializeNeuron(id);
+        this.initializeNeuron("");
 
         // Initialize array
         this.tmpArray = [];
@@ -94,6 +95,10 @@ import {ParserInterface} from "./Parser";
 
           // Fill soma
           this.addSoma();
+
+          // Put neuron in the rec
+          this.rec = new Reconstruction();
+          this.rec.addNeuron(this.neuron);
 
         } catch ( e ) {
           this.error = e;

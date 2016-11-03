@@ -173,7 +173,6 @@ export class Soma {
     let nodes: Array<Node3D>;
     nodes = [];
     for( let n of obj.nodes ){
-
       nodes.push(Node3D.fromObj(n));
     }
 

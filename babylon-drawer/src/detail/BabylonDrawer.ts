@@ -104,7 +104,9 @@ import {BabylonMaterialPalette} from "./BabylonPalette";
       this.engine.runRenderLoop( () => {
         if(this.loopCallbackFunction) this.loopCallbackFunction(this);
         // Control camera limits
-        BabylonDrawer.cameraLimits(this.camera);
+        if(this.config.camera.type == babylonConfigs.CameraType.universal){
+          BabylonDrawer.cameraLimits(this.camera);
+        }
 
          this.scene.render();
        });
@@ -203,6 +205,7 @@ import {BabylonMaterialPalette} from "./BabylonPalette";
       }
       this.setCameraPosition(new BABYLON.Vector3(2.25,2.25,2.25))
       this.camera.minZ = 0;
+      this.camera.maxZ = 1E6;
       this.camera.attachControl(this.canvas);
 
     }
@@ -217,16 +220,24 @@ import {BabylonMaterialPalette} from "./BabylonPalette";
     }
 
     private initPivotCamera() {
-      this.camera = new BABYLON.ArcRotateCamera("camera",
+      let camera = new BABYLON.ArcRotateCamera("camera",
         this.config.camera.alpha,
         this.config.camera.beta,
         this.config.camera.radius,
         this.config.camera.target,
         this.scene);
 
+      camera.lowerRadiusLimit = 0;
+      camera.upperRadiusLimit = 3;
+      camera.panningSensibility = 500;
+      camera.wheelPrecision = 200;
+      camera.inertialPanningX = 0;
+      camera.inertialPanningY = 0;
+
+      this.camera = camera;
       // Target
-      this.setCameraSpeed(this.config.camera.speed);
-      this.setCameraInertia(this.config.camera.inertia);
+      // this.setCameraSpeed(this.config.camera.speed);
+      // this.setCameraInertia(this.config.camera.inertia);
       this.setCameraFOV(this.config.camera.fov);
     }
 
@@ -346,7 +357,7 @@ import {BabylonMaterialPalette} from "./BabylonPalette";
     }
 
     public drawSphere(name: string, position: Point3D, radius: number){
-      let tmp_sph = BABYLON.Mesh.CreateSphere(name , 16, radius * 2.05, this.scene);
+      let tmp_sph = BABYLON.Mesh.CreateSphere(name , 8, radius * 2.05, this.scene);
 
       // Move to location
       tmp_sph.position = new BABYLON.Vector3(position.x,position.y,position.z);
@@ -358,7 +369,7 @@ import {BabylonMaterialPalette} from "./BabylonPalette";
 
       let from = new BABYLON.Vector3(from_p.x,from_p.y,from_p.z);
       let to = new BABYLON.Vector3(to_p.x,to_p.y,to_p.z);
-      let tmp_cyl = BABYLON.Mesh.CreateCylinder(name, BABYLON.Vector3.Distance(from, to), endRad * 2, initRad * 2, 16, 1, this.scene);
+      let tmp_cyl = BABYLON.Mesh.CreateCylinder(name, BABYLON.Vector3.Distance(from, to), endRad * 2, initRad * 2, 8, 1, this.scene);
 
       // Compute rotation
       let vec = to.subtract(from);
@@ -415,6 +426,55 @@ import {BabylonMaterialPalette} from "./BabylonPalette";
       return mesh;
     }
 
+    // ATM we ignore fillcolor and opacity
+    public drawContour(points: Array<Point3D>, closed: boolean,
+      color: string, fillcolor: string, opacity: number) {
+
+        // Points to vector3
+        let points_b : Array<BABYLON.Vector3> = [];
+        for( let p of points){
+          points_b.push(new BABYLON.Vector3(p.x,p.y,p.z));
+        }
+
+        let lines : Array<Array<BABYLON.Vector3>> = [];
+        for(var i = 1; i<points_b.length; ++i){
+          lines.push([points_b[i-1],points_b[i]]);
+        }
+
+        let mesh = BABYLON.MeshBuilder.CreateLineSystem(null,
+          {lines: lines,
+          updatable : false},
+          this.scene);
+        mesh.color = BABYLON.Color3.FromHexString(color);
+        return mesh;
+    }
+
+    public drawLines(lines: Array<Array<Point3D>>, color: string) {
+
+        // Points to vector3
+        let lines_v : Array<Array<BABYLON.Vector3>> = [];
+        for( let l of lines){
+            lines_v.push([ new BABYLON.Vector3(l[0].x,l[0].y,l[0].z), new BABYLON.Vector3(l[1].x,l[1].y,l[1].z) ]);
+        }
+
+        let mesh = BABYLON.MeshBuilder.CreateLineSystem(null,
+          {lines: lines_v,
+          updatable : false},
+          this.scene);
+        mesh.color = BABYLON.Color3.FromHexString(color);
+        return mesh;
+    }
+
+    public drawLine(id:string, source: Point3D, target: Point3D, color: string){
+      let mesh = BABYLON.MeshBuilder.CreateLines(id,
+        { points: [new BABYLON.Vector3(source.x,source.y,source.z),
+                  new BABYLON.Vector3(target.x,target.y,target.z) ],
+        updatable : false},
+        this.scene);
+      mesh.color = BABYLON.Color3.FromHexString(color);
+      return mesh;
+    }
+
     public merge(meshes: Array<BABYLON.Mesh>) {
       return BABYLON.Mesh.MergeMeshes(meshes,true);
     }
@@ -454,8 +514,8 @@ import {BabylonMaterialPalette} from "./BabylonPalette";
     public scaleScene( scale:number ){
       let scaling = new BABYLON.Vector3(scale,scale,scale);
       for( var mesh of this.scene.meshes){
-        mesh.scaling = scaling;
         mesh.position.multiplyInPlace(scaling);
+        mesh.scaling = scaling;
       }
     }
 

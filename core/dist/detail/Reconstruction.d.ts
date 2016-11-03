@@ -1,57 +1,59 @@
+import { Soma } from "./Soma";
 import { BranchElement } from "./Branch";
-import { Soma, SomaJSON } from "./Soma";
-import { Neurite, NeuriteJSON } from "./Neurite";
+import { Contour, ContourJSON } from "./Contour";
+import { Neuron, NeuronJSON } from "./Neuron";
 import { Drawer } from "./NvCoreInterfaces";
-export interface NeuronJSON {
-    id: string;
-    soma: SomaJSON;
-    neurites: Array<NeuriteJSON>;
+export interface ReconstructionJSON {
+    neurons: Array<NeuronJSON>;
     properties?: {
         [key: string]: any;
     };
+    contours?: Array<ContourJSON>;
 }
 /**
  * Neuron model class
  */
-export declare class Neuron {
-    id: string;
-    private neurites;
+export declare class Reconstruction {
+    neurons: Array<Neuron>;
+    contours: Array<Contour>;
     private properties;
-    soma: Soma;
     private drawer;
-    private cutbox;
     /**
      * Neuron constructor
      *
      * @param  {string} id Neuron unique name
      */
-    constructor(id: string);
+    constructor();
     /**
-     * Adds a neurite
+     * Adds a neruon
      *
-     * @param  {Neurite} n Neurite to add
+     * @param  {Neruon} n Neuron to add
      */
-    addNeurite(n: Neurite): void;
+    addNeuron(n: Neuron): void;
     attachDrawer(drawer: Drawer): void;
-    private updateMaterials();
     /**
-     * Adds a property to the neuron
+     * Adds a property to the reconstruction
      *
      * @param  {string} key  Property name
      * @param  {any} value   Property value (optional)
      */
     addProperty(key: string, value?: any): void;
     /**
-     * Number of neurites in the neuron
+     * Adds a new contour to the neuron
      *
+     * @param {Contour} c Contour to be added
      */
-    neuriteCount(): number;
+    addContour(c: Contour): void;
     /**
-     * Adds a soma to the neuron
+     * Number of neurons in the reconstruction
      *
-     * @param  {Soma} s      Neuron soma
      */
-    setSoma(s: Soma): void;
+    neuronCount(): number;
+    /**
+     * Number of contours in the reconstruction
+     *
+     */
+    contourCount(): number;
     /**
      * Search a node in the neuron by id
      *
@@ -60,23 +62,16 @@ export declare class Neuron {
      * @param  {bool} soma   Search only in the soma (default: false)
      * @return {Node3D}
      */
-    searchNode(nodeId: number, neurite?: number, soma?: boolean): any;
+    searchNode(nodeId: number, soma?: boolean): Soma | BranchElement;
     /**
-     * Draws the neuron (with collision capabilites)
+     * Draws the neuron
      *
      * @param  {type} drawer: Drawer description
      * @return {type}                description
      */
-    draw(linear?: boolean): void;
-    /**
-     * Draws the neuron merging all neurites in a single linesystem
-     *
-     * @return {Mesh}
-     */
+    draw(linear: boolean): void;
     drawLinear(): void;
     dispose(): void;
-    hasCutbox(): any;
-    drawCutbox(): void;
     forEachElement(fn: (item: BranchElement) => void): void;
     /**
      * Creates a neuron instance from a JS object
@@ -85,5 +80,5 @@ export declare class Neuron {
      * @param  {type} pal : MaterialPalette description
      * @return {type}                       description
      */
-    static fromObject(obj: NeuronJSON): Neuron;
+    static fromObject(obj: ReconstructionJSON): Reconstruction;
 }

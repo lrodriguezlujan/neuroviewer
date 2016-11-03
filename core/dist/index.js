@@ -5,8 +5,10 @@ function __export(m) {
 // Export all NvCore elements
 __export(require("./detail/Status"));
 __export(require("./detail/Node3D"));
+__export(require("./detail/Contour"));
 __export(require("./detail/Branch"));
 __export(require("./detail/Neurite"));
 __export(require("./detail/Soma"));
 __export(require("./detail/Neuron"));
+__export(require("./detail/Reconstruction"));
 //# sourceMappingURL=index.js.map

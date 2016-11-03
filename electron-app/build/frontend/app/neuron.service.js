@@ -56,12 +56,12 @@ var NeuronService = (function () {
         return new Promise(function (resolve, reject) {
             // Send request
             electron_1.ipcRenderer.send(channels_1.NeuronChannels.getNeuronRequest, id);
-            electron_1.ipcRenderer.once(channels_1.NeuronChannels.getNeuronResponse, function (event, obj) {
-                if (obj) {
+            electron_1.ipcRenderer.once(channels_1.NeuronChannels.getNeuronResponse, function (event, neuron) {
+                if (neuron) {
                     // Update active neuron
-                    _this.activeNeuron = obj;
+                    _this.activeNeuron = { id: id, neuron: neuron };
                     // Resolve
-                    resolve(obj.neuron);
+                    resolve(neuron);
                 }
                 else {
                     reject("empty");
@@ -77,12 +77,6 @@ var NeuronService = (function () {
     NeuronService.prototype.getActiveNeuron = function () {
         if (this.activeNeuron)
             return this.activeNeuron.neuron;
-        else
-            return undefined;
-    };
-    NeuronService.prototype.getActiveNeuronOrigin = function () {
-        if (this.activeNeuron)
-            return this.activeNeuron.origin;
         else
             return undefined;
     };

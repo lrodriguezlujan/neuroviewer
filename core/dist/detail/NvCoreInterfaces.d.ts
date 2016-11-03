@@ -13,9 +13,13 @@ export interface Drawer {
     drawCylinder: (id: string, from: Point3D, to: Point3D, fromRadius: number, toRadius: number) => DrawObject;
     merge: (objs: Array<DrawObject>) => DrawObject;
     drawLineBox: (min: Point3D, lenx: number, leny: number, lenz: number) => DrawObject;
+    drawContour: (points: Array<Point3D>, closed: boolean, color: string, fillcolor: string, opacity: number) => DrawObject;
+    drawLines: (lines: Array<Array<Point3D>>, color: string) => DrawObject;
+    drawLine: (id: string, source: Point3D, target: Point3D, color: string) => DrawObject;
     dispose: () => void;
 }
 export interface DrawMaterial {
+    diffuseColor?: any;
 }
 export interface DrawMaterialSet {
     standard: DrawMaterial;
@@ -23,6 +27,7 @@ export interface DrawMaterialSet {
     emmisive: DrawMaterial;
     disminished: DrawMaterial;
     highlight: DrawMaterial;
+    getStandardHexcolor: () => string;
 }
 export interface DrawMaterialPalette {
     grey: () => DrawMaterialSet;

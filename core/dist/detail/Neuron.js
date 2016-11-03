@@ -100,12 +100,13 @@ var Neuron = (function () {
         return null;
     };
     /**
-     * Draws the neuron
+     * Draws the neuron (with collision capabilites)
      *
      * @param  {type} drawer: Drawer description
      * @return {type}                description
      */
-    Neuron.prototype.draw = function () {
+    Neuron.prototype.draw = function (linear) {
+        if (linear === void 0) { linear = false; }
         // Draw soma
         if (this.soma) {
             this.soma.draw(this.drawer);
@@ -114,7 +115,25 @@ var Neuron = (function () {
         if (this.neurites) {
             for (var _i = 0, _a = this.neurites; _i < _a.length; _i++) {
                 var n = _a[_i];
-                n.draw(this.drawer);
+                n.draw(this.drawer, linear);
+            }
+        }
+    };
+    /**
+     * Draws the neuron merging all neurites in a single linesystem
+     *
+     * @return {Mesh}
+     */
+    Neuron.prototype.drawLinear = function () {
+        // Draw soma
+        if (this.soma) {
+            this.soma.draw(this.drawer);
+        }
+        // Draw each neurite
+        if (this.neurites) {
+            for (var _i = 0, _a = this.neurites; _i < _a.length; _i++) {
+                var n = _a[_i];
+                n.lineDraw(this.drawer);
             }
         }
     };

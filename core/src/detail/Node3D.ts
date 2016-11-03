@@ -53,6 +53,9 @@ import {Point3D} from "./NvCoreInterfaces";
    * @return {Node3D}
    */
   public static fromObj( obj: NodeJSON){
+    if(!(obj)){
+      console.log("WTF");
+    }
     let node = new Node3D(obj.x, obj.y , obj.z, obj.r, obj.id );
     if(obj.properties){
       for( let prop in obj.properties){

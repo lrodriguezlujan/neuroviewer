@@ -1,7 +1,7 @@
 import { NodeJSON, Node3D } from "./Node3D";
 import { Status } from "./Status";
 import { Neurite } from "./Neurite";
-import { Drawer } from "./NvCoreInterfaces";
+import { Point3D, Drawer } from "./NvCoreInterfaces";
 /**
  * @summary JSON branch definition
  *
@@ -60,7 +60,8 @@ export declare class BranchElement {
      * @param  {Drawer} drawer class
      * @public
      */
-    draw(drawer: Drawer): void;
+    draw(drawer: Drawer, linear?: boolean): void;
+    asLine(): Array<Point3D>;
     /**
      * Changes the element status and updates the material in the meshes
      *
@@ -69,6 +70,10 @@ export declare class BranchElement {
      * @public
      */
     setStatus(status: Status): void;
+    /**
+     * Gets current color
+     */
+    currentColor(): any;
     /**
      * Updates mesh material based on the status
      *
@@ -158,6 +163,7 @@ export declare class Branch {
      * @param  {Array<number>} id new ID
      */
     updateID(id: Array<number>): void;
+    asLineArray(recursive?: boolean): Array<Array<Point3D>>;
     /**
      * Updates the material of every element
      *
@@ -176,7 +182,7 @@ export declare class Branch {
      * @param  {Drawer} drawer Class that draws the branch
      * @param  {bool} recursive Should branch descendants be drawn? (default: true)
      */
-    draw(drawer: Drawer, recursive?: boolean): void;
+    draw(drawer: Drawer, recursive?: boolean, linear?: boolean): void;
     /**
      * Draws branch root
      *

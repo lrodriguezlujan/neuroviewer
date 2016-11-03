@@ -1,12 +1,12 @@
-import {NeuronJSON,Neuron} from "@neuroviewer/core";
+import {ReconstructionJSON, Reconstruction} from "@neuroviewer/core";
 
 /**
  * Basic parser interface
  */
 export interface ParserInterface{
 
-  readAsync:  (id:string, data: NeuronJSON | string, cb:( n:Neuron, e?:Error) => void) => void,
-  readSync:   (id:string, data: NeuronJSON | string) => Error,
-  neuron:     Neuron,
+  readAsync:  (data: ReconstructionJSON | string, cb:( n:Reconstruction, e?:Error) => void) => void,
+  readSync:   (data: ReconstructionJSON | string) => Error,
+  rec:     Reconstruction,
   error:      Error
 }

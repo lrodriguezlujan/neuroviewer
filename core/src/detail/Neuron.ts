@@ -14,7 +14,6 @@ import{Drawer, DrawMaterialSet, DrawObject} from "./NvCoreInterfaces";
     soma: SomaJSON,
     neurites: Array<NeuriteJSON>,
     properties?: {[key:string]:any}
-
   };
 
 
@@ -85,7 +84,6 @@ import{Drawer, DrawMaterialSet, DrawObject} from "./NvCoreInterfaces";
         this.properties[key] = [];
     }
 
-
     /**
      * Number of neurites in the neuron
      *
@@ -137,12 +135,12 @@ import{Drawer, DrawMaterialSet, DrawObject} from "./NvCoreInterfaces";
 
 
     /**
-     * Draws the neuron
+     * Draws the neuron (with collision capabilites)
      *
      * @param  {type} drawer: Drawer description
      * @return {type}                description
      */
-    public draw(){
+    public draw(linear: boolean = false){
       // Draw soma
       if(this.soma){
         this.soma.draw(this.drawer);
@@ -151,7 +149,27 @@ import{Drawer, DrawMaterialSet, DrawObject} from "./NvCoreInterfaces";
       // Draw each neurite
       if(this.neurites){
         for( let n of this.neurites){
-          n.draw(this.drawer);
+          n.draw(this.drawer,linear);
+        }
+      }
+    }
+
+
+    /**
+     * Draws the neuron merging all neurites in a single linesystem
+     *
+     * @return {Mesh}  
+     */
+    public drawLinear(){
+      // Draw soma
+      if(this.soma){
+        this.soma.draw(this.drawer);
+      }
+
+      // Draw each neurite
+      if(this.neurites){
+        for( let n of this.neurites){
+          n.lineDraw(this.drawer);
         }
       }
     }
