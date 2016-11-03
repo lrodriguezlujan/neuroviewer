@@ -59,7 +59,9 @@ var BabylonDrawer = (function () {
             if (_this.loopCallbackFunction)
                 _this.loopCallbackFunction(_this);
             // Control camera limits
-            BabylonDrawer.cameraLimits(_this.camera);
+            if (_this.config.camera.type == babylonConfigs.CameraType.universal) {
+                BabylonDrawer.cameraLimits(_this.camera);
+            }
             _this.scene.render();
         });
         // Set up info panel
@@ -156,10 +158,17 @@ var BabylonDrawer = (function () {
         this.setCameraFOV(this.config.camera.fov);
     };
     BabylonDrawer.prototype.initPivotCamera = function () {
-        this.camera = new BABYLON.ArcRotateCamera("camera", this.config.camera.alpha, this.config.camera.beta, this.config.camera.radius, this.config.camera.target, this.scene);
+        var camera = new BABYLON.ArcRotateCamera("camera", this.config.camera.alpha, this.config.camera.beta, this.config.camera.radius, this.config.camera.target, this.scene);
+        camera.lowerRadiusLimit = 0;
+        camera.upperRadiusLimit = 3;
+        camera.panningSensibility = 500;
+        camera.wheelPrecision = 200;
+        camera.inertialPanningX = 0;
+        camera.inertialPanningY = 0;
+        this.camera = camera;
         // Target
-        this.setCameraSpeed(this.config.camera.speed);
-        this.setCameraInertia(this.config.camera.inertia);
+        // this.setCameraSpeed(this.config.camera.speed);
+        // this.setCameraInertia(this.config.camera.inertia);
         this.setCameraFOV(this.config.camera.fov);
     };
     BabylonDrawer.prototype.resetCamera = function () {

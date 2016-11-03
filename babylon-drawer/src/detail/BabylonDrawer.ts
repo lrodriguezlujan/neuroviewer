@@ -104,7 +104,9 @@ import {BabylonMaterialPalette} from "./BabylonPalette";
       this.engine.runRenderLoop( () => {
         if(this.loopCallbackFunction) this.loopCallbackFunction(this);
         // Control camera limits
-        BabylonDrawer.cameraLimits(this.camera);
+        if(this.config.camera.type == babylonConfigs.CameraType.universal){
+          BabylonDrawer.cameraLimits(this.camera);
+        }
 
          this.scene.render();
        });
@@ -218,16 +220,24 @@ import {BabylonMaterialPalette} from "./BabylonPalette";
     }
 
     private initPivotCamera() {
-      this.camera = new BABYLON.ArcRotateCamera("camera",
+      let camera = new BABYLON.ArcRotateCamera("camera",
         this.config.camera.alpha,
         this.config.camera.beta,
         this.config.camera.radius,
         this.config.camera.target,
         this.scene);
 
+      camera.lowerRadiusLimit = 0;
+      camera.upperRadiusLimit = 3;
+      camera.panningSensibility = 500;
+      camera.wheelPrecision = 200;
+      camera.inertialPanningX = 0;
+      camera.inertialPanningY = 0;
+
+      this.camera = camera;
       // Target
-      this.setCameraSpeed(this.config.camera.speed);
-      this.setCameraInertia(this.config.camera.inertia);
+      // this.setCameraSpeed(this.config.camera.speed);
+      // this.setCameraInertia(this.config.camera.inertia);
       this.setCameraFOV(this.config.camera.fov);
     }
 

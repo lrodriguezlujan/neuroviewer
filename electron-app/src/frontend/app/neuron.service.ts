@@ -12,13 +12,12 @@ import {Neuron} from '@neuroviewer/core';
 export class NeuronService {
 
   // Async updates
-  private _ids : BehaviorSubject<Array<{id:number, name:string}>> = new BehaviorSubject([]);
-  public ids: Observable<Array<{id:number, name:string}>> = this._ids.asObservable();
+  private _ids : BehaviorSubject<Array<{id:number, origin: string, name:string}>> = new BehaviorSubject([]);
+  public ids: Observable<Array<{id:number, origin: string, name:string}>> = this._ids.asObservable();
 
   // Current active neuron. Only one neuron can be active.
   private activeNeuron : {
     id: number,
-    origin: string,
     neuron: Neuron
   };
 
@@ -31,7 +30,7 @@ export class NeuronService {
    * Request the neuron list from the backend.
    * Has a timetout parameter to reject the promise.
    */
-  public getNeuronList(timeoutts = 5000): Promise<Array<{id:number, name:string}>> { // TODO
+  public getNeuronList(timeoutts = 5000): Promise<Array<{id:number, origin:string, name:string}>> { // TODO
      // return Promise.resolve(TEST_NEURONS);
      return new Promise( (resolve,reject) => {
        // Send request
@@ -55,12 +54,12 @@ export class NeuronService {
      return new Promise( (resolve,reject) => {
        // Send request
        ipcRenderer.send(NeuronChannels.getNeuronRequest, id);
-       ipcRenderer.once(NeuronChannels.getNeuronResponse, (event, obj) => {
-         if(obj){
+       ipcRenderer.once(NeuronChannels.getNeuronResponse, (event, neuron) => {
+         if(neuron){
            // Update active neuron
-           this.activeNeuron = obj;
+           this.activeNeuron = {id: id, neuron: neuron};
            // Resolve
-           resolve(obj.neuron);
+           resolve(neuron);
          } else {
            reject("empty")
          }
@@ -77,13 +76,6 @@ export class NeuronService {
    public getActiveNeuron(){
      if(this.activeNeuron)
       return this.activeNeuron.neuron;
-     else
-      return undefined;
-   }
-
-   public getActiveNeuronOrigin(){
-     if(this.activeNeuron)
-      return this.activeNeuron.origin;
      else
       return undefined;
    }

@@ -95,7 +95,7 @@ var NeuroManager = (function () {
         var ids = [];
         for (var _i = 0, _a = this.items; _i < _a.length; _i++) {
             var el = _a[_i];
-            ids.push({ id: el.id, name: el.neuron.id });
+            ids.push({ id: el.id, origin: el.origin, name: el.neuron.id });
         }
         return ids;
     };

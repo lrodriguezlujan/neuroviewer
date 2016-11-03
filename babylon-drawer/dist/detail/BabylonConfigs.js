@@ -11,14 +11,14 @@ var CameraType = exports.CameraType;
 ;
 ;
 exports.default_config_camera = {
-    "type": CameraType.universal,
+    "type": CameraType.pivot,
     "initPos": new BABYLON.Vector3(1, 1, 1),
     "target": BABYLON.Vector3.Zero(),
     "inertia": 0,
-    "radius": 0.05,
+    "radius": 1.5,
     "speed": 0.1,
-    "alpha": 0,
-    "beta": 0
+    "alpha": Math.PI / 4,
+    "beta": Math.PI / 4
 };
 ;
 exports.default_config_info = {
