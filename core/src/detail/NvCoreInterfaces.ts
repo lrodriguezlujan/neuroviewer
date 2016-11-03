@@ -9,6 +9,11 @@
       dispose: () => void;
   }; // Intended: BABYLON.AbstractMesh
 
+  export enum CameraType{
+    universal,
+    pivot
+  };
+
   export interface Drawer {
       palette: DrawMaterialPalette;
       drawSphere: (id:string, position:Point3D, radius:number) => DrawObject;
@@ -24,6 +29,27 @@
       getCanvasPosition: () => Array<number>;
       getCanvasSize: () => Array<number>;
       attachResizeListener: ( fn:() => void ) => void;
+
+      // Camera Control
+
+      getCameraType: () => CameraType;
+      setCameraType: (type:CameraType) => void;
+
+      getCameraSpeed: () => number;
+      setCameraSpeed: (sp : number) => void;
+
+      getCameraInertia: () => number;
+      setCameraInertia: (inertia : number) => void;
+
+      getCameraPanSensibility: () => number;
+      setCameraPanSensibility: (v : number) => void;
+
+      getCameraWheelSensibility: () => number;
+      setCameraWheelSensibility: (v : number) => void;
+
+      resetCamera : () => void;
+
+
 
   }; // Intended: NvDraw.BabylonDrawer
 

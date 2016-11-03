@@ -11,4 +11,5 @@ __export(require("./detail/Neurite"));
 __export(require("./detail/Soma"));
 __export(require("./detail/Neuron"));
 __export(require("./detail/Reconstruction"));
+__export(require("./detail/NvCoreInterfaces"));
 //# sourceMappingURL=index.js.map

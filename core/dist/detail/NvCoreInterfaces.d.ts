@@ -7,6 +7,10 @@ export interface DrawObject {
     material: DrawMaterial;
     dispose: () => void;
 }
+export declare enum CameraType {
+    universal = 0,
+    pivot = 1,
+}
 export interface Drawer {
     palette: DrawMaterialPalette;
     drawSphere: (id: string, position: Point3D, radius: number) => DrawObject;
@@ -20,6 +24,17 @@ export interface Drawer {
     getCanvasPosition: () => Array<number>;
     getCanvasSize: () => Array<number>;
     attachResizeListener: (fn: () => void) => void;
+    getCameraType: () => CameraType;
+    setCameraType: (type: CameraType) => void;
+    getCameraSpeed: () => number;
+    setCameraSpeed: (sp: number) => void;
+    getCameraInertia: () => number;
+    setCameraInertia: (inertia: number) => void;
+    getCameraPanSensibility: () => number;
+    setCameraPanSensibility: (v: number) => void;
+    getCameraWheelSensibility: () => number;
+    setCameraWheelSensibility: (v: number) => void;
+    resetCamera: () => void;
 }
 export interface DrawMaterial {
     diffuseColor?: any;
