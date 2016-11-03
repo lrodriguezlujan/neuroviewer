@@ -1,0 +1,26 @@
+
+.controlPanel{
+  border: 1px solid rgb(100,100,100);
+  position: absolute;
+  background: rgba(128,128,128,0.25);
+  padding: 0px 0px 0px 5px;
+  overflow-y: auto;
+  pointer-events:none;
+}
+
+.controlHeader{
+  text-align: right;
+  width: 100%;
+  color: white;
+  background-color: black;
+  padding: 5px 5px 4px 0px;
+  margin-left: -5px;
+  font-weight: bold;
+}
+
+.controlContent{
+  padding-top: 5px;
+  padding-bottom: 5px;
+  overflow-y: auto;
+  height: 100%;
+}
