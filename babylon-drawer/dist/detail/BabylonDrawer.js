@@ -251,6 +251,13 @@ var BabylonDrawer = (function () {
             (this.camera).wheelPrecision = v;
         }
     };
+    BabylonDrawer.prototype.visibleGrid = function () {
+        return this.grid != null;
+    };
+    BabylonDrawer.prototype.showGrid = function (v) {
+        this.config.scene.grid.enable = v;
+        this.createGrid(this.config.scene.grid);
+    };
     // Create scene grid
     BabylonDrawer.prototype.createGrid = function (cfg) {
         // Remove previous grid
@@ -259,6 +266,7 @@ var BabylonDrawer = (function () {
                 var g = _a[_i];
                 g.dispose();
             }
+            this.grid = null;
         }
         if (cfg && cfg.enable) {
             // Default grid. TODO: Configure
@@ -295,9 +303,9 @@ var BabylonDrawer = (function () {
             sidePlane.rotation.y = Math.PI / 2;
             sidePlane.isPickable = false;
             this.grid.push(sidePlane);
-            this.createLabelText("label_x_axis", "X", new BABYLON.Vector3(1.2, 0, -1), cfg.xGridColor, cfg.mainColor);
-            this.createLabelText("label_y_axis", "Y", new BABYLON.Vector3(-1, 1.2, 0), cfg.yGridColor, cfg.mainColor);
-            this.createLabelText("label_y_axis", "Z", new BABYLON.Vector3(0, -1, 1.2), cfg.zGridColor, cfg.mainColor);
+            this.grid.push(this.createLabelText("label_x_axis", "X", new BABYLON.Vector3(1.2, 0, -1), cfg.xGridColor, cfg.mainColor));
+            this.grid.push(this.createLabelText("label_y_axis", "Y", new BABYLON.Vector3(-1, 1.2, 0), cfg.yGridColor, cfg.mainColor));
+            this.grid.push(this.createLabelText("label_y_axis", "Z", new BABYLON.Vector3(0, -1, 1.2), cfg.zGridColor, cfg.mainColor));
         }
     };
     BabylonDrawer.prototype.createLabelText = function (id, text, position, textColor, backColor) {
@@ -319,7 +327,7 @@ var BabylonDrawer = (function () {
         return outputplane;
     };
     BabylonDrawer.prototype.drawSphere = function (name, position, radius) {
-        var tmp_sph = BABYLON.Mesh.CreateSphere(name, this.config.draw.segmentsPerCircle, radius * 2.05, this.scene);
+        var tmp_sph = BABYLON.Mesh.CreateSphere(name, this.config.segmentsPerCircle, radius * 2.05, this.scene);
         // Move to location
         tmp_sph.position = new BABYLON.Vector3(position.x, position.y, position.z);
         return tmp_sph;
@@ -327,7 +335,7 @@ var BabylonDrawer = (function () {
     BabylonDrawer.prototype.drawCylinder = function (name, from_p, to_p, initRad, endRad) {
         var from = new BABYLON.Vector3(from_p.x, from_p.y, from_p.z);
         var to = new BABYLON.Vector3(to_p.x, to_p.y, to_p.z);
-        var tmp_cyl = BABYLON.Mesh.CreateCylinder(name, BABYLON.Vector3.Distance(from, to), endRad * 2, initRad * 2, this.config.draw.segmentsPerCircle, 1, this.scene);
+        var tmp_cyl = BABYLON.Mesh.CreateCylinder(name, BABYLON.Vector3.Distance(from, to), endRad * 2, initRad * 2, this.config.segmentsPerCircle, 1, this.scene);
         // Compute rotation
         var vec = to.subtract(from);
         // Move to position (midpoint)
@@ -463,17 +471,35 @@ var BabylonDrawer = (function () {
      *
      * @return Promise
      */
-    BabylonDrawer.prototype.optimize = function (level) {
-        if (level <= 0) {
-            BABYLON.SceneOptimizerOptions.LowDegradationAllowed();
+    BabylonDrawer.prototype.optimize = function (level, cb) {
+        var optlevel = -1; // Dont optimize by default
+        if (level) {
+            this.config.optLevel = level;
+            optlevel = level;
         }
-        else if (level == 1) {
-            BABYLON.SceneOptimizerOptions.ModerateDegradationAllowed();
+        else if (this.config.optLevel) {
+            optlevel = this.config.optLevel;
+        }
+        //
+        if (optlevel < 0) {
+            return; // No optimization
+        }
+        else if (optlevel == 0) {
+            return BABYLON.SceneOptimizer.OptimizeAsync(this.scene, BABYLON.SceneOptimizerOptions.LowDegradationAllowed(), cb);
+        }
+        else if (optlevel == 1) {
+            return BABYLON.SceneOptimizer.OptimizeAsync(this.scene, BABYLON.SceneOptimizerOptions.ModerateDegradationAllowed(), cb);
         }
         else {
-            BABYLON.SceneOptimizerOptions.HighDegradationAllowed();
+            return BABYLON.SceneOptimizer.OptimizeAsync(this.scene, BABYLON.SceneOptimizerOptions.HighDegradationAllowed(), cb);
         }
-        return BABYLON.SceneOptimizer.OptimizeAsync(this.scene);
+    };
+    BabylonDrawer.prototype.setCircularSegmentsCount = function (v) {
+        if (v >= 3)
+            this.config.segmentsPerCircle = v;
+    };
+    BabylonDrawer.prototype.getCircularSegmentsCount = function () {
+        return this.config.segmentsPerCircle;
     };
     BabylonDrawer.prototype.addPointerUpCallback = function (cb) {
         /*this.scene.onPointerObservable = function(evt, res) {

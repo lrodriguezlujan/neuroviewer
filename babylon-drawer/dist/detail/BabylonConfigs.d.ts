@@ -31,18 +31,11 @@ export interface SceneConfig {
     grid?: GridConfig;
 }
 export declare const default_config_scene: SceneConfig;
-export interface DrawConfig {
-    drawLinear?: boolean;
-    sphereNodes?: boolean;
-    singleMeshElements?: boolean;
-    optLevel?: number;
-    segmentsPerCircle: number;
-}
-export declare const default_config_draw: DrawConfig;
 export interface DrawerConfig {
     engine?: EngineConfig;
     camera?: CameraConfig;
     scene?: SceneConfig;
-    draw?: DrawConfig;
+    segmentsPerCircle: number;
+    optLevel?: number;
 }
 export declare const default_config: DrawerConfig;

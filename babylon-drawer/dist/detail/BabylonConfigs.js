@@ -30,18 +30,10 @@ exports.default_config_scene = {
     "grid": exports.default_config_grid
 };
 ;
-exports.default_config_draw = {
-    drawLinear: false,
-    sphereNodes: true,
-    singleMeshElements: false,
-    optLevel: 0,
-    segmentsPerCircle: 8
-};
-;
 exports.default_config = {
     engine: exports.default_config_engine,
     camera: exports.default_config_camera,
     scene: exports.default_config_scene,
-    draw: exports.default_config_draw
+    segmentsPerCircle: 8
 };
 //# sourceMappingURL=BabylonConfigs.js.map

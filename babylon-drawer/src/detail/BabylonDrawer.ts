@@ -321,6 +321,15 @@ import {BabylonMaterialPalette} from "./BabylonPalette";
       }
     }
 
+    public visibleGrid(){
+      return (this.grid.length != 0);
+    }
+
+    public showGrid(v : boolean){
+      this.config.scene.grid.enable = v;
+      this.createGrid(this.config.scene.grid);
+    }
+
 
     // Create scene grid
     public createGrid(cfg:babylonConfigs.GridConfig){
@@ -329,6 +338,7 @@ import {BabylonMaterialPalette} from "./BabylonPalette";
       if(this.grid){
         for(var g of this.grid)
           g.dispose();
+        this.grid = [];
       }
 
       if (cfg && cfg.enable) {
@@ -372,9 +382,9 @@ import {BabylonMaterialPalette} from "./BabylonPalette";
         sidePlane.isPickable = false;
         this.grid.push(sidePlane);
 
-        this.createLabelText("label_x_axis","X",new BABYLON.Vector3(1.2,0,-1),cfg.xGridColor, cfg.mainColor)
-        this.createLabelText("label_y_axis","Y",new BABYLON.Vector3(-1,1.2,0),cfg.yGridColor, cfg.mainColor)
-        this.createLabelText("label_y_axis","Z",new BABYLON.Vector3(0,-1,1.2),cfg.zGridColor, cfg.mainColor)
+        this.grid.push(this.createLabelText("label_x_axis","X",new BABYLON.Vector3(1.2,0,-1),cfg.xGridColor, cfg.mainColor))
+        this.grid.push(this.createLabelText("label_y_axis","Y",new BABYLON.Vector3(-1,1.2,0),cfg.yGridColor, cfg.mainColor))
+        this.grid.push(this.createLabelText("label_y_axis","Z",new BABYLON.Vector3(0,-1,1.2),cfg.zGridColor, cfg.mainColor))
       }
     }
 
@@ -403,7 +413,7 @@ import {BabylonMaterialPalette} from "./BabylonPalette";
     }
 
     public drawSphere(name: string, position: Point3D, radius: number){
-      let tmp_sph = BABYLON.Mesh.CreateSphere(name , this.config.draw.segmentsPerCircle, radius * 2.05, this.scene);
+      let tmp_sph = BABYLON.Mesh.CreateSphere(name , this.config.segmentsPerCircle, radius * 2.05, this.scene);
 
       // Move to location
       tmp_sph.position = new BABYLON.Vector3(position.x,position.y,position.z);
@@ -417,7 +427,7 @@ import {BabylonMaterialPalette} from "./BabylonPalette";
       let to = new BABYLON.Vector3(to_p.x,to_p.y,to_p.z);
       let tmp_cyl = BABYLON.Mesh.CreateCylinder(name, BABYLON.Vector3.Distance(from, to),
         endRad * 2, initRad * 2,
-        this.config.draw.segmentsPerCircle, 1, this.scene);
+        this.config.segmentsPerCircle, 1, this.scene);
 
       // Compute rotation
       let vec = to.subtract(from);
@@ -579,15 +589,36 @@ import {BabylonMaterialPalette} from "./BabylonPalette";
      *
      * @return Promise
      */
-    public optimize(level: number) {
-      if (level <= 0) {
-        BABYLON.SceneOptimizerOptions.LowDegradationAllowed();
-      } else if (level == 1) {
-        BABYLON.SceneOptimizerOptions.ModerateDegradationAllowed();
-      } else {
-        BABYLON.SceneOptimizerOptions.HighDegradationAllowed();
+    public optimize(level?: number,cb?:()=>any) {
+      let optlevel = -1; // Dont optimize by default
+      if(level){
+        this.config.optLevel = level;
+        optlevel = level;
+      } else if( this.config.optLevel){
+        optlevel = this.config.optLevel;
       }
-      return BABYLON.SceneOptimizer.OptimizeAsync(this.scene);
+
+      //
+      if (optlevel < 0){
+        return; // No optimization
+      } else if (optlevel == 0) {
+        return BABYLON.SceneOptimizer.OptimizeAsync(this.scene,BABYLON.SceneOptimizerOptions.LowDegradationAllowed(),cb);
+      } else if (optlevel == 1) {
+        return BABYLON.SceneOptimizer.OptimizeAsync(this.scene,BABYLON.SceneOptimizerOptions.ModerateDegradationAllowed(),cb);
+      } else {
+        return BABYLON.SceneOptimizer.OptimizeAsync(this.scene,BABYLON.SceneOptimizerOptions.HighDegradationAllowed(),cb);
+      }
+    }
+
+
+
+    public setCircularSegmentsCount(v:number){
+      if(v>=3)
+        this.config.segmentsPerCircle = v;
+    }
+
+    public getCircularSegmentsCount(){
+      return this.config.segmentsPerCircle;
     }
 
     public addPointerUpCallback(cb: (        distance: number,

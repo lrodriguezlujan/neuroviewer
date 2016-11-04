@@ -70,6 +70,8 @@ export declare class BabylonDrawer implements Drawer {
     setCameraPanSensibility(v: number): void;
     getCameraWheelSensibility(): number;
     setCameraWheelSensibility(v: number): void;
+    visibleGrid(): boolean;
+    showGrid(v: boolean): void;
     createGrid(cfg: babylonConfigs.GridConfig): void;
     private createLabelText(id, text, position, textColor, backColor);
     drawSphere(name: string, position: Point3D, radius: number): BABYLON.Mesh;
@@ -92,6 +94,8 @@ export declare class BabylonDrawer implements Drawer {
      *
      * @return Promise
      */
-    optimize(level: number): void;
+    optimize(level?: number, cb?: () => any): void;
+    setCircularSegmentsCount(v: number): void;
+    getCircularSegmentsCount(): number;
     addPointerUpCallback(cb: (distance: number, mesh: BABYLON.AbstractMesh, subMeshID?: number) => void): void;
 }

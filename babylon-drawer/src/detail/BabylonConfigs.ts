@@ -62,27 +62,12 @@ import {CameraType} from "@neuroviewer/core";
     "grid": default_config_grid
   };
 
-  export interface DrawConfig {
-    drawLinear?: boolean,
-    sphereNodes?: boolean,
-    singleMeshElements?: boolean,
-    optLevel?: number,
-    segmentsPerCircle: number
-  };
-
-  export const default_config_draw : DrawConfig = {
-    drawLinear: false,
-    sphereNodes: true,
-    singleMeshElements: false,
-    optLevel: 0,
-    segmentsPerCircle: 8
-  };
-
   export interface DrawerConfig {
-    engine?: EngineConfig;
-    camera?: CameraConfig;
-    scene?: SceneConfig;
-    draw?: DrawConfig;
+    engine?: EngineConfig,
+    camera?: CameraConfig,
+    scene?: SceneConfig,
+    segmentsPerCircle: number,
+    optLevel?: number
   };
 
 
@@ -90,5 +75,5 @@ import {CameraType} from "@neuroviewer/core";
     engine: default_config_engine,
     camera: default_config_camera,
     scene: default_config_scene,
-    draw: default_config_draw
+    segmentsPerCircle: 8
   };
