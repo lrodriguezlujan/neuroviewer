@@ -33,6 +33,7 @@ export class Contour {
 
   // Contour associated mesh
   private mesh : DrawObject;
+  private enabled : boolean;
 
   /**
    * Contour constructor
@@ -83,12 +84,27 @@ export class Contour {
    */
   public draw(drawer:Drawer){
 
+    if(this.mesh)
+      this.mesh.dispose();
+
     // Just draw spheres and merge them
-    drawer.drawContour(this.points,
+    this.enabled = true;
+    this.mesh = drawer.drawContour(this.points,
                        this.closed,
                        this.face_color,
                        this.back_color,
                        this.fill);
+  }
+
+  public isEnabled(){
+    return this.enabled;
+  }
+
+  public setEnabled(v:boolean, recursive = false){
+    this.enabled=v;
+    if(this.mesh){
+      this.mesh.setEnabled(v);
+    }
   }
 
   public dispose(){

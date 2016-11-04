@@ -25,6 +25,7 @@ export declare class Contour {
     resolution: number;
     status: Status;
     private mesh;
+    private enabled;
     /**
      * Contour constructor
      *
@@ -52,6 +53,8 @@ export declare class Contour {
      * @param  {Drawer} drawer drawer class
      */
     draw(drawer: Drawer): void;
+    isEnabled(): boolean;
+    setEnabled(v: boolean, recursive?: boolean): void;
     dispose(): void;
     /**
      * Creates a soma class from a JS object

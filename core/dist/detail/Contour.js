@@ -47,8 +47,21 @@ var Contour = (function () {
      * @param  {Drawer} drawer drawer class
      */
     Contour.prototype.draw = function (drawer) {
+        if (this.mesh)
+            this.mesh.dispose();
         // Just draw spheres and merge them
-        drawer.drawContour(this.points, this.closed, this.face_color, this.back_color, this.fill);
+        this.enabled = true;
+        this.mesh = drawer.drawContour(this.points, this.closed, this.face_color, this.back_color, this.fill);
+    };
+    Contour.prototype.isEnabled = function () {
+        return this.enabled;
+    };
+    Contour.prototype.setEnabled = function (v, recursive) {
+        if (recursive === void 0) { recursive = false; }
+        this.enabled = v;
+        if (this.mesh) {
+            this.mesh.setEnabled(v);
+        }
     };
     Contour.prototype.dispose = function () {
         this.mesh.dispose();
