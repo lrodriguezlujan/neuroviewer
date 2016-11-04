@@ -74,6 +74,9 @@ import{Drawer, DrawMaterialSet, DrawObject} from "./NvCoreInterfaces";
 
   public lineDraw(drawer:Drawer){
 
+    if(this.lineDrawObj)
+      this.lineDrawObj.dispose();
+
     if(this.firstBranch){
       // Get neurite as a line array
       let lines = this.firstBranch.asLineArray(true);

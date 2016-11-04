@@ -49,8 +49,10 @@ var BranchElement = (function () {
             this.drawn = true;
         }
         else {
-            // Create node
-            this.nodeMesh = drawer.drawSphere("N" + this.node.id + "@" + this.branch.idString() + "@" + this.branch.neurite.id, this.node, this.node.r);
+            if (this.branch.neurite.neuron.reconstruction.drawNodeSpheres) {
+                // Create node
+                this.nodeMesh = drawer.drawSphere("N" + this.node.id + "@" + this.branch.idString() + "@" + this.branch.neurite.id, this.node, this.node.r);
+            }
             // Create segment
             if (this.prevNode)
                 this.segmentMesh = drawer.drawCylinder("C" + this.node.id + "@" + this.branch.idString() + "}@" + this.branch.neurite.id, this.prevNode, this.node, this.prevNode.r, this.node.r);

@@ -2,6 +2,7 @@ import{Branch, BranchElement} from "./Branch";
 import{Soma,SomaJSON} from "./Soma";
 import{Neurite,NeuriteJSON} from "./Neurite";
 import{Status} from "./Status";
+import{Reconstruction} from "./Reconstruction";
 import{Drawer, DrawMaterialSet, DrawObject} from "./NvCoreInterfaces";
 
   //
@@ -34,7 +35,7 @@ import{Drawer, DrawMaterialSet, DrawObject} from "./NvCoreInterfaces";
      *
      * @param  {string} id Neuron unique name
      */
-    constructor( public id:string ){
+    constructor( public id:string, public reconstruction?:Reconstruction ){
       this.neurites = [];
       this.properties = {};
     }
@@ -158,7 +159,7 @@ import{Drawer, DrawMaterialSet, DrawObject} from "./NvCoreInterfaces";
     /**
      * Draws the neuron merging all neurites in a single linesystem
      *
-     * @return {Mesh}  
+     * @return {Mesh}
      */
     public drawLinear(){
       // Draw soma

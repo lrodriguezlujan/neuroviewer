@@ -111,6 +111,10 @@ export class Soma {
    */
   public draw(drawer:Drawer){
 
+    if(this.mesh){
+      this.mesh.dispose();
+    }
+
     if(this.isContour){
       // ConvexHull should provide a mesh...well... somehow.
       // TODO

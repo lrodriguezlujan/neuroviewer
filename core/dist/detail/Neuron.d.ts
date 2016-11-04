@@ -1,6 +1,7 @@
 import { BranchElement } from "./Branch";
 import { Soma, SomaJSON } from "./Soma";
 import { Neurite, NeuriteJSON } from "./Neurite";
+import { Reconstruction } from "./Reconstruction";
 import { Drawer } from "./NvCoreInterfaces";
 export interface NeuronJSON {
     id: string;
@@ -15,6 +16,7 @@ export interface NeuronJSON {
  */
 export declare class Neuron {
     id: string;
+    reconstruction: Reconstruction;
     private neurites;
     private properties;
     soma: Soma;
@@ -25,7 +27,7 @@ export declare class Neuron {
      *
      * @param  {string} id Neuron unique name
      */
-    constructor(id: string);
+    constructor(id: string, reconstruction?: Reconstruction);
     /**
      * Adds a neurite
      *

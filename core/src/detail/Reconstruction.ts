@@ -22,6 +22,10 @@ export class Reconstruction {
 
   private drawer : Drawer;
 
+  public linearDrawing = false;
+  public singleElementDraw = false;
+  public drawNodeSpheres = true;
+
   /**
    * Neuron constructor
    *
@@ -40,6 +44,7 @@ export class Reconstruction {
    * @param  {Neruon} n Neuron to add
    */
   public addNeuron( n: Neuron){
+    n.reconstruction = this;
     this.neurons.push(n);
   }
 
@@ -113,26 +118,27 @@ export class Reconstruction {
     return null;
   }
 
-
   /**
    * Draws the neuron
    *
-   * @param  {type} drawer: Drawer description
-   * @return {type}                description
    */
-  public draw(linear: boolean){
+  public draw(){
 
-    // Draw each neuron
-    if(this.neurons){
-      for( let n of this.neurons){
-        n.draw(linear);
+    if(this.singleElementDraw){
+      this.drawLinear();
+    } else {
+      // Draw each neuron
+      if(this.neurons){
+        for( let n of this.neurons){
+          n.draw(this.linearDrawing);
+        }
       }
-    }
 
-    // Draw contours
-    if(this.contours){
-      for( let c of this.contours){
-        c.draw(this.drawer);
+      // Draw contours
+      if(this.contours){
+        for( let c of this.contours){
+          c.draw(this.drawer);
+        }
       }
     }
   }

@@ -76,19 +76,26 @@ import {Point3D,Drawer, DrawObject, DrawMaterial} from "./NvCoreInterfaces";
      * @public
      */
     public draw( drawer: Drawer, linear:boolean = false ) {
+        if(this.nodeMesh) {
+          this.nodeMesh.dispose();
+        }
+        if(this.segmentMesh){
+          this.segmentMesh.dispose();
+        }
+
         if(linear) {
-          if(this.nodeMesh) {
-            this.nodeMesh.dispose();
-            this.nodeMesh = null;
-          }
+
           if(this.prevNode){
             this.segmentMesh = drawer.drawLine(`C${this.node.id}@${this.branch.idString()}}@${this.branch.neurite.id}`,
                                                 this.prevNode, this.node, this.currentColor());
           }
           this.drawn = true;
         } else {
-          // Create node
-          this.nodeMesh = drawer.drawSphere(`N${this.node.id}@${this.branch.idString()}@${this.branch.neurite.id}`, this.node, this.node.r );
+
+          if(this.branch.neurite.neuron.reconstruction.drawNodeSpheres){
+            // Create node
+            this.nodeMesh = drawer.drawSphere(`N${this.node.id}@${this.branch.idString()}@${this.branch.neurite.id}`, this.node, this.node.r );
+          }
 
           // Create segment
           if(this.prevNode)
@@ -431,6 +438,9 @@ export class Branch {
    * @param  {Drawer} drawer Class that draws the branch
    */
   public drawRoot(drawer : Drawer){
+    if(this.rootMesh)
+      this.rootMesh.dispose();
+      
     if(this.root)
      this.rootMesh = drawer.drawSphere(`N0@${this.idString()}`,this.root, this.root.r );
   }

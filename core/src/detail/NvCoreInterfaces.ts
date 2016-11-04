@@ -25,6 +25,10 @@
       drawLine: (id: string, source: Point3D, target: Point3D, color: string) => DrawObject;
       dispose: () => void;
 
+      // optimize
+      optimize: (level?:number,cb?:()=>any) => any;
+
+
       // Control adds
       getCanvasPosition: () => Array<number>;
       getCanvasSize: () => Array<number>;
@@ -49,7 +53,12 @@
 
       resetCamera : () => void;
 
-
+      // Draw Control
+      setCircularSegmentsCount: (v:number) => void;
+      getCircularSegmentsCount: () => void;
+      showGrid: (v:boolean) => void;
+      visibleGrid: () => boolean;
+      normalizeScene: () => void;
 
   }; // Intended: NvDraw.BabylonDrawer
 

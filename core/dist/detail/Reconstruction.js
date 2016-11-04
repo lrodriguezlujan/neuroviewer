@@ -12,6 +12,9 @@ var Reconstruction = (function () {
      * @param  {string} id Neuron unique name
      */
     function Reconstruction() {
+        this.linearDrawing = false;
+        this.singleElementDraw = false;
+        this.drawNodeSpheres = true;
         this.neurons = [];
         this.properties = {};
         this.contours = [];
@@ -22,6 +25,7 @@ var Reconstruction = (function () {
      * @param  {Neruon} n Neuron to add
      */
     Reconstruction.prototype.addNeuron = function (n) {
+        n.reconstruction = this;
         this.neurons.push(n);
     };
     Reconstruction.prototype.attachDrawer = function (drawer) {
@@ -90,22 +94,25 @@ var Reconstruction = (function () {
     /**
      * Draws the neuron
      *
-     * @param  {type} drawer: Drawer description
-     * @return {type}                description
      */
-    Reconstruction.prototype.draw = function (linear) {
-        // Draw each neuron
-        if (this.neurons) {
-            for (var _i = 0, _a = this.neurons; _i < _a.length; _i++) {
-                var n = _a[_i];
-                n.draw(linear);
-            }
+    Reconstruction.prototype.draw = function () {
+        if (this.singleElementDraw) {
+            this.drawLinear();
         }
-        // Draw contours
-        if (this.contours) {
-            for (var _b = 0, _c = this.contours; _b < _c.length; _b++) {
-                var c = _c[_b];
-                c.draw(this.drawer);
+        else {
+            // Draw each neuron
+            if (this.neurons) {
+                for (var _i = 0, _a = this.neurons; _i < _a.length; _i++) {
+                    var n = _a[_i];
+                    n.draw(this.linearDrawing);
+                }
+            }
+            // Draw contours
+            if (this.contours) {
+                for (var _b = 0, _c = this.contours; _b < _c.length; _b++) {
+                    var c = _c[_b];
+                    c.draw(this.drawer);
+                }
             }
         }
     };

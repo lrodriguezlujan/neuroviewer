@@ -18,6 +18,9 @@ export declare class Reconstruction {
     contours: Array<Contour>;
     private properties;
     private drawer;
+    linearDrawing: boolean;
+    singleElementDraw: boolean;
+    drawNodeSpheres: boolean;
     /**
      * Neuron constructor
      *
@@ -66,10 +69,8 @@ export declare class Reconstruction {
     /**
      * Draws the neuron
      *
-     * @param  {type} drawer: Drawer description
-     * @return {type}                description
      */
-    draw(linear: boolean): void;
+    draw(): void;
     drawLinear(): void;
     dispose(): void;
     forEachElement(fn: (item: BranchElement) => void): void;

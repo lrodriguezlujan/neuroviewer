@@ -21,6 +21,7 @@ export interface Drawer {
     drawLines: (lines: Array<Array<Point3D>>, color: string) => DrawObject;
     drawLine: (id: string, source: Point3D, target: Point3D, color: string) => DrawObject;
     dispose: () => void;
+    optimize: (level?: number, cb?: () => any) => any;
     getCanvasPosition: () => Array<number>;
     getCanvasSize: () => Array<number>;
     attachResizeListener: (fn: () => void) => void;
@@ -35,6 +36,11 @@ export interface Drawer {
     getCameraWheelSensibility: () => number;
     setCameraWheelSensibility: (v: number) => void;
     resetCamera: () => void;
+    setCircularSegmentsCount: (v: number) => void;
+    getCircularSegmentsCount: () => void;
+    showGrid: (v: boolean) => void;
+    visibleGrid: () => boolean;
+    normalizeScene: () => void;
 }
 export interface DrawMaterial {
     diffuseColor?: any;

@@ -11,8 +11,9 @@ var Neuron = (function () {
      *
      * @param  {string} id Neuron unique name
      */
-    function Neuron(id) {
+    function Neuron(id, reconstruction) {
         this.id = id;
+        this.reconstruction = reconstruction;
         this.neurites = [];
         this.properties = {};
     }
