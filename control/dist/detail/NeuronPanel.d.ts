@@ -1,7 +1,6 @@
-import { Reconstruction } from "@neuroviewer/core";
 import { ControlPanel } from "./ControlPanel";
+import { Control } from "./NvControl";
 export declare class NeuronControlPanel extends ControlPanel {
-    private recData;
     private static neuron_name;
-    constructor(parentDiv: HTMLElement, recData: Reconstruction);
+    constructor(parent: Control);
 }

@@ -11,12 +11,10 @@ export class Control {
   private neuronPanel : ControlPanel;
   private detailsPanel : ControlPanel;
 
-  private recData : Reconstruction;
-
   private controlLayer: HTMLElement;
   private canvasLayer: HTMLCanvasElement;
 
-  public constructor( private drawer: Drawer){
+  public constructor( public drawer: Drawer, public reconstruction: Reconstruction){
 
     //this.canvasLayer = document.createElement("canvas");
     //this.canvasLayer.classList.add("controlDrawingCanvas");
@@ -25,8 +23,12 @@ export class Control {
 
     //this.controlLayer.appendChild(this.canvasLayer);
 
-    this.optionsPanel = new OptionsControlPanel(this.controlLayer,this.drawer);
-    this.neuronPanel = new NeuronControlPanel(this.controlLayer,this.recData);
+    this.optionsPanel = new OptionsControlPanel(this);
+    this.neuronPanel = new NeuronControlPanel(this);
+  }
+
+  public getControlDiv() {
+    return this.controlLayer;
   }
 
   // Trigger display
@@ -48,7 +50,7 @@ export class Control {
 
   // Add reconstruction
   public attachReconstruction(r:Reconstruction){
-    this.recData = r;
+    this.reconstruction = r;
     // Add to neuronPanel
     /*if(this.neuronPanel){
       this.neuronPanel.setReconstruction(this.recData);

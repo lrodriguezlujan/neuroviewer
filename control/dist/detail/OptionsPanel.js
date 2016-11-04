@@ -8,9 +8,8 @@ var core_1 = require("@neuroviewer/core");
 var ControlPanel_1 = require("./ControlPanel");
 var OptionsControlPanel = (function (_super) {
     __extends(OptionsControlPanel, _super);
-    function OptionsControlPanel(parentDiv, drawer) {
-        _super.call(this, "options", "Options", parentDiv);
-        this.drawer = drawer;
+    function OptionsControlPanel(parent) {
+        _super.call(this, "options", "Options", parent);
         // Mark panes as options panel
         this.panelDiv.classList.add("optionsPanel");
         this.createCameraOptions();
@@ -28,7 +27,7 @@ var OptionsControlPanel = (function (_super) {
         legend.setAttribute("data-target", "#" + "camera_section");
         legend.setAttribute("cursor", "copy");
         var camera_type;
-        if (this.drawer.getCameraType() == core_1.CameraType.pivot) {
+        if (this.parent.drawer.getCameraType() == core_1.CameraType.pivot) {
             camera_type = "pivot";
         }
         else {
@@ -37,10 +36,10 @@ var OptionsControlPanel = (function (_super) {
         var selector_cb = function (ev) {
             var element = ev.srcElement;
             if (element.value == "pivot") {
-                _this.drawer.setCameraType(core_1.CameraType.pivot);
+                _this.parent.drawer.setCameraType(core_1.CameraType.pivot);
             }
             else if (element.value == "universal") {
-                _this.drawer.setCameraType(core_1.CameraType.universal);
+                _this.parent.drawer.setCameraType(core_1.CameraType.universal);
             }
         };
         var selector = ControlPanel_1.ControlPanel.createRadioBoxSelector("Camera type", "camera_type_sel", {
@@ -51,36 +50,37 @@ var OptionsControlPanel = (function (_super) {
         // Add...stuff
         var speed_change_cb = function (ev) {
             var element = ev.srcElement;
-            _this.drawer.setCameraSpeed(parseFloat(element.value));
+            _this.parent.drawer.setCameraSpeed(parseFloat(element.value));
             console.log(parseFloat(element.value));
         };
         parent.appendChild(ControlPanel_1.ControlPanel.createLabelTag("camspeed", "Camera speed"));
-        parent.appendChild(ControlPanel_1.ControlPanel.createInputBox("camspeed", "number", speed_change_cb, this.drawer.getCameraSpeed()));
+        parent.appendChild(ControlPanel_1.ControlPanel.createInputBox("camspeed", "number", speed_change_cb, this.parent.drawer.getCameraSpeed()));
         var inertia_change_cb = function (ev) {
             var element = ev.srcElement;
-            _this.drawer.setCameraInertia(parseFloat(element.value));
+            _this.parent.drawer.setCameraInertia(parseFloat(element.value));
             console.log(parseFloat(element.value));
         };
         parent.appendChild(ControlPanel_1.ControlPanel.createLabelTag("caminertia", "Camera inertia"));
-        parent.appendChild(ControlPanel_1.ControlPanel.createInputBox("caminertia", "number", inertia_change_cb, this.drawer.getCameraInertia()));
+        parent.appendChild(ControlPanel_1.ControlPanel.createInputBox("caminertia", "number", inertia_change_cb, this.parent.drawer.getCameraInertia()));
         var pansens_change_cb = function (ev) {
             var element = ev.srcElement;
-            _this.drawer.setCameraPanSensibility(parseFloat(element.value));
+            _this.parent.drawer.setCameraPanSensibility(parseFloat(element.value));
             console.log(parseFloat(element.value));
         };
         parent.appendChild(ControlPanel_1.ControlPanel.createLabelTag("campamsens", "Camera pan sensibility"));
-        parent.appendChild(ControlPanel_1.ControlPanel.createInputBox("campamsens", "number", pansens_change_cb, this.drawer.getCameraPanSensibility()));
+        parent.appendChild(ControlPanel_1.ControlPanel.createInputBox("campamsens", "number", pansens_change_cb, this.parent.drawer.getCameraPanSensibility()));
         var wheelsens_change_cb = function (ev) {
             var element = ev.srcElement;
-            _this.drawer.setCameraWheelSensibility(parseFloat(element.value));
+            _this.parent.drawer.setCameraWheelSensibility(parseFloat(element.value));
             console.log(parseFloat(element.value));
         };
         parent.appendChild(ControlPanel_1.ControlPanel.createLabelTag("camwheelsens", "Camera wheel sensibility"));
-        parent.appendChild(ControlPanel_1.ControlPanel.createInputBox("camwheelsens", "number", wheelsens_change_cb, this.drawer.getCameraWheelSensibility()));
+        parent.appendChild(ControlPanel_1.ControlPanel.createInputBox("camwheelsens", "number", wheelsens_change_cb, this.parent.drawer.getCameraWheelSensibility()));
         this.contentDiv.appendChild(legend);
         this.contentDiv.appendChild(parent);
     };
     OptionsControlPanel.prototype.createRendererOptions = function () {
+        var _this = this;
         var parent = ControlPanel_1.ControlPanel.createSet("render_section");
         parent.classList.add("collapse"); // Make section collapsible
         var legend = ControlPanel_1.ControlPanel.createLegend("Render options");
@@ -89,22 +89,50 @@ var OptionsControlPanel = (function (_super) {
         legend.setAttribute("cursor", "copy");
         //parent.appendChild(ControlPanel.createLabelTag("plotgrid","Render grid"));
         var ignore_cb = function (ev) { };
-        parent.appendChild(ControlPanel_1.ControlPanel.createSimpleCBInput("plot_grid", "Render grid", true, ignore_cb));
-        parent.appendChild(ControlPanel_1.ControlPanel.createSimpleCBInput("plot_linear", "Linear rendering", true, ignore_cb));
-        parent.appendChild(ControlPanel_1.ControlPanel.createSimpleCBInput("plot_nodes", "Render nodes", false, ignore_cb));
-        parent.appendChild(ControlPanel_1.ControlPanel.createSimpleCBInput("plot_single", "Simplified plot", false, ignore_cb));
-        var selector_detail = ControlPanel_1.ControlPanel.createRadioBoxSelector("Detail level", "plot_detail", {
-            "low": "Low",
-            "medium": "Medium",
-            "high": "High"
-        }, ignore_cb, "low");
-        parent.appendChild(selector_detail);
+        var grid_cb = function (ev) {
+            var element = ev.srcElement;
+            _this.parent.drawer.showGrid(element.checked);
+        };
+        parent.appendChild(ControlPanel_1.ControlPanel.createSimpleCBInput("plot_grid", "Render grid", this.parent.drawer.visibleGrid(), grid_cb));
+        var linear_cb = function (ev) {
+            var element = ev.srcElement;
+            _this.parent.reconstruction.linearDrawing = element.checked;
+        };
+        parent.appendChild(ControlPanel_1.ControlPanel.createSimpleCBInput("plot_linear", "Linear rendering", this.parent.reconstruction.linearDrawing, ignore_cb));
+        var node_cb = function (ev) {
+            var element = ev.srcElement;
+            _this.parent.reconstruction.drawNodeSpheres = element.checked;
+        };
+        parent.appendChild(ControlPanel_1.ControlPanel.createSimpleCBInput("plot_nodes", "Render nodes", this.parent.reconstruction.drawNodeSpheres, node_cb));
+        var single_cb = function (ev) {
+            var element = ev.srcElement;
+            _this.parent.reconstruction.singleElementDraw = element.checked;
+        };
+        parent.appendChild(ControlPanel_1.ControlPanel.createSimpleCBInput("plot_single", "Merge neurite elements", this.parent.reconstruction.singleElementDraw, single_cb));
+        var detail_cb = function (ev) {
+            var element = ev.srcElement;
+            _this.parent.drawer.setCircularSegmentsCount(parseInt(element.value));
+        };
+        parent.appendChild(ControlPanel_1.ControlPanel.createLabelTag("plot_segmentscircle", "Segments per circle"));
+        parent.appendChild(ControlPanel_1.ControlPanel.createInputBox("plot_segmentscircle", "number", detail_cb, this.parent.drawer.getCircularSegmentsCount()));
+        var optimization_cb = function (ev) {
+            var element = ev.srcElement;
+            _this.parent.drawer.optimize(parseInt(element.value));
+        };
         var selector_opt = ControlPanel_1.ControlPanel.createRadioBoxSelector("Optimization level", "plot_opt", {
-            "low": "Low",
-            "medium": "Medium",
-            "high": "High"
-        }, ignore_cb, "low");
+            "0": "Low",
+            "1": "Medium",
+            "2": "High"
+        }, optimization_cb, "0");
         parent.appendChild(selector_opt);
+        // Redraw button
+        var redraw_cb = function (ev) {
+            _this.parent.reconstruction.draw();
+            _this.parent.drawer.normalizeScene();
+            _this.parent.drawer.showGrid(_this.parent.drawer.visibleGrid());
+            _this.parent.drawer.optimize();
+        };
+        parent.appendChild(ControlPanel_1.ControlPanel.createButton("redraw_btn", "Redaw", redraw_cb, "glyphicon-pencil"));
         this.contentDiv.appendChild(legend);
         this.contentDiv.appendChild(parent);
     };

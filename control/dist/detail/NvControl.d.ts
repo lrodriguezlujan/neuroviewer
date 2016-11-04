@@ -1,13 +1,14 @@
 import { Drawer, Reconstruction } from "@neuroviewer/core";
 export declare class Control {
-    private drawer;
+    drawer: Drawer;
+    reconstruction: Reconstruction;
     private optionsPanel;
     private neuronPanel;
     private detailsPanel;
-    private recData;
     private controlLayer;
     private canvasLayer;
-    constructor(drawer: Drawer);
+    constructor(drawer: Drawer, reconstruction: Reconstruction);
+    getControlDiv(): HTMLElement;
     show(): void;
     hide(): void;
     dispose(): void;

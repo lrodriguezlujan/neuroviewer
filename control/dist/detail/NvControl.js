@@ -2,20 +2,24 @@
 var OptionsPanel_1 = require("./OptionsPanel");
 var NeuronPanel_1 = require("./NeuronPanel");
 var Control = (function () {
-    function Control(drawer) {
+    function Control(drawer, reconstruction) {
         //this.canvasLayer = document.createElement("canvas");
         //this.canvasLayer.classList.add("controlDrawingCanvas");
         var _this = this;
         this.drawer = drawer;
+        this.reconstruction = reconstruction;
         this.canvasResizeListener = function () {
             _this.updateDrawerPosition();
             _this.updateDrawerSize();
         };
         this.createLayer();
         //this.controlLayer.appendChild(this.canvasLayer);
-        this.optionsPanel = new OptionsPanel_1.OptionsControlPanel(this.controlLayer, this.drawer);
-        this.neuronPanel = new NeuronPanel_1.NeuronControlPanel(this.controlLayer, this.recData);
+        this.optionsPanel = new OptionsPanel_1.OptionsControlPanel(this);
+        this.neuronPanel = new NeuronPanel_1.NeuronControlPanel(this);
     }
+    Control.prototype.getControlDiv = function () {
+        return this.controlLayer;
+    };
     // Trigger display
     Control.prototype.show = function () {
         this.showOptions();
@@ -32,7 +36,7 @@ var Control = (function () {
     };
     // Add reconstruction
     Control.prototype.attachReconstruction = function (r) {
-        this.recData = r;
+        this.reconstruction = r;
         // Add to neuronPanel
         /*if(this.neuronPanel){
           this.neuronPanel.setReconstruction(this.recData);

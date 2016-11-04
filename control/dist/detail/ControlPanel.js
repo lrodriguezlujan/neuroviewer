@@ -1,9 +1,9 @@
 "use strict";
 var ControlPanel = (function () {
-    function ControlPanel(panelId, panelName, parentDiv) {
+    function ControlPanel(panelId, panelName, parent) {
         this.panelId = panelId;
         this.panelName = panelName;
-        this.parentDiv = parentDiv;
+        this.parent = parent;
         this.visible = false;
         this.dragMoveListener = function (event) {
             var target = event.target, 
@@ -22,16 +22,20 @@ var ControlPanel = (function () {
         this.resizeMoveListener = function (event) {
             var target = event.target, x = (parseFloat(target.getAttribute('data-x')) || 0), y = (parseFloat(target.getAttribute('data-y')) || 0);
             // update the element's style
-            target.style.width = event.rect.width + 'px';
-            target.style.height = event.rect.height + 'px';
-            // translate when resizing from top or left edges
-            x += event.deltaRect.left;
-            y += event.deltaRect.top;
-            target.style.webkitTransform = target.style.transform =
-                'translate(' + x + 'px,' + y + 'px)';
-            target.setAttribute('data-x', x);
-            target.setAttribute('data-y', y);
+            if (event.rect.width >= 150) {
+                target.style.width = event.rect.width + 'px';
+                //target.style.height = event.rect.height + 'px';
+                // translate when resizing from top or left edges
+                x += event.deltaRect.left;
+                y += event.deltaRect.top;
+                target.style.webkitTransform = target.style.transform =
+                    'translate(' + x + 'px,' + y + 'px)';
+                target.setAttribute('data-x', x);
+                target.setAttribute('data-y', y);
+            }
         };
+        // Set parent div
+        this.parentDiv = parent.getControlDiv();
         // Create panel
         this.createPanelDiv();
         // Hide it
@@ -72,13 +76,21 @@ var ControlPanel = (function () {
         // Create div
         this.headerDiv = document.createElement("div");
         this.headerDiv.id = this.panelId + "_header";
+        var icon = ControlPanel.createGlyphicon("glyphicon-plus");
+        icon.classList.add("collapse_icon");
+        //icon.style.cssFloat="left";
+        icon.setAttribute("data-toggle", "collapse");
+        icon.setAttribute("data-target", "#" + this.panelId + "_content");
+        icon.setAttribute("cursor", "copy");
+        // Toggle icon
+        icon.onclick = function (ev) {
+            ev.srcElement.classList.toggle("glyphicon-plus");
+            ev.srcElement.classList.toggle("glyphicon-minus");
+        };
+        this.headerDiv.appendChild(icon);
         // Add style
         this.headerDiv.classList.add("controlHeader");
         this.headerDiv.appendChild(document.createTextNode(this.panelName));
-        // Header collapse content
-        this.headerDiv.setAttribute("data-toggle", "collapse");
-        this.headerDiv.setAttribute("data-target", "#" + this.panelId + "_content");
-        this.headerDiv.setAttribute("cursor", "copy");
     };
     ControlPanel.prototype.createContentDiv = function () {
         // Create div
@@ -154,6 +166,22 @@ var ControlPanel = (function () {
         div.appendChild(input);
         div.appendChild(ControlPanel.createLabelTag(id, name));
         return div;
+    };
+    ControlPanel.createButton = function (id, text, cb, icon) {
+        /*<button type="button" class="btn btn-default btn-lg">
+      <span class="glyphicon glyphicon-star" aria-hidden="true"></span> Star
+    </button>*/
+        var bt = document.createElement("button");
+        bt.type = "button";
+        bt.id = id;
+        bt.classList.add("btn");
+        bt.classList.add("btn-default");
+        bt.classList.add("btn-lg");
+        if (icon)
+            bt.appendChild(ControlPanel.createGlyphicon(icon));
+        bt.appendChild(document.createTextNode(text));
+        bt.onclick = cb;
+        return bt;
     };
     ControlPanel.createInputBox = function (id, type, cb, value) {
         var input = document.createElement("input");

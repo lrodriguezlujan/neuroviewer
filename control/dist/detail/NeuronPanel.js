@@ -7,9 +7,8 @@ var __extends = (this && this.__extends) || function (d, b) {
 var ControlPanel_1 = require("./ControlPanel");
 var NeuronControlPanel = (function (_super) {
     __extends(NeuronControlPanel, _super);
-    function NeuronControlPanel(parentDiv, recData) {
-        _super.call(this, "neuron", "Reconstruction", parentDiv);
-        this.recData = recData;
+    function NeuronControlPanel(parent) {
+        _super.call(this, "neuron", "Reconstruction", parent);
         // Mark panes as options panel
         this.panelDiv.classList.add("neuronPanel");
         //this.createCameraOptions();
