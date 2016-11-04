@@ -602,11 +602,11 @@ import {BabylonMaterialPalette} from "./BabylonPalette";
       if (optlevel < 0){
         return; // No optimization
       } else if (optlevel == 0) {
-        return BABYLON.SceneOptimizer.OptimizeAsync(this.scene,BABYLON.SceneOptimizerOptions.LowDegradationAllowed(),cb);
+        return BABYLON.SceneOptimizer.OptimizeAsync(this.scene,BABYLON.SceneOptimizerOptions.LowDegradationAllowed(30),cb);
       } else if (optlevel == 1) {
-        return BABYLON.SceneOptimizer.OptimizeAsync(this.scene,BABYLON.SceneOptimizerOptions.ModerateDegradationAllowed(),cb);
+        return BABYLON.SceneOptimizer.OptimizeAsync(this.scene,BABYLON.SceneOptimizerOptions.ModerateDegradationAllowed(30),cb);
       } else {
-        return BABYLON.SceneOptimizer.OptimizeAsync(this.scene,BABYLON.SceneOptimizerOptions.HighDegradationAllowed(),cb);
+        return BABYLON.SceneOptimizer.OptimizeAsync(this.scene,BABYLON.SceneOptimizerOptions.HighDegradationAllowed(30),cb);
       }
     }
 

@@ -252,7 +252,7 @@ var BabylonDrawer = (function () {
         }
     };
     BabylonDrawer.prototype.visibleGrid = function () {
-        return this.grid != null;
+        return (this.grid.length != 0);
     };
     BabylonDrawer.prototype.showGrid = function (v) {
         this.config.scene.grid.enable = v;
@@ -266,7 +266,7 @@ var BabylonDrawer = (function () {
                 var g = _a[_i];
                 g.dispose();
             }
-            this.grid = null;
+            this.grid = [];
         }
         if (cfg && cfg.enable) {
             // Default grid. TODO: Configure
@@ -485,13 +485,13 @@ var BabylonDrawer = (function () {
             return; // No optimization
         }
         else if (optlevel == 0) {
-            return BABYLON.SceneOptimizer.OptimizeAsync(this.scene, BABYLON.SceneOptimizerOptions.LowDegradationAllowed(), cb);
+            return BABYLON.SceneOptimizer.OptimizeAsync(this.scene, BABYLON.SceneOptimizerOptions.LowDegradationAllowed(30), cb);
         }
         else if (optlevel == 1) {
-            return BABYLON.SceneOptimizer.OptimizeAsync(this.scene, BABYLON.SceneOptimizerOptions.ModerateDegradationAllowed(), cb);
+            return BABYLON.SceneOptimizer.OptimizeAsync(this.scene, BABYLON.SceneOptimizerOptions.ModerateDegradationAllowed(30), cb);
         }
         else {
-            return BABYLON.SceneOptimizer.OptimizeAsync(this.scene, BABYLON.SceneOptimizerOptions.HighDegradationAllowed(), cb);
+            return BABYLON.SceneOptimizer.OptimizeAsync(this.scene, BABYLON.SceneOptimizerOptions.HighDegradationAllowed(30), cb);
         }
     };
     BabylonDrawer.prototype.setCircularSegmentsCount = function (v) {
