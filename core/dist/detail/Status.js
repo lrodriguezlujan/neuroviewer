@@ -12,15 +12,15 @@ function materialPicker(pal, s) {
     if (pal != null) {
         switch (s) {
             case Status.none:
-                return this.branch.neurite.material.standard;
+                return pal.standard;
             case Status.invisible:
-                return this.branch.neurite.material.hidden;
+                return pal.hidden;
             case Status.selected:
-                return this.branch.neurite.material.emmisive;
+                return pal.emmisive;
             case Status.hidden:
-                return this.branch.neurite.material.disminished;
+                return pal.disminished;
             case Status.highlighted:
-                return this.branch.neurite.material.highlight;
+                return pal.highlight;
         }
     }
     else {

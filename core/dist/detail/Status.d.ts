@@ -1,4 +1,4 @@
-import { DrawMaterialSet } from "./NvCoreInterfaces";
+import { DrawMaterialSet, DrawMaterial } from "./NvCoreInterfaces";
 export declare enum Status {
     none = 0,
     invisible = 1,
@@ -6,5 +6,5 @@ export declare enum Status {
     hidden = 3,
     highlighted = 4,
 }
-export declare function materialPicker(pal: DrawMaterialSet, s: Status): any;
+export declare function materialPicker(pal: DrawMaterialSet, s: Status): DrawMaterial;
 export declare function materialColorPicker(pal: DrawMaterialSet, s: Status): any;
