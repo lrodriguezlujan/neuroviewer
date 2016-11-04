@@ -81,6 +81,10 @@ var Soma = (function () {
      * @param  {Drawer} drawer drawer class
      */
     Soma.prototype.draw = function (drawer) {
+        this.enabled = true;
+        if (this.mesh) {
+            this.mesh.dispose();
+        }
         if (this.isContour) {
         }
         else {
@@ -94,6 +98,16 @@ var Soma = (function () {
         }
         // Set mesh material
         this.mesh.material = this.pickMaterial();
+    };
+    Soma.prototype.isEnabled = function () {
+        return this.enabled;
+    };
+    Soma.prototype.setEnabled = function (v, recursive) {
+        if (recursive === void 0) { recursive = false; }
+        this.enabled = v;
+        if (this.mesh) {
+            this.mesh.setEnabled(v);
+        }
     };
     /**
      * Computes the convex hull of the given contour nodes

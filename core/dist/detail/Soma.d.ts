@@ -18,6 +18,7 @@ export declare class Soma {
     nodes: Array<Node3D>;
     status: Status;
     private mesh;
+    private enabled;
     /**
      * Soma constructor
      *
@@ -63,6 +64,8 @@ export declare class Soma {
      * @param  {Drawer} drawer drawer class
      */
     draw(drawer: Drawer): void;
+    isEnabled(): boolean;
+    setEnabled(v: boolean, recursive?: boolean): void;
     /**
      * Computes the convex hull of the given contour nodes
      *

@@ -171,6 +171,13 @@ var Reconstruction = (function () {
                 var c = _c[_b];
                 r.addContour(Contour_1.Contour.fromObject(c));
             }
+            // Sort reconstructions by name
+            r.contours.sort(function (a, b) { if (a.name < b.name)
+                return -1;
+            else if (a.name == b.name)
+                return 0;
+            else
+                return 1; });
         }
         return r;
     };

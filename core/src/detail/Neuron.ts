@@ -23,12 +23,14 @@ import{Drawer, DrawMaterialSet, DrawObject} from "./NvCoreInterfaces";
    */
   export class Neuron {
 
-    private neurites : Array<Neurite>; // Set of neurites
-    private properties : {[key:string]:any};
+    public neurites : Array<Neurite>; // Set of neurites
+    public properties : {[key:string]:any};
     public soma : Soma; // Cell soma
 
     private drawer : Drawer;
     private cutbox : DrawObject;
+
+    private enabled: boolean;
 
     /**
      * Neuron constructor
@@ -142,6 +144,7 @@ import{Drawer, DrawMaterialSet, DrawObject} from "./NvCoreInterfaces";
      * @return {type}                description
      */
     public draw(linear: boolean = false){
+      this.enabled = true;
       // Draw soma
       if(this.soma){
         this.soma.draw(this.drawer);
@@ -155,13 +158,13 @@ import{Drawer, DrawMaterialSet, DrawObject} from "./NvCoreInterfaces";
       }
     }
 
-
     /**
      * Draws the neuron merging all neurites in a single linesystem
      *
      * @return {Mesh}
      */
     public drawLinear(){
+      this.enabled = true;
       // Draw soma
       if(this.soma){
         this.soma.draw(this.drawer);
@@ -174,6 +177,26 @@ import{Drawer, DrawMaterialSet, DrawObject} from "./NvCoreInterfaces";
         }
       }
     }
+
+    public isEnabled(){
+      return this.enabled;
+    }
+
+    public setEnabled(v:boolean, recursive = false){
+      this.enabled=v;
+      if(this.soma){
+        this.soma.setEnabled(v);
+      }
+
+      // Draw each neurite
+      if(this.neurites){
+        for( let n of this.neurites){
+          n.setEnabled(v);
+        }
+      }
+    }
+
+
 
     public dispose(){
       for( let n of this.neurites )

@@ -38,17 +38,21 @@ var BranchElement = (function () {
      */
     BranchElement.prototype.draw = function (drawer, linear) {
         if (linear === void 0) { linear = false; }
+        if (this.nodeMesh) {
+            this.nodeMesh.dispose();
+        }
+        if (this.segmentMesh) {
+            this.segmentMesh.dispose();
+        }
         if (linear) {
-            if (this.nodeMesh) {
-                this.nodeMesh.dispose();
-                this.nodeMesh = null;
-            }
+            this.linear = true;
             if (this.prevNode) {
                 this.segmentMesh = drawer.drawLine("C" + this.node.id + "@" + this.branch.idString() + "}@" + this.branch.neurite.id, this.prevNode, this.node, this.currentColor());
             }
             this.drawn = true;
         }
         else {
+            this.linear = false;
             if (this.branch.neurite.neuron.reconstruction.drawNodeSpheres) {
                 // Create node
                 this.nodeMesh = drawer.drawSphere("N" + this.node.id + "@" + this.branch.idString() + "@" + this.branch.neurite.id, this.node, this.node.r);
@@ -58,6 +62,7 @@ var BranchElement = (function () {
                 this.segmentMesh = drawer.drawCylinder("C" + this.node.id + "@" + this.branch.idString() + "}@" + this.branch.neurite.id, this.prevNode, this.node, this.prevNode.r, this.node.r);
             // Set materials wrt status
             this.drawn = true;
+            this.enabled = true;
             this.updateMaterial();
         }
     };
@@ -80,6 +85,27 @@ var BranchElement = (function () {
     BranchElement.prototype.setStatus = function (status) {
         this.status = status;
         this.updateMaterial();
+        // Change color
+        if (this.linear && this.segmentMesh) {
+            this.segmentMesh.material.diffuseColor = this.currentColor();
+        }
+    };
+    BranchElement.prototype.isEnabled = function () {
+        if (this.segmentMesh) {
+            return this.segmentMesh.isEnabled();
+        }
+        else {
+            return false;
+        }
+    };
+    BranchElement.prototype.setEnabled = function (v) {
+        this.enabled = v;
+        if (this.segmentMesh) {
+            this.segmentMesh.setEnabled(v);
+            if (!this.linear && this.nodeMesh) {
+                this.nodeMesh.setEnabled(v);
+            }
+        }
     };
     /**
      * Gets current color
@@ -227,6 +253,14 @@ var Branch = (function () {
         }
         return null;
     };
+    Branch.prototype.isEnabled = function () {
+        return this.enabled;
+    };
+    Branch.prototype.setEnabled = function (v, recursive) {
+        if (recursive === void 0) { recursive = false; }
+        this.enabled = v;
+        this.forEachElement(function (i) { i.setEnabled(v); }, recursive);
+    };
     /**
      * Executes a function for each element in the branch
      */
@@ -260,8 +294,29 @@ var Branch = (function () {
         var idstr = "";
         idstr += this.id[0];
         for (var i = 1; i < this.id.length; ++i)
-            idstr += "_" + this.id[i];
+            idstr += "-" + this.id[i];
         return idstr;
+    };
+    Branch.prototype.subtreeSize = function () {
+        var acum = 1;
+        if (this.children) {
+            for (var _i = 0, _a = this.children; _i < _a.length; _i++) {
+                var c = _a[_i];
+                acum += c.subtreeSize();
+            }
+        }
+        return acum;
+    };
+    Branch.prototype.subtree = function () {
+        var arr = [];
+        arr.push(this);
+        if (this.children) {
+            for (var _i = 0, _a = this.children; _i < _a.length; _i++) {
+                var c = _a[_i];
+                arr = arr.concat(c.subtree());
+            }
+        }
+        return arr;
     };
     /**
      * Update the id of the branch and its descendants
@@ -338,6 +393,7 @@ var Branch = (function () {
     Branch.prototype.draw = function (drawer, recursive, linear) {
         if (recursive === void 0) { recursive = false; }
         if (linear === void 0) { linear = false; }
+        this.enabled = true;
         for (var _i = 0, _a = this.nodes; _i < _a.length; _i++) {
             var el = _a[_i];
             el.draw(drawer, linear);
@@ -355,6 +411,8 @@ var Branch = (function () {
      * @param  {Drawer} drawer Class that draws the branch
      */
     Branch.prototype.drawRoot = function (drawer) {
+        if (this.rootMesh)
+            this.rootMesh.dispose();
         if (this.root)
             this.rootMesh = drawer.drawSphere("N0@" + this.idString(), this.root, this.root.r);
     };

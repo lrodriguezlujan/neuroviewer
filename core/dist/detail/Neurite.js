@@ -45,10 +45,18 @@ var Neurite = (function () {
      */
     Neurite.prototype.draw = function (drawer, linear) {
         if (linear === void 0) { linear = false; }
+        this.enabled = true;
+        this.singleLine = false;
+        if (this.lineDrawObj)
+            this.lineDrawObj.dispose();
         if (this.firstBranch)
             this.firstBranch.draw(drawer, true, linear);
     };
     Neurite.prototype.lineDraw = function (drawer) {
+        this.enabled = true;
+        this.singleLine = true;
+        if (this.lineDrawObj)
+            this.lineDrawObj.dispose();
         if (this.firstBranch) {
             // Get neurite as a line array
             var lines = this.firstBranch.asLineArray(true);
@@ -56,12 +64,44 @@ var Neurite = (function () {
             this.lineDrawObj = drawer.drawLines(lines, color);
         }
     };
+    Neurite.prototype.getColor = function () {
+        return this.material.getStandardHexcolor();
+    };
     /**
      * Executes a function for each element in the neurite
      */
     Neurite.prototype.forEachElement = function (fn) {
         if (this.firstBranch)
             this.firstBranch.forEachElement(fn, true);
+    };
+    Neurite.prototype.branchCount = function () {
+        if (this.firstBranch) {
+            return this.firstBranch.subtreeSize();
+        }
+        else {
+            return 0;
+        }
+    };
+    Neurite.prototype.allBranches = function () {
+        if (this.firstBranch) {
+            return this.firstBranch.subtree();
+        }
+        else {
+            return [];
+        }
+    };
+    Neurite.prototype.isEnabled = function () {
+        return this.enabled;
+    };
+    Neurite.prototype.setEnabled = function (v, recursive) {
+        if (recursive === void 0) { recursive = false; }
+        this.enabled = v;
+        if (this.firstBranch) {
+            this.firstBranch.setEnabled(v, true);
+        }
+        if (this.singleLine) {
+            this.lineDrawObj.setEnabled(v);
+        }
     };
     /**
      * Auxiliar method that translates int (SWC) to neurite type

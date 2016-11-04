@@ -17,11 +17,14 @@ export interface NeuronJSON {
 export declare class Neuron {
     id: string;
     reconstruction: Reconstruction;
-    private neurites;
-    private properties;
+    neurites: Array<Neurite>;
+    properties: {
+        [key: string]: any;
+    };
     soma: Soma;
     private drawer;
     private cutbox;
+    private enabled;
     /**
      * Neuron constructor
      *
@@ -76,6 +79,8 @@ export declare class Neuron {
      * @return {Mesh}
      */
     drawLinear(): void;
+    isEnabled(): boolean;
+    setEnabled(v: boolean, recursive?: boolean): void;
     dispose(): void;
     hasCutbox(): any;
     drawCutbox(): void;

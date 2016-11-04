@@ -27,6 +27,8 @@ export class Soma {
   // Soma associated mesh
   private mesh : DrawObject;
 
+  private enabled: boolean;
+
   /**
    * Soma constructor
    *
@@ -110,7 +112,7 @@ export class Soma {
    * @param  {Drawer} drawer drawer class
    */
   public draw(drawer:Drawer){
-
+    this.enabled = true;
     if(this.mesh){
       this.mesh.dispose();
     }
@@ -129,6 +131,19 @@ export class Soma {
     }
     // Set mesh material
     this.mesh.material = this.pickMaterial();
+  }
+
+  public isEnabled(){
+    return this.enabled;
+  }
+
+  public setEnabled(v:boolean, recursive = false){
+    this.enabled=v;
+
+    if(this.mesh){
+      this.mesh.setEnabled(v);
+    }
+
   }
 
 

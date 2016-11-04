@@ -21,6 +21,9 @@ var Contour = (function () {
         this.fill = 0;
         this.resolution = 1;
     }
+    Contour.prototype.size = function () {
+        return this.points.length;
+    };
     /**
      * Changes status
      *

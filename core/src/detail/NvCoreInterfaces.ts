@@ -7,6 +7,8 @@
   export interface DrawObject {
       material: DrawMaterial;
       dispose: () => void;
+      setEnabled: (value:boolean) => void;
+      isEnabled: () => boolean;
   }; // Intended: BABYLON.AbstractMesh
 
   export enum CameraType{

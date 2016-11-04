@@ -108,6 +108,7 @@ var Neuron = (function () {
      */
     Neuron.prototype.draw = function (linear) {
         if (linear === void 0) { linear = false; }
+        this.enabled = true;
         // Draw soma
         if (this.soma) {
             this.soma.draw(this.drawer);
@@ -126,6 +127,7 @@ var Neuron = (function () {
      * @return {Mesh}
      */
     Neuron.prototype.drawLinear = function () {
+        this.enabled = true;
         // Draw soma
         if (this.soma) {
             this.soma.draw(this.drawer);
@@ -135,6 +137,23 @@ var Neuron = (function () {
             for (var _i = 0, _a = this.neurites; _i < _a.length; _i++) {
                 var n = _a[_i];
                 n.lineDraw(this.drawer);
+            }
+        }
+    };
+    Neuron.prototype.isEnabled = function () {
+        return this.enabled;
+    };
+    Neuron.prototype.setEnabled = function (v, recursive) {
+        if (recursive === void 0) { recursive = false; }
+        this.enabled = v;
+        if (this.soma) {
+            this.soma.setEnabled(v);
+        }
+        // Draw each neurite
+        if (this.neurites) {
+            for (var _i = 0, _a = this.neurites; _i < _a.length; _i++) {
+                var n = _a[_i];
+                n.setEnabled(v);
             }
         }
     };

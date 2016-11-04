@@ -32,6 +32,9 @@ import {Point3D,Drawer, DrawObject, DrawMaterial} from "./NvCoreInterfaces";
      */
     private status : Status;
 
+    private linear : boolean;
+    private enabled : boolean;
+
 
     /**
      * Draw method called flag
@@ -84,14 +87,14 @@ import {Point3D,Drawer, DrawObject, DrawMaterial} from "./NvCoreInterfaces";
         }
 
         if(linear) {
-
+          this.linear = true;
           if(this.prevNode){
             this.segmentMesh = drawer.drawLine(`C${this.node.id}@${this.branch.idString()}}@${this.branch.neurite.id}`,
                                                 this.prevNode, this.node, this.currentColor());
           }
           this.drawn = true;
         } else {
-
+          this.linear = false;
           if(this.branch.neurite.neuron.reconstruction.drawNodeSpheres){
             // Create node
             this.nodeMesh = drawer.drawSphere(`N${this.node.id}@${this.branch.idString()}@${this.branch.neurite.id}`, this.node, this.node.r );
@@ -105,6 +108,7 @@ import {Point3D,Drawer, DrawObject, DrawMaterial} from "./NvCoreInterfaces";
 
           // Set materials wrt status
           this.drawn = true;
+          this.enabled = true;
           this.updateMaterial();
         }
     }
@@ -128,6 +132,28 @@ import {Point3D,Drawer, DrawObject, DrawMaterial} from "./NvCoreInterfaces";
     public setStatus(status: Status ){
       this.status = status;
       this.updateMaterial();
+      // Change color
+      if(this.linear && this.segmentMesh){
+        this.segmentMesh.material.diffuseColor = this.currentColor();
+      }
+    }
+
+    public isEnabled(){
+      if(this.segmentMesh){
+        return this.segmentMesh.isEnabled();
+      } else{
+        return false;
+      }
+    }
+
+    public setEnabled(v:boolean){
+      this.enabled=v;
+      if(this.segmentMesh){
+        this.segmentMesh.setEnabled(v);
+        if(!this.linear && this.nodeMesh){
+          this.nodeMesh.setEnabled(v);
+        }
+      }
     }
 
     /**
@@ -215,6 +241,7 @@ export class Branch {
    * Branch descs.
    */
   private children: Array<Branch>;
+  private enabled : boolean;
 
 
   /**
@@ -304,6 +331,15 @@ export class Branch {
     return null;
   }
 
+  public isEnabled(){
+    return this.enabled;
+  }
+
+  public setEnabled(v:boolean, recursive = false){
+    this.enabled=v;
+    this.forEachElement( function(i){i.setEnabled(v);} ,recursive );
+  }
+
 
   /**
    * Executes a function for each element in the branch
@@ -340,8 +376,31 @@ export class Branch {
     let idstr = "";
     idstr+= this.id[0];
     for( let i = 1; i < this.id.length ; ++i )
-      idstr += "_" + this.id[i];
+      idstr += "-" + this.id[i];
     return idstr;
+  }
+
+  public subtreeSize(){
+    let acum = 1;
+    if(this.children){
+      for(let c of this.children){
+        acum += c.subtreeSize();
+      }
+    }
+    return acum;
+  }
+
+  public subtree(){
+    let arr =[]
+
+    arr.push(this);
+    if(this.children){
+      for(let c of this.children){
+        arr=arr.concat(c.subtree());
+      }
+    }
+
+    return arr;
   }
 
 
@@ -421,6 +480,7 @@ export class Branch {
    * @param  {bool} recursive Should branch descendants be drawn? (default: true)
    */
   public draw(drawer : Drawer, recursive = false, linear:boolean = false ){
+    this.enabled = true;
     for(let el of this.nodes){
       el.draw(drawer,linear)
     }
@@ -440,7 +500,7 @@ export class Branch {
   public drawRoot(drawer : Drawer){
     if(this.rootMesh)
       this.rootMesh.dispose();
-      
+
     if(this.root)
      this.rootMesh = drawer.drawSphere(`N0@${this.idString()}`,this.root, this.root.r );
   }

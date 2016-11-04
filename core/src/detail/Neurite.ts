@@ -39,6 +39,9 @@ import{Drawer, DrawMaterialSet, DrawObject} from "./NvCoreInterfaces";
   private firstBranch: Branch;
   private lineDrawObj : DrawObject;
 
+  private singleLine : boolean;
+  private enabled : boolean;
+
 
   /**
    * Neurite constructor
@@ -68,12 +71,19 @@ import{Drawer, DrawMaterialSet, DrawObject} from "./NvCoreInterfaces";
    * @param  {Drawer} drawer Class that draws the neurite
    */
   public draw(drawer:Drawer, linear:boolean = false){
+    this.enabled = true;
+    this.singleLine = false;
+
+    if(this.lineDrawObj)
+      this.lineDrawObj.dispose();
+
     if(this.firstBranch)
       this.firstBranch.draw(drawer,true, linear);
   }
 
   public lineDraw(drawer:Drawer){
-
+    this.enabled = true;
+    this.singleLine = true;
     if(this.lineDrawObj)
       this.lineDrawObj.dispose();
 
@@ -85,6 +95,10 @@ import{Drawer, DrawMaterialSet, DrawObject} from "./NvCoreInterfaces";
     }
   }
 
+  public getColor(){
+    return this.material.getStandardHexcolor();
+  }
+
 
   /**
    * Executes a function for each element in the neurite
@@ -92,6 +106,38 @@ import{Drawer, DrawMaterialSet, DrawObject} from "./NvCoreInterfaces";
   public forEachElement( fn:(item:BranchElement) => void){
     if(this.firstBranch)
       this.firstBranch.forEachElement(fn,true);
+  }
+
+  public branchCount(){
+    if(this.firstBranch){
+      return this.firstBranch.subtreeSize();
+    } else {
+      return 0;
+    }
+  }
+
+  public allBranches(){
+    if(this.firstBranch){
+      return this.firstBranch.subtree();
+    } else {
+      return [];
+    }
+  }
+
+  public isEnabled(){
+    return this.enabled;
+  }
+
+  public setEnabled(v:boolean, recursive = false){
+    this.enabled=v;
+    if(this.firstBranch){
+      this.firstBranch.setEnabled(v,true);
+    }
+
+    if(this.singleLine){
+      this.lineDrawObj.setEnabled(v);
+    }
+
   }
 
 

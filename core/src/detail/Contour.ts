@@ -51,6 +51,10 @@ export class Contour {
     this.resolution = 1;
   }
 
+  public size(){
+    return this.points.length;
+  }
+
   /**
    * Changes status
    *

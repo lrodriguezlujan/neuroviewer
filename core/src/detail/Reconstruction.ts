@@ -200,7 +200,11 @@ export class Reconstruction {
       for(let c of obj.contours){
         r.addContour(Contour.fromObject(c));
       }
+      // Sort reconstructions by name
+      r.contours.sort(function(a,b){ if(a.name<b.name) return -1; else if(a.name==b.name) return 0; else return 1  });
     }
+
+
 
     return r;
   }

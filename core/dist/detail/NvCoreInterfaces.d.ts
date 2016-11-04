@@ -6,6 +6,8 @@ export interface Point3D {
 export interface DrawObject {
     material: DrawMaterial;
     dispose: () => void;
+    setEnabled: (value: boolean) => void;
+    isEnabled: () => boolean;
 }
 export declare enum CameraType {
     universal = 0,

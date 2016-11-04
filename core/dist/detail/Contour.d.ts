@@ -32,6 +32,7 @@ export declare class Contour {
      * @param  {MaterialPaletteElement} m material element (optional)
      */
     constructor(points: Array<Point3D>);
+    size(): number;
     /**
      * Changes status
      *
