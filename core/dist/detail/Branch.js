@@ -111,26 +111,12 @@ var BranchElement = (function () {
      * Gets current color
      */
     BranchElement.prototype.currentColor = function () {
-        var color;
-        if (this.branch.neurite.material != null) {
-            switch (this.status) {
-                case Status_1.Status.none:
-                    return this.branch.neurite.material.standard.diffuseColor.toHexString();
-                case Status_1.Status.invisible:
-                    return this.branch.neurite.material.hidden.diffuseColor.toHexString();
-                    ;
-                case Status_1.Status.selected:
-                    return this.branch.neurite.material.emmisive.diffuseColor.toHexString();
-                    ;
-                case Status_1.Status.hidden:
-                    return this.branch.neurite.material.disminished.diffuseColor.toHexString();
-                    ;
-                case Status_1.Status.highlighted:
-                    return this.branch.neurite.material.highlight.diffuseColor.toHexString();
-                    ;
-            }
+        if (this.drawn && this.branch && this.branch.neurite) {
+            return Status_1.materialColorPicker(this.branch.neurite.material, this.status);
         }
-        return "#FFFFFF";
+        else {
+            return "#FFFFFF";
+        }
     };
     /**
      * Updates mesh material based on the status
@@ -139,30 +125,10 @@ var BranchElement = (function () {
      */
     BranchElement.prototype.updateMaterial = function () {
         if (this.drawn && this.branch && this.branch.neurite) {
-            var mat = void 0;
-            if (this.branch.neurite.material != null) {
-                switch (this.status) {
-                    case Status_1.Status.none:
-                        mat = this.branch.neurite.material.standard;
-                        break;
-                    case Status_1.Status.invisible:
-                        mat = this.branch.neurite.material.hidden;
-                        break;
-                    case Status_1.Status.selected:
-                        mat = this.branch.neurite.material.emmisive;
-                        break;
-                    case Status_1.Status.hidden:
-                        mat = this.branch.neurite.material.disminished;
-                        break;
-                    case Status_1.Status.highlighted:
-                        mat = this.branch.neurite.material.highlight;
-                        break;
-                }
+            var mat = Status_1.materialPicker(this.branch.neurite.material, this.status);
+            if (this.nodeMesh) {
+                this.nodeMesh.material = mat;
             }
-            else {
-                mat = null;
-            }
-            this.nodeMesh.material = mat;
             if (this.segmentMesh)
                 this.segmentMesh.material = mat;
         }
@@ -259,6 +225,8 @@ var Branch = (function () {
     Branch.prototype.setEnabled = function (v, recursive) {
         if (recursive === void 0) { recursive = false; }
         this.enabled = v;
+        if (this.rootMesh)
+            this.rootMesh.setEnabled(v);
         this.forEachElement(function (i) { i.setEnabled(v); }, recursive);
     };
     /**
@@ -362,6 +330,9 @@ var Branch = (function () {
         if (this.neurite) {
             this.forEachElement(function (it) { return it.updateMaterial(); }, recursive);
         }
+        if (this.rootMesh && this.neurite) {
+            this.rootMesh.material = Status_1.materialPicker(this.neurite.material, this.status);
+        }
     };
     /**
      * Changes the status of the branch
@@ -383,6 +354,9 @@ var Branch = (function () {
                     }
                 }
             }
+        if (this.rootMesh && this.neurite) {
+            this.rootMesh.material = Status_1.materialPicker(this.neurite.material, this.status);
+        }
     };
     /**
      * Draws the branch and its elements in the given Drawer

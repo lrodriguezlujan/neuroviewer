@@ -100,7 +100,7 @@ export class Contour {
     return this.enabled;
   }
 
-  public setEnabled(v:boolean, recursive = false){
+  public setEnabled(v:boolean){
     this.enabled=v;
     if(this.mesh){
       this.mesh.setEnabled(v);

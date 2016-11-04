@@ -1,6 +1,6 @@
 
 import{NodeJSON, Node3D} from "./Node3D";
-import{Status} from "./Status";
+import{Status,materialPicker} from "./Status";
 import{Drawer, DrawObject ,DrawMaterialSet} from "./NvCoreInterfaces";
 
   /**
@@ -102,7 +102,8 @@ export class Soma {
    *
    */
   private updateMaterial(){
-    if(this.mesh) this.mesh.material = this.pickMaterial();
+    if(this.mesh)
+      this.mesh.material = materialPicker(this.mat,this.status);
   }
 
 
@@ -130,7 +131,7 @@ export class Soma {
       this.mesh = drawer.merge(meshes);
     }
     // Set mesh material
-    this.mesh.material = this.pickMaterial();
+    this.mesh.material = materialPicker(this.mat,this.status);
   }
 
   public isEnabled(){
@@ -156,28 +157,6 @@ export class Soma {
     // TODO
     this.nodes = nodes;
   }
-
-
-  /**
-   * Selects the material based on teh status
-   *
-   * @return {type}  description
-   */
-  private pickMaterial(){
-    switch(this.status){
-      case Status.none:
-        return this.mat.standard;
-      case Status.invisible:
-        return this.mat.hidden;
-      case Status.selected:
-        return this.mat.emmisive;
-      case Status.hidden:
-        return this.mat.disminished;
-      case Status.highlighted:
-        return this.mat.highlight;
-    }
-  }
-
 
   /**
    * Creates a soma class from a JS object

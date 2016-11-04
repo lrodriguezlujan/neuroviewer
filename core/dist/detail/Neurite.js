@@ -1,5 +1,6 @@
 "use strict";
 var Branch_1 = require("./Branch");
+var Status_1 = require("./Status");
 /**
  * Neurite Type enum
  */
@@ -28,6 +29,7 @@ var Neurite = (function () {
         this.type = type;
         this.material = material;
         this.neuron = neuron;
+        this.status = Status_1.Status.none;
     }
     /**
      * Changes neurite root branch
@@ -123,10 +125,18 @@ var Neurite = (function () {
      *
      * @param  {MaterialPaletteElement} mat New material
      */
-    Neurite.prototype.updateMaterial = function (mat) {
+    Neurite.prototype.updateMaterial = function (mat, propagate) {
+        if (propagate === void 0) { propagate = true; }
         this.material = mat;
-        if (this.firstBranch) {
-            this.firstBranch.updateMaterial(true);
+        if (!this.lineDraw) {
+            if (this.firstBranch && propagate) {
+                this.firstBranch.updateMaterial(true);
+            }
+        }
+        else {
+            if (this.lineDrawObj) {
+                this.lineDrawObj.material.diffuseColor = Status_1.materialColorPicker(this.material, this.status);
+            }
         }
     };
     /**
@@ -137,7 +147,10 @@ var Neurite = (function () {
      */
     Neurite.prototype.setStatus = function (status, propagate) {
         if (propagate === void 0) { propagate = true; }
-        this.firstBranch.setStatus(status, propagate);
+        this.status = status;
+        if (!this.lineDraw && this.firstBranch)
+            this.firstBranch.setStatus(status, propagate);
+        this.updateMaterial(this.material, false);
     };
     /**
      * Creates a new Neurite from a JS object

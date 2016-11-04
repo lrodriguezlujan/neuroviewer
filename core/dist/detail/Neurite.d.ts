@@ -36,6 +36,7 @@ export declare class Neurite {
     private lineDrawObj;
     private singleLine;
     private enabled;
+    private status;
     /**
      * Neurite constructor
      *
@@ -78,7 +79,7 @@ export declare class Neurite {
      *
      * @param  {MaterialPaletteElement} mat New material
      */
-    updateMaterial(mat: DrawMaterialSet): void;
+    updateMaterial(mat: DrawMaterialSet, propagate?: boolean): void;
     /**
      * Changes the status
      *

@@ -54,7 +54,7 @@ export declare class Contour {
      */
     draw(drawer: Drawer): void;
     isEnabled(): boolean;
-    setEnabled(v: boolean, recursive?: boolean): void;
+    setEnabled(v: boolean): void;
     dispose(): void;
     /**
      * Creates a soma class from a JS object

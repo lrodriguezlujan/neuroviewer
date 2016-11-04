@@ -1,5 +1,5 @@
 import {NodeJSON, Node3D} from "./Node3D";
-import {Status} from "./Status";
+import {Status,materialPicker,materialColorPicker} from "./Status";
 import {Neurite} from "./Neurite";
 import {Point3D,Drawer, DrawObject, DrawMaterial} from "./NvCoreInterfaces";
 
@@ -160,23 +160,12 @@ import {Point3D,Drawer, DrawObject, DrawMaterial} from "./NvCoreInterfaces";
      * Gets current color
      */
      public currentColor() {
-       let color : string;
-       if( this.branch.neurite.material != null){
-         switch(this.status){
-           case Status.none:
-             return this.branch.neurite.material.standard.diffuseColor.toHexString();
-           case Status.invisible:
-             return this.branch.neurite.material.hidden.diffuseColor.toHexString();;
-           case Status.selected:
-             return this.branch.neurite.material.emmisive.diffuseColor.toHexString();;
-           case Status.hidden:
-             return this.branch.neurite.material.disminished.diffuseColor.toHexString();;
-           case Status.highlighted:
-             return this.branch.neurite.material.highlight.diffuseColor.toHexString();;
-         }
+       if(this.drawn && this.branch && this.branch.neurite){
+         return materialColorPicker(this.branch.neurite.material,this.status);
+       } else {
+         return "#FFFFFF";
+       }
      }
-     return "#FFFFFF";
-   }
 
 
 
@@ -187,29 +176,12 @@ import {Point3D,Drawer, DrawObject, DrawMaterial} from "./NvCoreInterfaces";
      */
     public updateMaterial(){
       if(this.drawn && this.branch && this.branch.neurite){
-        let mat :DrawMaterial;
-        if( this.branch.neurite.material != null){
-          switch(this.status){
-            case Status.none:
-              mat = this.branch.neurite.material.standard;
-              break;
-            case Status.invisible:
-              mat = this.branch.neurite.material.hidden;
-              break;
-            case Status.selected:
-              mat = this.branch.neurite.material.emmisive;
-              break;
-            case Status.hidden:
-              mat = this.branch.neurite.material.disminished;
-              break;
-            case Status.highlighted:
-              mat = this.branch.neurite.material.highlight;
-              break;
-          }
-        } else {
-          mat = null;
+        let mat = materialPicker(this.branch.neurite.material,this.status);
+
+        if(this.nodeMesh){
+          this.nodeMesh.material = mat;
         }
-        this.nodeMesh.material = mat;
+
         if(this.segmentMesh)
           this.segmentMesh.material = mat;
       }
@@ -337,6 +309,9 @@ export class Branch {
 
   public setEnabled(v:boolean, recursive = false){
     this.enabled=v;
+    if(this.rootMesh)
+      this.rootMesh.setEnabled(v);
+
     this.forEachElement( function(i){i.setEnabled(v);} ,recursive );
   }
 
@@ -449,6 +424,9 @@ export class Branch {
     if (this.neurite){
       this.forEachElement( (it) => it.updateMaterial(),recursive);
     }
+    if(this.rootMesh && this.neurite){
+      this.rootMesh.material = materialPicker(this.neurite.material,this.status);
+    }
   }
 
 
@@ -469,6 +447,9 @@ export class Branch {
             c.setStatus(status,propagate)
           }
         }
+    }
+    if(this.rootMesh && this.neurite){
+      this.rootMesh.material = materialPicker(this.neurite.material,this.status);
     }
   }
 

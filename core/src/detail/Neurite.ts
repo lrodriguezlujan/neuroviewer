@@ -1,7 +1,7 @@
 import{BranchJSON, Branch, BranchElement} from "./Branch";
 import{Node3D} from "./Node3D";
 import{Neuron} from "./Neuron";
-import{Status} from "./Status";
+import{Status,materialColorPicker} from "./Status";
 import{Drawer, DrawMaterialSet, DrawObject} from "./NvCoreInterfaces";
 
 
@@ -41,6 +41,7 @@ import{Drawer, DrawMaterialSet, DrawObject} from "./NvCoreInterfaces";
 
   private singleLine : boolean;
   private enabled : boolean;
+  private status = Status.none;
 
 
   /**
@@ -163,10 +164,16 @@ import{Drawer, DrawMaterialSet, DrawObject} from "./NvCoreInterfaces";
    *
    * @param  {MaterialPaletteElement} mat New material
    */
-  public updateMaterial(mat:DrawMaterialSet){
+  public updateMaterial(mat:DrawMaterialSet, propagate = true){
     this.material = mat;
-    if(this.firstBranch){
-      this.firstBranch.updateMaterial(true);
+    if(!this.lineDraw){
+      if(this.firstBranch && propagate){
+        this.firstBranch.updateMaterial(true);
+      }
+    } else {
+      if(this.lineDrawObj){
+        this.lineDrawObj.material.diffuseColor = materialColorPicker(this.material, this.status);
+      }
     }
   }
 
@@ -178,7 +185,11 @@ import{Drawer, DrawMaterialSet, DrawObject} from "./NvCoreInterfaces";
    * @param  {bool} propagate @see Branch.setStatus (default: true)
    */
   public setStatus(status: Status, propagate = true ){
-    this.firstBranch.setStatus(status,propagate);
+    this.status = status;
+    if (!this.lineDraw && this.firstBranch)
+      this.firstBranch.setStatus(status,propagate);
+
+    this.updateMaterial(this.material,false);
   }
 
 

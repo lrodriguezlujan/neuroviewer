@@ -1,6 +1,7 @@
 import { BranchElement } from "./Branch";
 import { Soma, SomaJSON } from "./Soma";
 import { Neurite, NeuriteJSON } from "./Neurite";
+import { Status } from "./Status";
 import { Reconstruction } from "./Reconstruction";
 import { Drawer } from "./NvCoreInterfaces";
 export interface NeuronJSON {
@@ -25,6 +26,7 @@ export declare class Neuron {
     private drawer;
     private cutbox;
     private enabled;
+    private status;
     /**
      * Neuron constructor
      *
@@ -39,6 +41,7 @@ export declare class Neuron {
     addNeurite(n: Neurite): void;
     attachDrawer(drawer: Drawer): void;
     private updateMaterials();
+    setStatus(s: Status): void;
     /**
      * Adds a property to the neuron
      *

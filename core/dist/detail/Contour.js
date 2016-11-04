@@ -56,8 +56,7 @@ var Contour = (function () {
     Contour.prototype.isEnabled = function () {
         return this.enabled;
     };
-    Contour.prototype.setEnabled = function (v, recursive) {
-        if (recursive === void 0) { recursive = false; }
+    Contour.prototype.setEnabled = function (v) {
         this.enabled = v;
         if (this.mesh) {
             this.mesh.setEnabled(v);

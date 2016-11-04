@@ -73,7 +73,7 @@ var Soma = (function () {
      */
     Soma.prototype.updateMaterial = function () {
         if (this.mesh)
-            this.mesh.material = this.pickMaterial();
+            this.mesh.material = Status_1.materialPicker(this.mat, this.status);
     };
     /**
      * Draws the soma in the drawer
@@ -97,7 +97,7 @@ var Soma = (function () {
             this.mesh = drawer.merge(meshes);
         }
         // Set mesh material
-        this.mesh.material = this.pickMaterial();
+        this.mesh.material = Status_1.materialPicker(this.mat, this.status);
     };
     Soma.prototype.isEnabled = function () {
         return this.enabled;
@@ -117,25 +117,6 @@ var Soma = (function () {
     Soma.prototype.convexHull3D = function (nodes) {
         // TODO
         this.nodes = nodes;
-    };
-    /**
-     * Selects the material based on teh status
-     *
-     * @return {type}  description
-     */
-    Soma.prototype.pickMaterial = function () {
-        switch (this.status) {
-            case Status_1.Status.none:
-                return this.mat.standard;
-            case Status_1.Status.invisible:
-                return this.mat.hidden;
-            case Status_1.Status.selected:
-                return this.mat.emmisive;
-            case Status_1.Status.hidden:
-                return this.mat.disminished;
-            case Status_1.Status.highlighted:
-                return this.mat.highlight;
-        }
     };
     /**
      * Creates a soma class from a JS object

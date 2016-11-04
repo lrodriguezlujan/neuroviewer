@@ -31,6 +31,7 @@ import{Drawer, DrawMaterialSet, DrawObject} from "./NvCoreInterfaces";
     private cutbox : DrawObject;
 
     private enabled: boolean;
+    private status = Status.none;
 
     /**
      * Neuron constructor
@@ -72,6 +73,18 @@ import{Drawer, DrawMaterialSet, DrawObject} from "./NvCoreInterfaces";
           n.updateMaterial(this.drawer.palette.get(n.id));
         }
       }
+    }
+
+    public setStatus(s:Status){
+      this.status = s;
+        if(this.soma){
+          this.soma.setStatus(s);
+        }
+        if(this.neurites){
+          for(let n of this.neurites) {
+            n.setStatus(s);
+          }
+        }
     }
 
     /**

@@ -73,12 +73,6 @@ export declare class Soma {
      */
     private convexHull3D(nodes);
     /**
-     * Selects the material based on teh status
-     *
-     * @return {type}  description
-     */
-    private pickMaterial();
-    /**
      * Creates a soma class from a JS object
      *
      * @param  {SomaJSON} obj             JS object

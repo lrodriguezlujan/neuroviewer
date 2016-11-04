@@ -1,6 +1,7 @@
 "use strict";
 var Soma_1 = require("./Soma");
 var Neurite_1 = require("./Neurite");
+var Status_1 = require("./Status");
 ;
 /**
  * Neuron model class
@@ -14,6 +15,7 @@ var Neuron = (function () {
     function Neuron(id, reconstruction) {
         this.id = id;
         this.reconstruction = reconstruction;
+        this.status = Status_1.Status.none;
         this.neurites = [];
         this.properties = {};
     }
@@ -42,6 +44,18 @@ var Neuron = (function () {
             for (var _i = 0, _a = this.neurites; _i < _a.length; _i++) {
                 var n = _a[_i];
                 n.updateMaterial(this.drawer.palette.get(n.id));
+            }
+        }
+    };
+    Neuron.prototype.setStatus = function (s) {
+        this.status = s;
+        if (this.soma) {
+            this.soma.setStatus(s);
+        }
+        if (this.neurites) {
+            for (var _i = 0, _a = this.neurites; _i < _a.length; _i++) {
+                var n = _a[_i];
+                n.setStatus(s);
             }
         }
     };
