@@ -14,10 +14,27 @@ export class NeuronControlPanel  extends ControlPanel {
 
     //this.createCameraOptions();
     //this.createRendererOptions();
+    //
+    // // TEST
+    this.contentDiv.appendChild(this.createContourSection());
 
     // Default size and position
     this.move(310,50);
     this.resize(300);
+  }
+
+  private createContourSection(){
+    let parent = ControlPanel.createSet("contours");
+    parent.appendChild(ControlPanel.createLegend("Contours"));
+
+    let list = ControlPanel.createBoxList("test_list",[
+      ControlPanel.createBoxListItem("testA","Regular item",false, null),
+      ControlPanel.createBoxListItem("testB","Expand",false, null, document.createElement("dummy") , 10, "#880000")
+    ])
+
+    parent.appendChild(list);
+
+    return parent;
   }
 
 

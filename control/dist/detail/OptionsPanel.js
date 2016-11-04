@@ -98,7 +98,7 @@ var OptionsControlPanel = (function (_super) {
             var element = ev.srcElement;
             _this.parent.reconstruction.linearDrawing = element.checked;
         };
-        parent.appendChild(ControlPanel_1.ControlPanel.createSimpleCBInput("plot_linear", "Linear rendering", this.parent.reconstruction.linearDrawing, ignore_cb));
+        parent.appendChild(ControlPanel_1.ControlPanel.createSimpleCBInput("plot_linear", "Linear rendering", this.parent.reconstruction.linearDrawing, linear_cb));
         var node_cb = function (ev) {
             var element = ev.srcElement;
             _this.parent.reconstruction.drawNodeSpheres = element.checked;

@@ -13,10 +13,23 @@ var NeuronControlPanel = (function (_super) {
         this.panelDiv.classList.add("neuronPanel");
         //this.createCameraOptions();
         //this.createRendererOptions();
+        //
+        // // TEST
+        this.contentDiv.appendChild(this.createContourSection());
         // Default size and position
         this.move(310, 50);
         this.resize(300);
     }
+    NeuronControlPanel.prototype.createContourSection = function () {
+        var parent = ControlPanel_1.ControlPanel.createSet("contours");
+        parent.appendChild(ControlPanel_1.ControlPanel.createLegend("Contours"));
+        var list = ControlPanel_1.ControlPanel.createBoxList("test_list", [
+            ControlPanel_1.ControlPanel.createBoxListItem("testA", "Regular item", false, null),
+            ControlPanel_1.ControlPanel.createBoxListItem("testB", "Expand", false, null, document.createElement("dummy"), 10, "#880000")
+        ]);
+        parent.appendChild(list);
+        return parent;
+    };
     NeuronControlPanel.neuron_name = "Reconstruction";
     return NeuronControlPanel;
 }(ControlPanel_1.ControlPanel));

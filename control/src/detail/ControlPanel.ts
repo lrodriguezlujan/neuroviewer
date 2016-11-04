@@ -255,6 +255,69 @@ export class ControlPanel {
     return input;
   }
 
+  protected static createBoxList(id:string, elements : Array<HTMLElement> ){
+    let div = document.createElement("div");
+    div.classList.add("list-group");
+
+    for( let el of elements ){
+      div.appendChild(el);
+    }
+
+    return div;
+  }
+
+  protected static createBoxListItem(id: string, label:string, checked: boolean, cb : (ev:Event) => any, desc?:HTMLElement, nitems?:number, badgeBgColor?: string){
+    let div = document.createElement("div");
+    div.classList.add("input-group");
+    div.id = id+"_inputgroup";
+
+    // Create left box
+    let cb_span = document.createElement("span");
+    cb_span.classList.add("input-group-addon");
+    //cb_span.classList.add("beautiful");
+
+    // Add checkbox
+    let cbox = document.createElement("input");
+    cbox.type="checkbox";
+    cbox.id = id;
+    cbox.checked=checked;
+    cbox.onchange=cb;
+    cb_span.appendChild(cbox);
+    div.appendChild(cb_span);
+
+    // Add label + collapse stuff
+    let inner_div = document.createElement("div");
+    inner_div.classList.add("form-control");
+
+
+
+    if(desc){
+      let expand = ControlPanel.createGlyphicon("glyphicon-plus");
+      expand.style.paddingRight = "5px";
+      expand.style.cursor = "hand";
+      inner_div.appendChild(expand)
+      inner_div.classList.add("collapsible_boxlist_item");
+
+      //TODO
+    }
+    // Add text
+    inner_div.appendChild( document.createTextNode(label) );
+
+    if(nitems){
+      let badge = document.createElement("span");
+      badge.classList.add("badge")
+      badge.appendChild(document.createTextNode(nitems.toString()));
+      if(badgeBgColor){
+        badge.style.backgroundColor = badgeBgColor;
+      }
+      badge.style.cssFloat = "right";
+      inner_div.appendChild(badge);
+    }
+
+    div.appendChild(inner_div);
+    return div;
+  }
+
   protected static createLabelTag(id:string, text:string){
     let label = document.createElement("label");
     label.htmlFor = id;

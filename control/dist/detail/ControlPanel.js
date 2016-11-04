@@ -193,6 +193,54 @@ var ControlPanel = (function () {
             input.value = value;
         return input;
     };
+    ControlPanel.createBoxList = function (id, elements) {
+        var div = document.createElement("div");
+        div.classList.add("list-group");
+        for (var _i = 0, elements_1 = elements; _i < elements_1.length; _i++) {
+            var el = elements_1[_i];
+            div.appendChild(el);
+        }
+        return div;
+    };
+    ControlPanel.createBoxListItem = function (id, label, checked, cb, desc, nitems, badgeBgColor) {
+        var div = document.createElement("div");
+        div.classList.add("input-group");
+        div.id = id + "_inputgroup";
+        // Create left box
+        var cb_span = document.createElement("span");
+        cb_span.classList.add("input-group-addon");
+        //cb_span.classList.add("beautiful");
+        // Add checkbox
+        var cbox = document.createElement("input");
+        cbox.type = "checkbox";
+        cbox.id = id;
+        cbox.checked = checked;
+        cbox.onchange = cb;
+        cb_span.appendChild(cbox);
+        div.appendChild(cb_span);
+        // Add label + collapse stuff
+        var inner_div = document.createElement("div");
+        inner_div.classList.add("form-control");
+        // Add text
+        inner_div.appendChild(document.createTextNode(label));
+        if (desc) {
+            var expand = ControlPanel.createGlyphicon("glyphicon-plus");
+            inner_div.appendChild(expand);
+            inner_div.classList.add("collapsible_boxlist_item");
+        }
+        if (nitems) {
+            var badge = document.createElement("span");
+            badge.classList.add("badge");
+            badge.appendChild(document.createTextNode(nitems.toString()));
+            if (badgeBgColor) {
+                badge.style.backgroundColor = badgeBgColor;
+            }
+            badge.style.cssFloat = "right";
+            inner_div.appendChild(badge);
+        }
+        div.appendChild(inner_div);
+        return div;
+    };
     ControlPanel.createLabelTag = function (id, text) {
         var label = document.createElement("label");
         label.htmlFor = id;
