@@ -27,7 +27,7 @@ gulp.task('copy:vendor', function(){
   ]).pipe(gulp.dest('./dist/vendor'));
 });
 
-gulp.task('copy:static', function(){
+gulp.task('copy:css', function(){
   return gulp.src([
     'static/css/*',
     'node_modules/bootstrap/dist/css/bootstrap.min.css',
@@ -35,6 +35,12 @@ gulp.task('copy:static', function(){
   ]).pipe(gulp.dest('./dist/static/css'));
 });
 
+gulp.task('copy:fonts', function(){
+  return gulp.src([
+    'node_modules/bootstrap/dist/fonts/*'
+  ]).pipe(gulp.dest('./dist/static/fonts'));
+});
+
 gulp.task('copy', function(done){
-    return runSeq(['copy:package','copy:vendor', 'copy:static'], done);
+    return runSeq(['copy:package','copy:vendor', 'copy:fonts', 'copy:css'], done);
 });

@@ -76,3 +76,10 @@ legend{
 .controlContent input {
   max-width:  100px;
 }
+
+.collapse_icon{
+  float:left;
+  padding-left: 10px;
+  padding-top: 3px;
+  font-size: x-large;
+}
