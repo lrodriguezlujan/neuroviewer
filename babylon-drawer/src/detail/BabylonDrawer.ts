@@ -41,13 +41,17 @@ import {BabylonMaterialPalette} from "./BabylonPalette";
     protected lights: Array<BABYLON.Light>;
 
     // loop callback function
-    protected loopCallbackFunction: (instance:Drawer) => void;
+    protected loopCallbackFunction: Array<(instance:Drawer) => void> = [];
 
     /**
     * Set loop function to be called before rendering
     **/
-    public setLoopFunction(fn:(instance:Drawer) => void){
-      this.loopCallbackFunction = fn;
+    public addLoopFunction(fn:(instance:Drawer) => void){
+      this.loopCallbackFunction.push(fn);
+    }
+
+    public clearLoopFunctions() {
+      this.loopCallbackFunction = [];
     }
 
     // Scene scaling
@@ -99,7 +103,9 @@ import {BabylonMaterialPalette} from "./BabylonPalette";
       this.lights.push(spot);
 
       this.engine.runRenderLoop( () => {
-        if(this.loopCallbackFunction) this.loopCallbackFunction(this);
+        for(let fn of this.loopCallbackFunction){
+          fn(this);
+        }
         // Control camera limits
         if(this.config.camera.type == CameraType.universal){
           BabylonDrawer.cameraLimits(this.camera);
@@ -318,6 +324,13 @@ import {BabylonMaterialPalette} from "./BabylonPalette";
     public setCameraWheelSensibility(v : number){
       if(this.camera && this.getCameraType() == CameraType.pivot) {
         (<BABYLON.ArcRotateCamera>(this.camera)).wheelPrecision = v;
+      }
+    }
+
+    public cameraAddRotation(alphaDelta:number,betaDelta:number) {
+      if(this.camera && this.getCameraType() == CameraType.pivot) {
+        (<BABYLON.ArcRotateCamera>(this.camera)).alpha += alphaDelta;
+        (<BABYLON.ArcRotateCamera>(this.camera)).beta += betaDelta;
       }
     }
 

@@ -10,6 +10,8 @@ var BabylonDrawer = (function () {
         if (cfg === void 0) { cfg = babylonConfigs.default_config; }
         this.canvas = canvas;
         this.initialized = false;
+        // loop callback function
+        this.loopCallbackFunction = [];
         // Scene scaling
         this.sceneScaling = 1;
         // TODO: Expand default config with cfg
@@ -19,8 +21,11 @@ var BabylonDrawer = (function () {
     /**
     * Set loop function to be called before rendering
     **/
-    BabylonDrawer.prototype.setLoopFunction = function (fn) {
-        this.loopCallbackFunction = fn;
+    BabylonDrawer.prototype.addLoopFunction = function (fn) {
+        this.loopCallbackFunction.push(fn);
+    };
+    BabylonDrawer.prototype.clearLoopFunctions = function () {
+        this.loopCallbackFunction = [];
     };
     /**
     * Initialize the drawer. Note that the object can be constructer but not initialized
@@ -57,8 +62,10 @@ var BabylonDrawer = (function () {
         spot.intensity = 0.8;
         this.lights.push(spot);
         this.engine.runRenderLoop(function () {
-            if (_this.loopCallbackFunction)
-                _this.loopCallbackFunction(_this);
+            for (var _i = 0, _a = _this.loopCallbackFunction; _i < _a.length; _i++) {
+                var fn = _a[_i];
+                fn(_this);
+            }
             // Control camera limits
             if (_this.config.camera.type == core_1.CameraType.universal) {
                 BabylonDrawer.cameraLimits(_this.camera);
@@ -249,6 +256,12 @@ var BabylonDrawer = (function () {
     BabylonDrawer.prototype.setCameraWheelSensibility = function (v) {
         if (this.camera && this.getCameraType() == core_1.CameraType.pivot) {
             (this.camera).wheelPrecision = v;
+        }
+    };
+    BabylonDrawer.prototype.cameraAddRotation = function (alphaDelta, betaDelta) {
+        if (this.camera && this.getCameraType() == core_1.CameraType.pivot) {
+            (this.camera).alpha += alphaDelta;
+            (this.camera).beta += betaDelta;
         }
     };
     BabylonDrawer.prototype.visibleGrid = function () {

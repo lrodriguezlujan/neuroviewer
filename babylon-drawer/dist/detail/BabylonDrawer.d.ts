@@ -18,11 +18,12 @@ export declare class BabylonDrawer implements Drawer {
     protected octtree: BABYLON.Octree<BABYLON.AbstractMesh>;
     protected camera: BABYLON.TargetCamera;
     protected lights: Array<BABYLON.Light>;
-    protected loopCallbackFunction: (instance: Drawer) => void;
+    protected loopCallbackFunction: Array<(instance: Drawer) => void>;
     /**
     * Set loop function to be called before rendering
     **/
-    setLoopFunction(fn: (instance: Drawer) => void): void;
+    addLoopFunction(fn: (instance: Drawer) => void): void;
+    clearLoopFunctions(): void;
     protected sceneScaling: number;
     protected grid: Array<BABYLON.AbstractMesh>;
     /**
@@ -70,6 +71,7 @@ export declare class BabylonDrawer implements Drawer {
     setCameraPanSensibility(v: number): void;
     getCameraWheelSensibility(): number;
     setCameraWheelSensibility(v: number): void;
+    cameraAddRotation(alphaDelta: number, betaDelta: number): void;
     visibleGrid(): boolean;
     showGrid(v: boolean): void;
     createGrid(cfg: babylonConfigs.GridConfig): void;
