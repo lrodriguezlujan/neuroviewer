@@ -7,7 +7,15 @@
   export interface DrawObject {
       material: DrawMaterial;
       dispose: () => void;
+      setEnabled: (value:boolean) => void;
+      isEnabled: () => boolean;
+      color?: DrawColor;
   }; // Intended: BABYLON.AbstractMesh
+
+  export enum CameraType{
+    universal,
+    pivot
+  };
 
   export interface Drawer {
       palette: DrawMaterialPalette;
@@ -19,10 +27,62 @@
       drawLines: (lines: Array<Array<Point3D>>, color: string) => DrawObject;
       drawLine: (id: string, source: Point3D, target: Point3D, color: string) => DrawObject;
       dispose: () => void;
+
+      // Add loop function
+      addLoopFunction: ( fn: (d:Drawer) => void ) => void;
+      clearLoopFunctions: () => void;
+
+      // optimize
+      optimize: (level?:number,cb?:()=>any) => any;
+
+
+      // Control adds
+      getCanvasPosition: () => Array<number>;
+      getCanvasSize: () => Array<number>;
+      attachResizeListener: ( fn:() => void ) => void;
+
+      // Camera Control
+
+      getCameraType: () => CameraType;
+      setCameraType: (type:CameraType) => void;
+
+      getCameraSpeed: () => number;
+      setCameraSpeed: (sp : number) => void;
+
+      getCameraInertia: () => number;
+      setCameraInertia: (inertia : number) => void;
+
+      getCameraPanSensibility: () => number;
+      setCameraPanSensibility: (v : number) => void;
+
+      getCameraWheelSensibility: () => number;
+      setCameraWheelSensibility: (v : number) => void;
+
+      resetCamera : () => void;
+
+      // Rtoate camera (for arc rotate camera)
+      cameraAddRotation: (alphaDelta:number,betaDelta:number) => void;
+
+      // Draw Control
+      setCircularSegmentsCount: (v:number) => void;
+      getCircularSegmentsCount: () => void;
+      showGrid: (v:boolean) => void;
+      visibleGrid: () => boolean;
+      normalizeScene: () => void;
+
+      // Get color from hex
+      colorFormHex: (color:string) => DrawColor;
+
   }; // Intended: NvDraw.BabylonDrawer
 
+  export interface DrawColor {
+    toHexString: () => string;
+  };
+
   export interface DrawMaterial {
-    diffuseColor?: any;
+    diffuseColor?: DrawColor,
+
+    markDirty(): any;
   };
 
   export interface DrawMaterialSet{

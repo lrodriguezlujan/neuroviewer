@@ -1,6 +1,7 @@
 "use strict";
 var Soma_1 = require("./Soma");
 var Neurite_1 = require("./Neurite");
+var Status_1 = require("./Status");
 ;
 /**
  * Neuron model class
@@ -11,8 +12,10 @@ var Neuron = (function () {
      *
      * @param  {string} id Neuron unique name
      */
-    function Neuron(id) {
+    function Neuron(id, reconstruction) {
         this.id = id;
+        this.reconstruction = reconstruction;
+        this.status = Status_1.Status.none;
         this.neurites = [];
         this.properties = {};
     }
@@ -41,6 +44,21 @@ var Neuron = (function () {
             for (var _i = 0, _a = this.neurites; _i < _a.length; _i++) {
                 var n = _a[_i];
                 n.updateMaterial(this.drawer.palette.get(n.id));
+            }
+        }
+    };
+    Neuron.prototype.getDrawer = function () {
+        return this.drawer;
+    };
+    Neuron.prototype.setStatus = function (s) {
+        this.status = s;
+        if (this.soma) {
+            this.soma.setStatus(s);
+        }
+        if (this.neurites) {
+            for (var _i = 0, _a = this.neurites; _i < _a.length; _i++) {
+                var n = _a[_i];
+                n.setStatus(s);
             }
         }
     };
@@ -107,6 +125,7 @@ var Neuron = (function () {
      */
     Neuron.prototype.draw = function (linear) {
         if (linear === void 0) { linear = false; }
+        this.enabled = true;
         // Draw soma
         if (this.soma) {
             this.soma.draw(this.drawer);
@@ -125,6 +144,7 @@ var Neuron = (function () {
      * @return {Mesh}
      */
     Neuron.prototype.drawLinear = function () {
+        this.enabled = true;
         // Draw soma
         if (this.soma) {
             this.soma.draw(this.drawer);
@@ -137,7 +157,25 @@ var Neuron = (function () {
             }
         }
     };
+    Neuron.prototype.isEnabled = function () {
+        return this.enabled;
+    };
+    Neuron.prototype.setEnabled = function (v, recursive) {
+        if (recursive === void 0) { recursive = false; }
+        this.enabled = v;
+        if (this.soma) {
+            this.soma.setEnabled(v);
+        }
+        // Draw each neurite
+        if (this.neurites) {
+            for (var _i = 0, _a = this.neurites; _i < _a.length; _i++) {
+                var n = _a[_i];
+                n.setEnabled(v);
+            }
+        }
+    };
     Neuron.prototype.dispose = function () {
+        this.enabled = false;
         for (var _i = 0, _a = this.neurites; _i < _a.length; _i++) {
             var n = _a[_i];
             n.dispose();

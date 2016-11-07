@@ -1,6 +1,8 @@
 import { BranchElement } from "./Branch";
 import { Soma, SomaJSON } from "./Soma";
 import { Neurite, NeuriteJSON } from "./Neurite";
+import { Status } from "./Status";
+import { Reconstruction } from "./Reconstruction";
 import { Drawer } from "./NvCoreInterfaces";
 export interface NeuronJSON {
     id: string;
@@ -15,17 +17,22 @@ export interface NeuronJSON {
  */
 export declare class Neuron {
     id: string;
-    private neurites;
-    private properties;
+    reconstruction: Reconstruction;
+    neurites: Array<Neurite>;
+    properties: {
+        [key: string]: any;
+    };
     soma: Soma;
     private drawer;
     private cutbox;
+    private enabled;
+    private status;
     /**
      * Neuron constructor
      *
      * @param  {string} id Neuron unique name
      */
-    constructor(id: string);
+    constructor(id: string, reconstruction?: Reconstruction);
     /**
      * Adds a neurite
      *
@@ -34,6 +41,8 @@ export declare class Neuron {
     addNeurite(n: Neurite): void;
     attachDrawer(drawer: Drawer): void;
     private updateMaterials();
+    getDrawer(): Drawer;
+    setStatus(s: Status): void;
     /**
      * Adds a property to the neuron
      *
@@ -74,6 +83,8 @@ export declare class Neuron {
      * @return {Mesh}
      */
     drawLinear(): void;
+    isEnabled(): boolean;
+    setEnabled(v: boolean, recursive?: boolean): void;
     dispose(): void;
     hasCutbox(): any;
     drawCutbox(): void;

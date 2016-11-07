@@ -2,6 +2,7 @@ import{Branch, BranchElement} from "./Branch";
 import{Soma,SomaJSON} from "./Soma";
 import{Neurite,NeuriteJSON} from "./Neurite";
 import{Status} from "./Status";
+import{Reconstruction} from "./Reconstruction";
 import{Drawer, DrawMaterialSet, DrawObject} from "./NvCoreInterfaces";
 
   //
@@ -22,19 +23,22 @@ import{Drawer, DrawMaterialSet, DrawObject} from "./NvCoreInterfaces";
    */
   export class Neuron {
 
-    private neurites : Array<Neurite>; // Set of neurites
-    private properties : {[key:string]:any};
+    public neurites : Array<Neurite>; // Set of neurites
+    public properties : {[key:string]:any};
     public soma : Soma; // Cell soma
 
     private drawer : Drawer;
     private cutbox : DrawObject;
+
+    private enabled: boolean;
+    private status = Status.none;
 
     /**
      * Neuron constructor
      *
      * @param  {string} id Neuron unique name
      */
-    constructor( public id:string ){
+    constructor( public id:string, public reconstruction?:Reconstruction ){
       this.neurites = [];
       this.properties = {};
     }
@@ -69,6 +73,22 @@ import{Drawer, DrawMaterialSet, DrawObject} from "./NvCoreInterfaces";
           n.updateMaterial(this.drawer.palette.get(n.id));
         }
       }
+    }
+
+    public getDrawer() {
+      return this.drawer;
+    }
+
+    public setStatus(s:Status){
+      this.status = s;
+        if(this.soma){
+          this.soma.setStatus(s);
+        }
+        if(this.neurites){
+          for(let n of this.neurites) {
+            n.setStatus(s);
+          }
+        }
     }
 
     /**
@@ -141,6 +161,7 @@ import{Drawer, DrawMaterialSet, DrawObject} from "./NvCoreInterfaces";
      * @return {type}                description
      */
     public draw(linear: boolean = false){
+      this.enabled = true;
       // Draw soma
       if(this.soma){
         this.soma.draw(this.drawer);
@@ -154,13 +175,13 @@ import{Drawer, DrawMaterialSet, DrawObject} from "./NvCoreInterfaces";
       }
     }
 
-
     /**
      * Draws the neuron merging all neurites in a single linesystem
      *
-     * @return {Mesh}  
+     * @return {Mesh}
      */
     public drawLinear(){
+      this.enabled = true;
       // Draw soma
       if(this.soma){
         this.soma.draw(this.drawer);
@@ -174,7 +195,28 @@ import{Drawer, DrawMaterialSet, DrawObject} from "./NvCoreInterfaces";
       }
     }
 
+    public isEnabled(){
+      return this.enabled;
+    }
+
+    public setEnabled(v:boolean, recursive = false){
+      this.enabled=v;
+      if(this.soma){
+        this.soma.setEnabled(v);
+      }
+
+      // Draw each neurite
+      if(this.neurites){
+        for( let n of this.neurites){
+          n.setEnabled(v);
+        }
+      }
+    }
+
+
+
     public dispose(){
+      this.enabled = false;
       for( let n of this.neurites )
         n.dispose();
     }

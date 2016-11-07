@@ -1,7 +1,7 @@
 import{BranchJSON, Branch, BranchElement} from "./Branch";
 import{Node3D} from "./Node3D";
 import{Neuron} from "./Neuron";
-import{Status} from "./Status";
+import{Status,materialColorPicker} from "./Status";
 import{Drawer, DrawMaterialSet, DrawObject} from "./NvCoreInterfaces";
 
 
@@ -39,6 +39,10 @@ import{Drawer, DrawMaterialSet, DrawObject} from "./NvCoreInterfaces";
   private firstBranch: Branch;
   private lineDrawObj : DrawObject;
 
+  private singleLine = false;
+  private enabled = false;
+  private status = Status.none;
+
 
   /**
    * Neurite constructor
@@ -68,18 +72,33 @@ import{Drawer, DrawMaterialSet, DrawObject} from "./NvCoreInterfaces";
    * @param  {Drawer} drawer Class that draws the neurite
    */
   public draw(drawer:Drawer, linear:boolean = false){
+    this.enabled = true;
+    this.singleLine = false;
+
+    if(this.lineDrawObj)
+      this.lineDrawObj.dispose();
+
     if(this.firstBranch)
       this.firstBranch.draw(drawer,true, linear);
   }
 
   public lineDraw(drawer:Drawer){
+    this.enabled = true;
+    this.singleLine = true;
+    if(this.lineDrawObj)
+      this.lineDrawObj.dispose();
 
     if(this.firstBranch){
+      this.firstBranch.dispose(true);
       // Get neurite as a line array
       let lines = this.firstBranch.asLineArray(true);
       let color = this.material.getStandardHexcolor();
       this.lineDrawObj = drawer.drawLines(lines, color);
     }
+  }
+
+  public getColor(){
+    return this.material.getStandardHexcolor();
   }
 
 
@@ -89,6 +108,38 @@ import{Drawer, DrawMaterialSet, DrawObject} from "./NvCoreInterfaces";
   public forEachElement( fn:(item:BranchElement) => void){
     if(this.firstBranch)
       this.firstBranch.forEachElement(fn,true);
+  }
+
+  public branchCount(){
+    if(this.firstBranch){
+      return this.firstBranch.subtreeSize();
+    } else {
+      return 0;
+    }
+  }
+
+  public allBranches(){
+    if(this.firstBranch){
+      return this.firstBranch.subtree();
+    } else {
+      return [];
+    }
+  }
+
+  public isEnabled(){
+    return this.enabled;
+  }
+
+  public setEnabled(v:boolean, recursive = false){
+    this.enabled=v;
+    if(this.firstBranch){
+      this.firstBranch.setEnabled(v,true);
+    }
+
+    if(this.singleLine){
+      this.lineDrawObj.setEnabled(v);
+    }
+
   }
 
 
@@ -114,10 +165,17 @@ import{Drawer, DrawMaterialSet, DrawObject} from "./NvCoreInterfaces";
    *
    * @param  {MaterialPaletteElement} mat New material
    */
-  public updateMaterial(mat:DrawMaterialSet){
+  public updateMaterial(mat:DrawMaterialSet, propagate = true){
     this.material = mat;
-    if(this.firstBranch){
-      this.firstBranch.updateMaterial(true);
+    if(!this.singleLine){
+      if(this.firstBranch && propagate){
+        this.firstBranch.updateMaterial(true);
+      }
+    } else {
+      if(this.lineDrawObj){
+        this.lineDrawObj.color = this.neuron.getDrawer().colorFormHex(materialColorPicker(this.material, this.status));
+        this.lineDrawObj.material.markDirty();
+      }
     }
   }
 
@@ -129,7 +187,11 @@ import{Drawer, DrawMaterialSet, DrawObject} from "./NvCoreInterfaces";
    * @param  {bool} propagate @see Branch.setStatus (default: true)
    */
   public setStatus(status: Status, propagate = true ){
-    this.firstBranch.setStatus(status,propagate);
+    this.status = status;
+    if ( (!this.singleLine) && this.firstBranch)
+      this.firstBranch.setStatus(status,propagate);
+
+    this.updateMaterial(this.material,false);
   }
 
 
@@ -169,6 +231,7 @@ import{Drawer, DrawMaterialSet, DrawObject} from "./NvCoreInterfaces";
   }
 
   public dispose(){
+    this.enabled = false;
     if(this.firstBranch) this.firstBranch.dispose(true);
     if(this.lineDrawObj) this.lineDrawObj.dispose();
   }

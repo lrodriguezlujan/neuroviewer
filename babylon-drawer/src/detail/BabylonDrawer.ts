@@ -1,5 +1,5 @@
 import * as babylonConfigs from "./BabylonConfigs";
-import {Point3D, Drawer} from "@neuroviewer/core";
+import {Point3D, Drawer, CameraType} from "@neuroviewer/core";
 import {BabylonMaterialPalette} from "./BabylonPalette";
 
   /**
@@ -40,17 +40,18 @@ import {BabylonMaterialPalette} from "./BabylonPalette";
     // Lights
     protected lights: Array<BABYLON.Light>;
 
-    // Info panel
-    public infoPanel: BABYLON.ScreenSpaceCanvas2D;
-
     // loop callback function
-    protected loopCallbackFunction: (instance:Drawer) => void;
+    protected loopCallbackFunction: Array<(instance:Drawer) => void> = [];
 
     /**
     * Set loop function to be called before rendering
     **/
-    public setLoopFunction(fn:(instance:Drawer) => void){
-      this.loopCallbackFunction = fn;
+    public addLoopFunction(fn:(instance:Drawer) => void){
+      this.loopCallbackFunction.push(fn);
+    }
+
+    public clearLoopFunctions() {
+      this.loopCallbackFunction = [];
     }
 
     // Scene scaling
@@ -102,19 +103,32 @@ import {BabylonMaterialPalette} from "./BabylonPalette";
       this.lights.push(spot);
 
       this.engine.runRenderLoop( () => {
-        if(this.loopCallbackFunction) this.loopCallbackFunction(this);
+        for(let fn of this.loopCallbackFunction){
+          fn(this);
+        }
         // Control camera limits
-        if(this.config.camera.type == babylonConfigs.CameraType.universal){
+        if(this.config.camera.type == CameraType.universal){
           BabylonDrawer.cameraLimits(this.camera);
         }
 
          this.scene.render();
        });
+    }
 
-       // Set up info panel
-       if( this.config.scene.info ){
-         this.createInfoPanel(this.config.scene.info);
-       }
+    public getCanvasPosition(){
+      let bodyRect   = document.body.getBoundingClientRect();
+      let canvasRect = this.canvas.getBoundingClientRect();
+      return [canvasRect.left - bodyRect.left, canvasRect.top - bodyRect.top];
+    }
+
+    public getCanvasSize(){
+      let bodyRect   = document.body.getBoundingClientRect();
+      let canvasRect = this.canvas.getBoundingClientRect();
+      return [canvasRect.right - canvasRect.left, canvasRect.bottom - canvasRect.top];
+    }
+
+    public attachResizeListener( fn:() => void ){
+      this.canvas.addEventListener("resize",fn);
     }
 
     private static cameraLimits(camera: BABYLON.Camera){
@@ -175,30 +189,13 @@ import {BabylonMaterialPalette} from "./BabylonPalette";
       }
     }
 
-
-    // INFO PANEL
-    public createInfoPanel(cfg: babylonConfigs.InfoPanelConfig){
-
-      if(this.infoPanel) this.infoPanel.dispose();
-
-      if(cfg.enable){
-        this.infoPanel = new BABYLON.ScreenSpaceCanvas2D(this.scene,
-          {id: "infoPanel",
-          position: cfg.position,
-          size: cfg.size } );
-        this.infoPanel.isPickable = false;
-      }
-
-      return this.infoPanel;
-    }
-
     // CAMERA
     public setCamera(camera: BABYLON.TargetCamera) {
       this.camera = camera;
     }
 
     private initCamera() {
-      if (this.config.camera.type == babylonConfigs.CameraType.universal) {
+      if (this.config.camera.type == CameraType.universal) {
         this.initUniversalCamera();
       } else {
         this.initPivotCamera();
@@ -258,9 +255,35 @@ import {BabylonMaterialPalette} from "./BabylonPalette";
       }
     }
 
+    public getCameraType(){
+      return this.config.camera.type;
+    }
+
+    public setCameraType(type: CameraType ){
+      this.config.camera.type;
+      this.camera.dispose();
+      this.initCamera();
+    }
+
+    // Speed
+    public getCameraSpeed(){
+      if(this.initialized){
+        return this.camera.speed;
+      } else {
+        return undefined;
+      }
+    }
+
     public setCameraSpeed(speed: number) {
       if (speed && this.initialized) {
         this.camera.speed = speed;
+      }
+    }
+
+    // Inertia
+    public getCameraInertia() {
+      if (this.initialized) {
+        return this.camera.inertia;
       }
     }
 
@@ -270,11 +293,56 @@ import {BabylonMaterialPalette} from "./BabylonPalette";
       }
     }
 
+    // FOV
     public setCameraFOV(fov: number) {
       if (fov && this.initialized) {
         this.camera.fov = fov;
       }
     }
+
+    // Pan sensibility
+    public getCameraPanSensibility(){
+      if(this.camera && this.getCameraType() == CameraType.pivot) {
+        return (<BABYLON.ArcRotateCamera>(this.camera)).panningSensibility;
+      }else{
+        return undefined;
+      }
+    };
+    public setCameraPanSensibility(v : number){
+      if(this.camera && this.getCameraType() == CameraType.pivot) {
+        (<BABYLON.ArcRotateCamera>(this.camera)).panningSensibility = v;
+      }
+    }
+
+    public getCameraWheelSensibility(){
+      if(this.camera && this.getCameraType() == CameraType.pivot) {
+        return (<BABYLON.ArcRotateCamera>(this.camera)).wheelPrecision;
+      }else{
+        return undefined;
+      }
+    };
+    public setCameraWheelSensibility(v : number){
+      if(this.camera && this.getCameraType() == CameraType.pivot) {
+        (<BABYLON.ArcRotateCamera>(this.camera)).wheelPrecision = v;
+      }
+    }
+
+    public cameraAddRotation(alphaDelta:number,betaDelta:number) {
+      if(this.camera && this.getCameraType() == CameraType.pivot) {
+        (<BABYLON.ArcRotateCamera>(this.camera)).alpha += alphaDelta;
+        (<BABYLON.ArcRotateCamera>(this.camera)).beta += betaDelta;
+      }
+    }
+
+    public visibleGrid(){
+      return (this.grid.length != 0);
+    }
+
+    public showGrid(v : boolean){
+      this.config.scene.grid.enable = v;
+      this.createGrid(this.config.scene.grid);
+    }
+
 
     // Create scene grid
     public createGrid(cfg:babylonConfigs.GridConfig){
@@ -283,6 +351,7 @@ import {BabylonMaterialPalette} from "./BabylonPalette";
       if(this.grid){
         for(var g of this.grid)
           g.dispose();
+        this.grid = [];
       }
 
       if (cfg && cfg.enable) {
@@ -326,9 +395,9 @@ import {BabylonMaterialPalette} from "./BabylonPalette";
         sidePlane.isPickable = false;
         this.grid.push(sidePlane);
 
-        this.createLabelText("label_x_axis","X",new BABYLON.Vector3(1.2,0,-1),cfg.xGridColor, cfg.mainColor)
-        this.createLabelText("label_y_axis","Y",new BABYLON.Vector3(-1,1.2,0),cfg.yGridColor, cfg.mainColor)
-        this.createLabelText("label_y_axis","Z",new BABYLON.Vector3(0,-1,1.2),cfg.zGridColor, cfg.mainColor)
+        this.grid.push(this.createLabelText("label_x_axis","X",new BABYLON.Vector3(1.2,0,-1),cfg.xGridColor, cfg.mainColor))
+        this.grid.push(this.createLabelText("label_y_axis","Y",new BABYLON.Vector3(-1,1.2,0),cfg.yGridColor, cfg.mainColor))
+        this.grid.push(this.createLabelText("label_y_axis","Z",new BABYLON.Vector3(0,-1,1.2),cfg.zGridColor, cfg.mainColor))
       }
     }
 
@@ -357,7 +426,7 @@ import {BabylonMaterialPalette} from "./BabylonPalette";
     }
 
     public drawSphere(name: string, position: Point3D, radius: number){
-      let tmp_sph = BABYLON.Mesh.CreateSphere(name , 8, radius * 2.05, this.scene);
+      let tmp_sph = BABYLON.Mesh.CreateSphere(name , this.config.segmentsPerCircle, radius * 2.05, this.scene);
 
       // Move to location
       tmp_sph.position = new BABYLON.Vector3(position.x,position.y,position.z);
@@ -369,7 +438,9 @@ import {BabylonMaterialPalette} from "./BabylonPalette";
 
       let from = new BABYLON.Vector3(from_p.x,from_p.y,from_p.z);
       let to = new BABYLON.Vector3(to_p.x,to_p.y,to_p.z);
-      let tmp_cyl = BABYLON.Mesh.CreateCylinder(name, BABYLON.Vector3.Distance(from, to), endRad * 2, initRad * 2, 8, 1, this.scene);
+      let tmp_cyl = BABYLON.Mesh.CreateCylinder(name, BABYLON.Vector3.Distance(from, to),
+        endRad * 2, initRad * 2,
+        this.config.segmentsPerCircle, 1, this.scene);
 
       // Compute rotation
       let vec = to.subtract(from);
@@ -447,6 +518,10 @@ import {BabylonMaterialPalette} from "./BabylonPalette";
           this.scene);
         mesh.color = BABYLON.Color3.FromHexString(color);
         return mesh;
+    }
+
+    public colorFormHex(color:string){
+      return BABYLON.Color3.FromHexString(color);
     }
 
     public drawLines(lines: Array<Array<Point3D>>, color: string) {
@@ -531,15 +606,36 @@ import {BabylonMaterialPalette} from "./BabylonPalette";
      *
      * @return Promise
      */
-    public optimize(level: number) {
-      if (level <= 0) {
-        BABYLON.SceneOptimizerOptions.LowDegradationAllowed();
-      } else if (level == 1) {
-        BABYLON.SceneOptimizerOptions.ModerateDegradationAllowed();
-      } else {
-        BABYLON.SceneOptimizerOptions.HighDegradationAllowed();
+    public optimize(level?: number,cb?:()=>any) {
+      let optlevel = -1; // Dont optimize by default
+      if(level){
+        this.config.optLevel = level;
+        optlevel = level;
+      } else if( this.config.optLevel){
+        optlevel = this.config.optLevel;
       }
-      return BABYLON.SceneOptimizer.OptimizeAsync(this.scene);
+
+      //
+      if (optlevel < 0){
+        return; // No optimization
+      } else if (optlevel == 0) {
+        return BABYLON.SceneOptimizer.OptimizeAsync(this.scene,BABYLON.SceneOptimizerOptions.LowDegradationAllowed(30),cb);
+      } else if (optlevel == 1) {
+        return BABYLON.SceneOptimizer.OptimizeAsync(this.scene,BABYLON.SceneOptimizerOptions.ModerateDegradationAllowed(30),cb);
+      } else {
+        return BABYLON.SceneOptimizer.OptimizeAsync(this.scene,BABYLON.SceneOptimizerOptions.HighDegradationAllowed(30),cb);
+      }
+    }
+
+
+
+    public setCircularSegmentsCount(v:number){
+      if(v>=3)
+        this.config.segmentsPerCircle = v;
+    }
+
+    public getCircularSegmentsCount(){
+      return this.config.segmentsPerCircle;
     }
 
     public addPointerUpCallback(cb: (        distance: number,

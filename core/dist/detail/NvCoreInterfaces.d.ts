@@ -6,6 +6,13 @@ export interface Point3D {
 export interface DrawObject {
     material: DrawMaterial;
     dispose: () => void;
+    setEnabled: (value: boolean) => void;
+    isEnabled: () => boolean;
+    color?: DrawColor;
+}
+export declare enum CameraType {
+    universal = 0,
+    pivot = 1,
 }
 export interface Drawer {
     palette: DrawMaterialPalette;
@@ -17,9 +24,37 @@ export interface Drawer {
     drawLines: (lines: Array<Array<Point3D>>, color: string) => DrawObject;
     drawLine: (id: string, source: Point3D, target: Point3D, color: string) => DrawObject;
     dispose: () => void;
+    addLoopFunction: (fn: (d: Drawer) => void) => void;
+    clearLoopFunctions: () => void;
+    optimize: (level?: number, cb?: () => any) => any;
+    getCanvasPosition: () => Array<number>;
+    getCanvasSize: () => Array<number>;
+    attachResizeListener: (fn: () => void) => void;
+    getCameraType: () => CameraType;
+    setCameraType: (type: CameraType) => void;
+    getCameraSpeed: () => number;
+    setCameraSpeed: (sp: number) => void;
+    getCameraInertia: () => number;
+    setCameraInertia: (inertia: number) => void;
+    getCameraPanSensibility: () => number;
+    setCameraPanSensibility: (v: number) => void;
+    getCameraWheelSensibility: () => number;
+    setCameraWheelSensibility: (v: number) => void;
+    resetCamera: () => void;
+    cameraAddRotation: (alphaDelta: number, betaDelta: number) => void;
+    setCircularSegmentsCount: (v: number) => void;
+    getCircularSegmentsCount: () => void;
+    showGrid: (v: boolean) => void;
+    visibleGrid: () => boolean;
+    normalizeScene: () => void;
+    colorFormHex: (color: string) => DrawColor;
+}
+export interface DrawColor {
+    toHexString: () => string;
 }
 export interface DrawMaterial {
-    diffuseColor?: any;
+    diffuseColor?: DrawColor;
+    markDirty(): any;
 }
 export interface DrawMaterialSet {
     standard: DrawMaterial;

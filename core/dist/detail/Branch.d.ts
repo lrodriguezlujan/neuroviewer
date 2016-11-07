@@ -29,6 +29,8 @@ export declare class BranchElement {
      * Branch status
      */
     private status;
+    private linear;
+    private enabled;
     /**
      * Draw method called flag
      */
@@ -70,10 +72,12 @@ export declare class BranchElement {
      * @public
      */
     setStatus(status: Status): void;
+    isEnabled(): boolean;
+    setEnabled(v: boolean): void;
     /**
      * Gets current color
      */
-    currentColor(): any;
+    currentColor(): string;
     /**
      * Updates mesh material based on the status
      *
@@ -99,6 +103,7 @@ export declare class Branch {
      * Branch descs.
      */
     private children;
+    private enabled;
     /**
      * Branch nodes (ordered)
      */
@@ -141,6 +146,8 @@ export declare class Branch {
      * @return {Node3D}
      */
     searchNode(nodeId: number): any;
+    isEnabled(): boolean;
+    setEnabled(v: boolean, recursive?: boolean): void;
     /**
      * Executes a function for each element in the branch
      */
@@ -157,6 +164,8 @@ export declare class Branch {
      * @return {string}  Branch id as string
      */
     idString(): string;
+    subtreeSize(): number;
+    subtree(): any[];
     /**
      * Update the id of the branch and its descendants
      *

@@ -1,13 +1,10 @@
+import { CameraType } from "@neuroviewer/core";
 export interface EngineConfig {
     antialias?: boolean;
     prserveDrawingBuffer?: boolean;
     limitDeviceRatio?: number;
 }
 export declare const default_config_engine: EngineConfig;
-export declare enum CameraType {
-    universal = 0,
-    pivot = 1,
-}
 export interface CameraConfig {
     type: CameraType;
     initPos?: BABYLON.Vector3;
@@ -20,12 +17,6 @@ export interface CameraConfig {
     beta?: number;
 }
 export declare const default_config_camera: CameraConfig;
-export interface InfoPanelConfig {
-    enable: boolean;
-    position?: BABYLON.Vector2;
-    size?: BABYLON.Size;
-}
-export declare const default_config_info: InfoPanelConfig;
 export interface GridConfig {
     enable: boolean;
     xGridColor?: BABYLON.Color3;
@@ -37,7 +28,6 @@ export declare const default_config_grid: GridConfig;
 export interface SceneConfig {
     bgColor?: BABYLON.Color3;
     ambientColor?: BABYLON.Color3;
-    info?: InfoPanelConfig;
     grid?: GridConfig;
 }
 export declare const default_config_scene: SceneConfig;
@@ -45,5 +35,7 @@ export interface DrawerConfig {
     engine?: EngineConfig;
     camera?: CameraConfig;
     scene?: SceneConfig;
+    segmentsPerCircle: number;
+    optLevel?: number;
 }
 export declare const default_config: DrawerConfig;

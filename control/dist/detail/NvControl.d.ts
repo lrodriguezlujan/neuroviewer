@@ -1,0 +1,31 @@
+import { Drawer, Reconstruction } from "@neuroviewer/core";
+export declare class Control {
+    drawer: Drawer;
+    reconstruction: Reconstruction;
+    private optionsPanel;
+    private neuronPanel;
+    private detailsPanel;
+    private controlLayer;
+    private canvasLayer;
+    constructor(drawer: Drawer, reconstruction: Reconstruction);
+    getControlDiv(): HTMLElement;
+    show(): void;
+    hide(): void;
+    dispose(): void;
+    attachReconstruction(r: Reconstruction): void;
+    showOptions(): void;
+    hideOptions(): void;
+    triggerOptions(): boolean;
+    showNeuron(): void;
+    hideNeuron(): void;
+    triggerNeuron(): boolean;
+    showDetails(): void;
+    hideDetails(): void;
+    triggerDetails(): boolean;
+    addToDetails(c: HTMLElement): void;
+    emptyDetails(): void;
+    private createLayer();
+    private canvasResizeListener;
+    private updateDrawerPosition();
+    private updateDrawerSize();
+}

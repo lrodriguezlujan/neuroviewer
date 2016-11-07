@@ -1,17 +1,12 @@
 "use strict";
+var core_1 = require("@neuroviewer/core");
 exports.default_config_engine = {
     "antialias": true,
     "prserveDrawingBuffer": true
 };
-(function (CameraType) {
-    CameraType[CameraType["universal"] = 0] = "universal";
-    CameraType[CameraType["pivot"] = 1] = "pivot";
-})(exports.CameraType || (exports.CameraType = {}));
-var CameraType = exports.CameraType;
-;
 ;
 exports.default_config_camera = {
-    "type": CameraType.pivot,
+    "type": core_1.CameraType.pivot,
     "initPos": new BABYLON.Vector3(1, 1, 1),
     "target": BABYLON.Vector3.Zero(),
     "inertia": 0,
@@ -19,10 +14,6 @@ exports.default_config_camera = {
     "speed": 0.1,
     "alpha": Math.PI / 4,
     "beta": Math.PI / 4
-};
-;
-exports.default_config_info = {
-    "enable": false
 };
 ;
 exports.default_config_grid = {
@@ -36,12 +27,13 @@ exports.default_config_grid = {
 exports.default_config_scene = {
     "bgColor": BABYLON.Color3.Black(),
     "ambientColor": new BABYLON.Color3(0.1, 0.1, 0.1),
-    info: exports.default_config_info
+    "grid": exports.default_config_grid
 };
 ;
 exports.default_config = {
     engine: exports.default_config_engine,
     camera: exports.default_config_camera,
-    scene: exports.default_config_scene
+    scene: exports.default_config_scene,
+    segmentsPerCircle: 8
 };
 //# sourceMappingURL=BabylonConfigs.js.map

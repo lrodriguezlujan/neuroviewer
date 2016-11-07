@@ -1,5 +1,6 @@
 "use strict";
 var babylonConfigs = require("./BabylonConfigs");
+var core_1 = require("@neuroviewer/core");
 var BabylonPalette_1 = require("./BabylonPalette");
 /**
 * Drawer class - scene management
@@ -9,6 +10,8 @@ var BabylonDrawer = (function () {
         if (cfg === void 0) { cfg = babylonConfigs.default_config; }
         this.canvas = canvas;
         this.initialized = false;
+        // loop callback function
+        this.loopCallbackFunction = [];
         // Scene scaling
         this.sceneScaling = 1;
         // TODO: Expand default config with cfg
@@ -18,8 +21,11 @@ var BabylonDrawer = (function () {
     /**
     * Set loop function to be called before rendering
     **/
-    BabylonDrawer.prototype.setLoopFunction = function (fn) {
-        this.loopCallbackFunction = fn;
+    BabylonDrawer.prototype.addLoopFunction = function (fn) {
+        this.loopCallbackFunction.push(fn);
+    };
+    BabylonDrawer.prototype.clearLoopFunctions = function () {
+        this.loopCallbackFunction = [];
     };
     /**
     * Initialize the drawer. Note that the object can be constructer but not initialized
@@ -56,18 +62,29 @@ var BabylonDrawer = (function () {
         spot.intensity = 0.8;
         this.lights.push(spot);
         this.engine.runRenderLoop(function () {
-            if (_this.loopCallbackFunction)
-                _this.loopCallbackFunction(_this);
+            for (var _i = 0, _a = _this.loopCallbackFunction; _i < _a.length; _i++) {
+                var fn = _a[_i];
+                fn(_this);
+            }
             // Control camera limits
-            if (_this.config.camera.type == babylonConfigs.CameraType.universal) {
+            if (_this.config.camera.type == core_1.CameraType.universal) {
                 BabylonDrawer.cameraLimits(_this.camera);
             }
             _this.scene.render();
         });
-        // Set up info panel
-        if (this.config.scene.info) {
-            this.createInfoPanel(this.config.scene.info);
-        }
+    };
+    BabylonDrawer.prototype.getCanvasPosition = function () {
+        var bodyRect = document.body.getBoundingClientRect();
+        var canvasRect = this.canvas.getBoundingClientRect();
+        return [canvasRect.left - bodyRect.left, canvasRect.top - bodyRect.top];
+    };
+    BabylonDrawer.prototype.getCanvasSize = function () {
+        var bodyRect = document.body.getBoundingClientRect();
+        var canvasRect = this.canvas.getBoundingClientRect();
+        return [canvasRect.right - canvasRect.left, canvasRect.bottom - canvasRect.top];
+    };
+    BabylonDrawer.prototype.attachResizeListener = function (fn) {
+        this.canvas.addEventListener("resize", fn);
     };
     BabylonDrawer.cameraLimits = function (camera) {
         if (camera.position.x > 3)
@@ -121,24 +138,12 @@ var BabylonDrawer = (function () {
             this.octtree = this.scene.createOrUpdateSelectionOctree(16, 3); // TODO: CONFIG
         }
     };
-    // INFO PANEL
-    BabylonDrawer.prototype.createInfoPanel = function (cfg) {
-        if (this.infoPanel)
-            this.infoPanel.dispose();
-        if (cfg.enable) {
-            this.infoPanel = new BABYLON.ScreenSpaceCanvas2D(this.scene, { id: "infoPanel",
-                position: cfg.position,
-                size: cfg.size });
-            this.infoPanel.isPickable = false;
-        }
-        return this.infoPanel;
-    };
     // CAMERA
     BabylonDrawer.prototype.setCamera = function (camera) {
         this.camera = camera;
     };
     BabylonDrawer.prototype.initCamera = function () {
-        if (this.config.camera.type == babylonConfigs.CameraType.universal) {
+        if (this.config.camera.type == core_1.CameraType.universal) {
             this.initUniversalCamera();
         }
         else {
@@ -185,9 +190,32 @@ var BabylonDrawer = (function () {
             this.camera.setTarget(target);
         }
     };
+    BabylonDrawer.prototype.getCameraType = function () {
+        return this.config.camera.type;
+    };
+    BabylonDrawer.prototype.setCameraType = function (type) {
+        this.config.camera.type;
+        this.camera.dispose();
+        this.initCamera();
+    };
+    // Speed
+    BabylonDrawer.prototype.getCameraSpeed = function () {
+        if (this.initialized) {
+            return this.camera.speed;
+        }
+        else {
+            return undefined;
+        }
+    };
     BabylonDrawer.prototype.setCameraSpeed = function (speed) {
         if (speed && this.initialized) {
             this.camera.speed = speed;
+        }
+    };
+    // Inertia
+    BabylonDrawer.prototype.getCameraInertia = function () {
+        if (this.initialized) {
+            return this.camera.inertia;
         }
     };
     BabylonDrawer.prototype.setCameraInertia = function (inertia) {
@@ -195,10 +223,53 @@ var BabylonDrawer = (function () {
             this.camera.inertia = inertia;
         }
     };
+    // FOV
     BabylonDrawer.prototype.setCameraFOV = function (fov) {
         if (fov && this.initialized) {
             this.camera.fov = fov;
         }
+    };
+    // Pan sensibility
+    BabylonDrawer.prototype.getCameraPanSensibility = function () {
+        if (this.camera && this.getCameraType() == core_1.CameraType.pivot) {
+            return (this.camera).panningSensibility;
+        }
+        else {
+            return undefined;
+        }
+    };
+    ;
+    BabylonDrawer.prototype.setCameraPanSensibility = function (v) {
+        if (this.camera && this.getCameraType() == core_1.CameraType.pivot) {
+            (this.camera).panningSensibility = v;
+        }
+    };
+    BabylonDrawer.prototype.getCameraWheelSensibility = function () {
+        if (this.camera && this.getCameraType() == core_1.CameraType.pivot) {
+            return (this.camera).wheelPrecision;
+        }
+        else {
+            return undefined;
+        }
+    };
+    ;
+    BabylonDrawer.prototype.setCameraWheelSensibility = function (v) {
+        if (this.camera && this.getCameraType() == core_1.CameraType.pivot) {
+            (this.camera).wheelPrecision = v;
+        }
+    };
+    BabylonDrawer.prototype.cameraAddRotation = function (alphaDelta, betaDelta) {
+        if (this.camera && this.getCameraType() == core_1.CameraType.pivot) {
+            (this.camera).alpha += alphaDelta;
+            (this.camera).beta += betaDelta;
+        }
+    };
+    BabylonDrawer.prototype.visibleGrid = function () {
+        return (this.grid.length != 0);
+    };
+    BabylonDrawer.prototype.showGrid = function (v) {
+        this.config.scene.grid.enable = v;
+        this.createGrid(this.config.scene.grid);
     };
     // Create scene grid
     BabylonDrawer.prototype.createGrid = function (cfg) {
@@ -208,6 +279,7 @@ var BabylonDrawer = (function () {
                 var g = _a[_i];
                 g.dispose();
             }
+            this.grid = [];
         }
         if (cfg && cfg.enable) {
             // Default grid. TODO: Configure
@@ -244,9 +316,9 @@ var BabylonDrawer = (function () {
             sidePlane.rotation.y = Math.PI / 2;
             sidePlane.isPickable = false;
             this.grid.push(sidePlane);
-            this.createLabelText("label_x_axis", "X", new BABYLON.Vector3(1.2, 0, -1), cfg.xGridColor, cfg.mainColor);
-            this.createLabelText("label_y_axis", "Y", new BABYLON.Vector3(-1, 1.2, 0), cfg.yGridColor, cfg.mainColor);
-            this.createLabelText("label_y_axis", "Z", new BABYLON.Vector3(0, -1, 1.2), cfg.zGridColor, cfg.mainColor);
+            this.grid.push(this.createLabelText("label_x_axis", "X", new BABYLON.Vector3(1.2, 0, -1), cfg.xGridColor, cfg.mainColor));
+            this.grid.push(this.createLabelText("label_y_axis", "Y", new BABYLON.Vector3(-1, 1.2, 0), cfg.yGridColor, cfg.mainColor));
+            this.grid.push(this.createLabelText("label_y_axis", "Z", new BABYLON.Vector3(0, -1, 1.2), cfg.zGridColor, cfg.mainColor));
         }
     };
     BabylonDrawer.prototype.createLabelText = function (id, text, position, textColor, backColor) {
@@ -268,7 +340,7 @@ var BabylonDrawer = (function () {
         return outputplane;
     };
     BabylonDrawer.prototype.drawSphere = function (name, position, radius) {
-        var tmp_sph = BABYLON.Mesh.CreateSphere(name, 8, radius * 2.05, this.scene);
+        var tmp_sph = BABYLON.Mesh.CreateSphere(name, this.config.segmentsPerCircle, radius * 2.05, this.scene);
         // Move to location
         tmp_sph.position = new BABYLON.Vector3(position.x, position.y, position.z);
         return tmp_sph;
@@ -276,7 +348,7 @@ var BabylonDrawer = (function () {
     BabylonDrawer.prototype.drawCylinder = function (name, from_p, to_p, initRad, endRad) {
         var from = new BABYLON.Vector3(from_p.x, from_p.y, from_p.z);
         var to = new BABYLON.Vector3(to_p.x, to_p.y, to_p.z);
-        var tmp_cyl = BABYLON.Mesh.CreateCylinder(name, BABYLON.Vector3.Distance(from, to), endRad * 2, initRad * 2, 8, 1, this.scene);
+        var tmp_cyl = BABYLON.Mesh.CreateCylinder(name, BABYLON.Vector3.Distance(from, to), endRad * 2, initRad * 2, this.config.segmentsPerCircle, 1, this.scene);
         // Compute rotation
         var vec = to.subtract(from);
         // Move to position (midpoint)
@@ -340,6 +412,9 @@ var BabylonDrawer = (function () {
             updatable: false }, this.scene);
         mesh.color = BABYLON.Color3.FromHexString(color);
         return mesh;
+    };
+    BabylonDrawer.prototype.colorFormHex = function (color) {
+        return BABYLON.Color3.FromHexString(color);
     };
     BabylonDrawer.prototype.drawLines = function (lines, color) {
         // Points to vector3
@@ -412,17 +487,35 @@ var BabylonDrawer = (function () {
      *
      * @return Promise
      */
-    BabylonDrawer.prototype.optimize = function (level) {
-        if (level <= 0) {
-            BABYLON.SceneOptimizerOptions.LowDegradationAllowed();
+    BabylonDrawer.prototype.optimize = function (level, cb) {
+        var optlevel = -1; // Dont optimize by default
+        if (level) {
+            this.config.optLevel = level;
+            optlevel = level;
         }
-        else if (level == 1) {
-            BABYLON.SceneOptimizerOptions.ModerateDegradationAllowed();
+        else if (this.config.optLevel) {
+            optlevel = this.config.optLevel;
+        }
+        //
+        if (optlevel < 0) {
+            return; // No optimization
+        }
+        else if (optlevel == 0) {
+            return BABYLON.SceneOptimizer.OptimizeAsync(this.scene, BABYLON.SceneOptimizerOptions.LowDegradationAllowed(30), cb);
+        }
+        else if (optlevel == 1) {
+            return BABYLON.SceneOptimizer.OptimizeAsync(this.scene, BABYLON.SceneOptimizerOptions.ModerateDegradationAllowed(30), cb);
         }
         else {
-            BABYLON.SceneOptimizerOptions.HighDegradationAllowed();
+            return BABYLON.SceneOptimizer.OptimizeAsync(this.scene, BABYLON.SceneOptimizerOptions.HighDegradationAllowed(30), cb);
         }
-        return BABYLON.SceneOptimizer.OptimizeAsync(this.scene);
+    };
+    BabylonDrawer.prototype.setCircularSegmentsCount = function (v) {
+        if (v >= 3)
+            this.config.segmentsPerCircle = v;
+    };
+    BabylonDrawer.prototype.getCircularSegmentsCount = function () {
+        return this.config.segmentsPerCircle;
     };
     BabylonDrawer.prototype.addPointerUpCallback = function (cb) {
         /*this.scene.onPointerObservable = function(evt, res) {

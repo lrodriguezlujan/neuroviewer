@@ -18,6 +18,7 @@ export declare class Soma {
     nodes: Array<Node3D>;
     status: Status;
     private mesh;
+    private enabled;
     /**
      * Soma constructor
      *
@@ -63,18 +64,14 @@ export declare class Soma {
      * @param  {Drawer} drawer drawer class
      */
     draw(drawer: Drawer): void;
+    isEnabled(): boolean;
+    setEnabled(v: boolean, recursive?: boolean): void;
     /**
      * Computes the convex hull of the given contour nodes
      *
      * @param  {Array<Node3D>} nodes Soma contour
      */
     private convexHull3D(nodes);
-    /**
-     * Selects the material based on teh status
-     *
-     * @return {type}  description
-     */
-    private pickMaterial();
     /**
      * Creates a soma class from a JS object
      *

@@ -34,6 +34,9 @@ export declare class Neurite {
      */
     private firstBranch;
     private lineDrawObj;
+    private singleLine;
+    private enabled;
+    private status;
     /**
      * Neurite constructor
      *
@@ -56,10 +59,15 @@ export declare class Neurite {
      */
     draw(drawer: Drawer, linear?: boolean): void;
     lineDraw(drawer: Drawer): void;
+    getColor(): string;
     /**
      * Executes a function for each element in the neurite
      */
     forEachElement(fn: (item: BranchElement) => void): void;
+    branchCount(): number;
+    allBranches(): any[];
+    isEnabled(): boolean;
+    setEnabled(v: boolean, recursive?: boolean): void;
     /**
      * Auxiliar method that translates int (SWC) to neurite type
      *
@@ -71,7 +79,7 @@ export declare class Neurite {
      *
      * @param  {MaterialPaletteElement} mat New material
      */
-    updateMaterial(mat: DrawMaterialSet): void;
+    updateMaterial(mat: DrawMaterialSet, propagate?: boolean): void;
     /**
      * Changes the status
      *

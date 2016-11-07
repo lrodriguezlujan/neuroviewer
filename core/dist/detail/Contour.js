@@ -21,6 +21,9 @@ var Contour = (function () {
         this.fill = 0;
         this.resolution = 1;
     }
+    Contour.prototype.size = function () {
+        return this.points.length;
+    };
     /**
      * Changes status
      *
@@ -28,6 +31,17 @@ var Contour = (function () {
      */
     Contour.prototype.setStatus = function (s) {
         this.status = s;
+        this.updateColor();
+    };
+    Contour.prototype.updateColor = function () {
+        if (this.drawer) {
+            if (this.status == Status_1.Status.highlighted) {
+                this.mesh.color = this.drawer.colorFormHex("#FFFF00");
+            }
+            else {
+                this.mesh.color = this.drawer.colorFormHex(this.face_color);
+            }
+        }
     };
     /**
      * Returns the i-th point in the contour
@@ -44,10 +58,24 @@ var Contour = (function () {
      * @param  {Drawer} drawer drawer class
      */
     Contour.prototype.draw = function (drawer) {
+        if (this.mesh)
+            this.mesh.dispose();
+        this.drawer = drawer;
         // Just draw spheres and merge them
-        drawer.drawContour(this.points, this.closed, this.face_color, this.back_color, this.fill);
+        this.enabled = true;
+        this.mesh = drawer.drawContour(this.points, this.closed, this.face_color, this.back_color, this.fill);
+    };
+    Contour.prototype.isEnabled = function () {
+        return this.enabled;
+    };
+    Contour.prototype.setEnabled = function (v) {
+        this.enabled = v;
+        if (this.mesh) {
+            this.mesh.setEnabled(v);
+        }
     };
     Contour.prototype.dispose = function () {
+        this.enabled = false;
         this.mesh.dispose();
     };
     /**

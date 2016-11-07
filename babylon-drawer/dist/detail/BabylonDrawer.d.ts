@@ -1,5 +1,5 @@
 import * as babylonConfigs from "./BabylonConfigs";
-import { Point3D, Drawer } from "@neuroviewer/core";
+import { Point3D, Drawer, CameraType } from "@neuroviewer/core";
 import { BabylonMaterialPalette } from "./BabylonPalette";
 /**
 * Drawer class - scene management
@@ -18,12 +18,12 @@ export declare class BabylonDrawer implements Drawer {
     protected octtree: BABYLON.Octree<BABYLON.AbstractMesh>;
     protected camera: BABYLON.TargetCamera;
     protected lights: Array<BABYLON.Light>;
-    infoPanel: BABYLON.ScreenSpaceCanvas2D;
-    protected loopCallbackFunction: (instance: Drawer) => void;
+    protected loopCallbackFunction: Array<(instance: Drawer) => void>;
     /**
     * Set loop function to be called before rendering
     **/
-    setLoopFunction(fn: (instance: Drawer) => void): void;
+    addLoopFunction(fn: (instance: Drawer) => void): void;
+    clearLoopFunctions(): void;
     protected sceneScaling: number;
     protected grid: Array<BABYLON.AbstractMesh>;
     /**
@@ -36,6 +36,9 @@ export declare class BabylonDrawer implements Drawer {
     * @return none
     */
     init(): void;
+    getCanvasPosition(): number[];
+    getCanvasSize(): number[];
+    attachResizeListener(fn: () => void): void;
     private static cameraLimits(camera);
     /**
      * Releases resources allocated by the drawer
@@ -50,7 +53,6 @@ export declare class BabylonDrawer implements Drawer {
     setAmbientColor(col: BABYLON.Color3): void;
     setLoadingScreen(loader: BABYLON.ILoadingScreen): void;
     updateOcttree(): void;
-    createInfoPanel(cfg: babylonConfigs.InfoPanelConfig): BABYLON.ScreenSpaceCanvas2D;
     setCamera(camera: BABYLON.TargetCamera): void;
     private initCamera();
     private initUniversalCamera();
@@ -58,15 +60,27 @@ export declare class BabylonDrawer implements Drawer {
     resetCamera(): void;
     setCameraPosition(pos: BABYLON.Vector3): void;
     setCameraTarget(target: BABYLON.Vector3): void;
+    getCameraType(): CameraType;
+    setCameraType(type: CameraType): void;
+    getCameraSpeed(): number;
     setCameraSpeed(speed: number): void;
+    getCameraInertia(): number;
     setCameraInertia(inertia: number): void;
     setCameraFOV(fov: number): void;
+    getCameraPanSensibility(): number;
+    setCameraPanSensibility(v: number): void;
+    getCameraWheelSensibility(): number;
+    setCameraWheelSensibility(v: number): void;
+    cameraAddRotation(alphaDelta: number, betaDelta: number): void;
+    visibleGrid(): boolean;
+    showGrid(v: boolean): void;
     createGrid(cfg: babylonConfigs.GridConfig): void;
     private createLabelText(id, text, position, textColor, backColor);
     drawSphere(name: string, position: Point3D, radius: number): BABYLON.Mesh;
     drawCylinder(name: string, from_p: Point3D, to_p: Point3D, initRad: number, endRad: number): BABYLON.Mesh;
     drawLineBox(root_p: Point3D, x: number, y: number, z: number): BABYLON.LinesMesh;
     drawContour(points: Array<Point3D>, closed: boolean, color: string, fillcolor: string, opacity: number): BABYLON.LinesMesh;
+    colorFormHex(color: string): BABYLON.Color3;
     drawLines(lines: Array<Array<Point3D>>, color: string): BABYLON.LinesMesh;
     drawLine(id: string, source: Point3D, target: Point3D, color: string): BABYLON.LinesMesh;
     merge(meshes: Array<BABYLON.Mesh>): BABYLON.Mesh;
@@ -83,6 +97,8 @@ export declare class BabylonDrawer implements Drawer {
      *
      * @return Promise
      */
-    optimize(level: number): void;
+    optimize(level?: number, cb?: () => any): void;
+    setCircularSegmentsCount(v: number): void;
+    getCircularSegmentsCount(): number;
     addPointerUpCallback(cb: (distance: number, mesh: BABYLON.AbstractMesh, subMeshID?: number) => void): void;
 }

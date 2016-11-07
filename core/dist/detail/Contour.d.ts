@@ -25,6 +25,8 @@ export declare class Contour {
     resolution: number;
     status: Status;
     private mesh;
+    private enabled;
+    private drawer;
     /**
      * Contour constructor
      *
@@ -32,12 +34,14 @@ export declare class Contour {
      * @param  {MaterialPaletteElement} m material element (optional)
      */
     constructor(points: Array<Point3D>);
+    size(): number;
     /**
      * Changes status
      *
      * @param  {type} s: Status description
      */
     setStatus(s: Status): void;
+    updateColor(): void;
     /**
      * Returns the i-th point in the contour
      *
@@ -51,6 +55,8 @@ export declare class Contour {
      * @param  {Drawer} drawer drawer class
      */
     draw(drawer: Drawer): void;
+    isEnabled(): boolean;
+    setEnabled(v: boolean): void;
     dispose(): void;
     /**
      * Creates a soma class from a JS object

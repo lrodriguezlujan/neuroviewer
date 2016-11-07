@@ -38,24 +38,31 @@ var BranchElement = (function () {
      */
     BranchElement.prototype.draw = function (drawer, linear) {
         if (linear === void 0) { linear = false; }
+        if (this.nodeMesh) {
+            this.nodeMesh.dispose();
+        }
+        if (this.segmentMesh) {
+            this.segmentMesh.dispose();
+        }
         if (linear) {
-            if (this.nodeMesh) {
-                this.nodeMesh.dispose();
-                this.nodeMesh = null;
-            }
+            this.linear = true;
             if (this.prevNode) {
                 this.segmentMesh = drawer.drawLine("C" + this.node.id + "@" + this.branch.idString() + "}@" + this.branch.neurite.id, this.prevNode, this.node, this.currentColor());
             }
             this.drawn = true;
         }
         else {
-            // Create node
-            this.nodeMesh = drawer.drawSphere("N" + this.node.id + "@" + this.branch.idString() + "@" + this.branch.neurite.id, this.node, this.node.r);
+            this.linear = false;
+            if (this.branch.neurite.neuron.reconstruction.drawNodeSpheres) {
+                // Create node
+                this.nodeMesh = drawer.drawSphere("N" + this.node.id + "@" + this.branch.idString() + "@" + this.branch.neurite.id, this.node, this.node.r);
+            }
             // Create segment
             if (this.prevNode)
                 this.segmentMesh = drawer.drawCylinder("C" + this.node.id + "@" + this.branch.idString() + "}@" + this.branch.neurite.id, this.prevNode, this.node, this.prevNode.r, this.node.r);
             // Set materials wrt status
             this.drawn = true;
+            this.enabled = true;
             this.updateMaterial();
         }
     };
@@ -77,32 +84,42 @@ var BranchElement = (function () {
      */
     BranchElement.prototype.setStatus = function (status) {
         this.status = status;
-        this.updateMaterial();
+        // Change color
+        if (this.linear && this.segmentMesh) {
+            this.segmentMesh.color = this.branch.neurite.neuron.getDrawer().colorFormHex(this.currentColor());
+            this.segmentMesh.material.markDirty();
+        }
+        else {
+            this.updateMaterial();
+        }
+    };
+    BranchElement.prototype.isEnabled = function () {
+        if (this.segmentMesh) {
+            return this.segmentMesh.isEnabled();
+        }
+        else {
+            return false;
+        }
+    };
+    BranchElement.prototype.setEnabled = function (v) {
+        this.enabled = v;
+        if (this.segmentMesh) {
+            this.segmentMesh.setEnabled(v);
+            if (!this.linear && this.nodeMesh) {
+                this.nodeMesh.setEnabled(v);
+            }
+        }
     };
     /**
      * Gets current color
      */
     BranchElement.prototype.currentColor = function () {
-        var color;
-        if (this.branch.neurite.material != null) {
-            switch (this.status) {
-                case Status_1.Status.none:
-                    return this.branch.neurite.material.standard.diffuseColor.toHexString();
-                case Status_1.Status.invisible:
-                    return this.branch.neurite.material.hidden.diffuseColor.toHexString();
-                    ;
-                case Status_1.Status.selected:
-                    return this.branch.neurite.material.emmisive.diffuseColor.toHexString();
-                    ;
-                case Status_1.Status.hidden:
-                    return this.branch.neurite.material.disminished.diffuseColor.toHexString();
-                    ;
-                case Status_1.Status.highlighted:
-                    return this.branch.neurite.material.highlight.diffuseColor.toHexString();
-                    ;
-            }
+        if (this.drawn && this.branch && this.branch.neurite) {
+            return Status_1.materialColorPicker(this.branch.neurite.material, this.status);
         }
-        return "#FFFFFF";
+        else {
+            return "#FFFFFF";
+        }
     };
     /**
      * Updates mesh material based on the status
@@ -111,32 +128,14 @@ var BranchElement = (function () {
      */
     BranchElement.prototype.updateMaterial = function () {
         if (this.drawn && this.branch && this.branch.neurite) {
-            var mat = void 0;
-            if (this.branch.neurite.material != null) {
-                switch (this.status) {
-                    case Status_1.Status.none:
-                        mat = this.branch.neurite.material.standard;
-                        break;
-                    case Status_1.Status.invisible:
-                        mat = this.branch.neurite.material.hidden;
-                        break;
-                    case Status_1.Status.selected:
-                        mat = this.branch.neurite.material.emmisive;
-                        break;
-                    case Status_1.Status.hidden:
-                        mat = this.branch.neurite.material.disminished;
-                        break;
-                    case Status_1.Status.highlighted:
-                        mat = this.branch.neurite.material.highlight;
-                        break;
-                }
+            var mat = Status_1.materialPicker(this.branch.neurite.material, this.status);
+            if (this.nodeMesh) {
+                this.nodeMesh.material = mat;
+                this.nodeMesh.material.markDirty();
             }
-            else {
-                mat = null;
-            }
-            this.nodeMesh.material = mat;
             if (this.segmentMesh)
                 this.segmentMesh.material = mat;
+            this.segmentMesh.material.markDirty();
         }
     };
     /**
@@ -145,6 +144,7 @@ var BranchElement = (function () {
      * @public
      */
     BranchElement.prototype.dispose = function () {
+        this.enabled = false;
         if (this.nodeMesh)
             this.nodeMesh.dispose();
         if (this.segmentMesh)
@@ -225,6 +225,16 @@ var Branch = (function () {
         }
         return null;
     };
+    Branch.prototype.isEnabled = function () {
+        return this.enabled;
+    };
+    Branch.prototype.setEnabled = function (v, recursive) {
+        if (recursive === void 0) { recursive = false; }
+        this.enabled = v;
+        if (this.rootMesh)
+            this.rootMesh.setEnabled(v);
+        this.forEachElement(function (i) { i.setEnabled(v); }, recursive);
+    };
     /**
      * Executes a function for each element in the branch
      */
@@ -258,8 +268,29 @@ var Branch = (function () {
         var idstr = "";
         idstr += this.id[0];
         for (var i = 1; i < this.id.length; ++i)
-            idstr += "_" + this.id[i];
+            idstr += "-" + this.id[i];
         return idstr;
+    };
+    Branch.prototype.subtreeSize = function () {
+        var acum = 1;
+        if (this.children) {
+            for (var _i = 0, _a = this.children; _i < _a.length; _i++) {
+                var c = _a[_i];
+                acum += c.subtreeSize();
+            }
+        }
+        return acum;
+    };
+    Branch.prototype.subtree = function () {
+        var arr = [];
+        arr.push(this);
+        if (this.children) {
+            for (var _i = 0, _a = this.children; _i < _a.length; _i++) {
+                var c = _a[_i];
+                arr = arr.concat(c.subtree());
+            }
+        }
+        return arr;
     };
     /**
      * Update the id of the branch and its descendants
@@ -305,6 +336,10 @@ var Branch = (function () {
         if (this.neurite) {
             this.forEachElement(function (it) { return it.updateMaterial(); }, recursive);
         }
+        if (this.rootMesh && this.neurite) {
+            this.rootMesh.material = Status_1.materialPicker(this.neurite.material, this.status);
+            this.rootMesh.material.markDirty();
+        }
     };
     /**
      * Changes the status of the branch
@@ -315,17 +350,20 @@ var Branch = (function () {
     Branch.prototype.setStatus = function (status, propagate) {
         if (propagate === void 0) { propagate = true; }
         this.status = status;
+        for (var _i = 0, _a = this.nodes; _i < _a.length; _i++) {
+            var el = _a[_i];
+            el.setStatus(status);
+        }
         if (propagate)
-            for (var _i = 0, _a = this.nodes; _i < _a.length; _i++) {
-                var el = _a[_i];
-                el.setStatus(status);
-                if (this.children) {
-                    for (var _b = 0, _c = this.children; _b < _c.length; _b++) {
-                        var c = _c[_b];
-                        c.setStatus(status, propagate);
-                    }
+            if (this.children) {
+                for (var _b = 0, _c = this.children; _b < _c.length; _b++) {
+                    var c = _c[_b];
+                    c.setStatus(status, propagate);
                 }
             }
+        if (this.rootMesh && this.neurite) {
+            this.rootMesh.material = Status_1.materialPicker(this.neurite.material, this.status);
+        }
     };
     /**
      * Draws the branch and its elements in the given Drawer
@@ -336,6 +374,7 @@ var Branch = (function () {
     Branch.prototype.draw = function (drawer, recursive, linear) {
         if (recursive === void 0) { recursive = false; }
         if (linear === void 0) { linear = false; }
+        this.enabled = true;
         for (var _i = 0, _a = this.nodes; _i < _a.length; _i++) {
             var el = _a[_i];
             el.draw(drawer, linear);
@@ -353,6 +392,8 @@ var Branch = (function () {
      * @param  {Drawer} drawer Class that draws the branch
      */
     Branch.prototype.drawRoot = function (drawer) {
+        if (this.rootMesh)
+            this.rootMesh.dispose();
         if (this.root)
             this.rootMesh = drawer.drawSphere("N0@" + this.idString(), this.root, this.root.r);
     };
@@ -369,6 +410,7 @@ var Branch = (function () {
     };
     Branch.prototype.dispose = function (recursive) {
         if (recursive === void 0) { recursive = true; }
+        this.enabled = false;
         if (this.rootMesh)
             this.rootMesh.dispose();
         for (var _i = 0, _a = this.nodes; _i < _a.length; _i++) {

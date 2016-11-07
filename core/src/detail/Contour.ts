@@ -33,6 +33,8 @@ export class Contour {
 
   // Contour associated mesh
   private mesh : DrawObject;
+  private enabled : boolean;
+  private drawer : Drawer;
 
   /**
    * Contour constructor
@@ -51,6 +53,10 @@ export class Contour {
     this.resolution = 1;
   }
 
+  public size(){
+    return this.points.length;
+  }
+
   /**
    * Changes status
    *
@@ -58,6 +64,18 @@ export class Contour {
    */
   public setStatus( s: Status ){
     this.status = s;
+    this.updateColor();
+
+  }
+
+  public updateColor(){
+    if(this.drawer){
+      if(this.status == Status.highlighted){
+        this.mesh.color = this.drawer.colorFormHex("#FFFF00");
+      } else {
+        this.mesh.color = this.drawer.colorFormHex(this.face_color);
+      }
+    }
   }
 
 
@@ -79,15 +97,32 @@ export class Contour {
    */
   public draw(drawer:Drawer){
 
+    if(this.mesh)
+      this.mesh.dispose();
+
+    this.drawer = drawer;
     // Just draw spheres and merge them
-    drawer.drawContour(this.points,
+    this.enabled = true;
+    this.mesh = drawer.drawContour(this.points,
                        this.closed,
                        this.face_color,
                        this.back_color,
                        this.fill);
   }
 
+  public isEnabled(){
+    return this.enabled;
+  }
+
+  public setEnabled(v:boolean){
+    this.enabled=v;
+    if(this.mesh){
+      this.mesh.setEnabled(v);
+    }
+  }
+
   public dispose(){
+    this.enabled = false;
     this.mesh.dispose();
   }
 

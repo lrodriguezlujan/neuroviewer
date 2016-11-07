@@ -72,8 +72,10 @@ var Soma = (function () {
      *
      */
     Soma.prototype.updateMaterial = function () {
-        if (this.mesh)
-            this.mesh.material = this.pickMaterial();
+        if (this.mesh) {
+            this.mesh.material = Status_1.materialPicker(this.mat, this.status);
+            this.mesh.material.markDirty();
+        }
     };
     /**
      * Draws the soma in the drawer
@@ -81,6 +83,10 @@ var Soma = (function () {
      * @param  {Drawer} drawer drawer class
      */
     Soma.prototype.draw = function (drawer) {
+        this.enabled = true;
+        if (this.mesh) {
+            this.mesh.dispose();
+        }
         if (this.isContour) {
         }
         else {
@@ -93,7 +99,17 @@ var Soma = (function () {
             this.mesh = drawer.merge(meshes);
         }
         // Set mesh material
-        this.mesh.material = this.pickMaterial();
+        this.mesh.material = Status_1.materialPicker(this.mat, this.status);
+    };
+    Soma.prototype.isEnabled = function () {
+        return this.enabled;
+    };
+    Soma.prototype.setEnabled = function (v, recursive) {
+        if (recursive === void 0) { recursive = false; }
+        this.enabled = v;
+        if (this.mesh) {
+            this.mesh.setEnabled(v);
+        }
     };
     /**
      * Computes the convex hull of the given contour nodes
@@ -103,25 +119,6 @@ var Soma = (function () {
     Soma.prototype.convexHull3D = function (nodes) {
         // TODO
         this.nodes = nodes;
-    };
-    /**
-     * Selects the material based on teh status
-     *
-     * @return {type}  description
-     */
-    Soma.prototype.pickMaterial = function () {
-        switch (this.status) {
-            case Status_1.Status.none:
-                return this.mat.standard;
-            case Status_1.Status.invisible:
-                return this.mat.hidden;
-            case Status_1.Status.selected:
-                return this.mat.emmisive;
-            case Status_1.Status.hidden:
-                return this.mat.disminished;
-            case Status_1.Status.highlighted:
-                return this.mat.highlight;
-        }
     };
     /**
      * Creates a soma class from a JS object
