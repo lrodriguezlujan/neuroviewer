@@ -284,6 +284,7 @@ export class ControlPanel {
     cbox.id = id;
     cbox.checked=checked;
     cbox.onchange=box_cb;
+    //cbox.classList.add("input-list-cbox")
     cb_span.appendChild(cbox);
     div.appendChild(cb_span);
 

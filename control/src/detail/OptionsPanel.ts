@@ -13,6 +13,7 @@ export class OptionsControlPanel  extends ControlPanel {
     this.panelDiv.classList.add("optionsPanel");
     this.createCameraOptions();
     this.createRendererOptions();
+    this.createAnimationOptions();
 
     // Default size and position
     this.move(10,10);
@@ -163,11 +164,55 @@ export class OptionsControlPanel  extends ControlPanel {
       this.parent.drawer.showGrid(this.parent.drawer.visibleGrid())
       this.parent.drawer.optimize();
     };
-    parent.appendChild( ControlPanel.createButton("redraw_btn", "Redaw", redraw_cb, "glyphicon-pencil"));
+    parent.appendChild(document.createElement("br"));
+    parent.appendChild( ControlPanel.createButton("redraw_btn", "Redraw", redraw_cb, "glyphicon-pencil"));
 
     this.contentDiv.appendChild(legend);
     this.contentDiv.appendChild(parent);
   }
 
+  private static cameraAnimationFunction(alpha:number, beta:number){
+    return (d:Drawer) => {
+      d.cameraAddRotation(alpha,beta);
+    }
+  }
 
+  private createAnimationOptions(){
+    let parent = ControlPanel.createSet("animation_section");
+    parent.classList.add("collapse"); // Make section collapsible
+
+    let legend = ControlPanel.createLegend("Animation")
+    legend.setAttribute("data-toggle","collapse");
+    legend.setAttribute("data-target","#" + "animation_section");
+    legend.setAttribute("cursor","copy");
+
+    //parent.appendChild(ControlPanel.createLabelTag("plotgrid","Render grid"));
+    parent.appendChild(ControlPanel.createLabelTag("camera_alpha","Alpha speed"));
+    parent.appendChild(ControlPanel.createInputBox("camera_alpha","number", null,0.01));
+
+    parent.appendChild(ControlPanel.createLabelTag("camera_beta","Beta speed"));
+    parent.appendChild(ControlPanel.createInputBox("camera_beta","number", null,0.01));
+
+    let animation_cb = (ev:Event) => {
+      var element = <HTMLElement>ev.srcElement;
+      element.classList.toggle("animate-play");
+      if(element.classList.contains("animate-play")){
+        // Start
+        let alpha = parseFloat((<HTMLInputElement>document.getElementById("camera_alpha")).value);
+        let beta = parseFloat((<HTMLInputElement>document.getElementById("camera_beta")).value);
+        this.parent.drawer.addLoopFunction(OptionsControlPanel.cameraAnimationFunction(alpha,beta));
+      } else {
+        this.parent.drawer.clearLoopFunctions();
+      }
+    };
+
+    let play_btn =  ControlPanel.createButton("animate_btn", "Start/Stop", animation_cb, "glyphicon-play");
+
+    parent.appendChild(document.createElement("br"));
+    parent.appendChild( play_btn);
+
+
+    this.contentDiv.appendChild(legend);
+    this.contentDiv.appendChild(parent);
+  }
 }

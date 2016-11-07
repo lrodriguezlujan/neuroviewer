@@ -217,6 +217,7 @@ var ControlPanel = (function () {
         cbox.id = id;
         cbox.checked = checked;
         cbox.onchange = box_cb;
+        //cbox.classList.add("input-list-cbox")
         cb_span.appendChild(cbox);
         div.appendChild(cb_span);
         // Add label + collapse stuff

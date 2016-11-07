@@ -86,14 +86,14 @@ var NeuronControlPanel = (function (_super) {
         }
         return ControlPanel_1.ControlPanel.createBoxList("neuron_" + id + "_neurite_" + n.id + "_branchlist", boxes);
     };
-    NeuronControlPanel.cbox_callback = function (c, hideId) {
+    NeuronControlPanel.cbox_callback = function (c, checkId) {
         return function (ev) {
             var element = ev.srcElement;
             c.setEnabled(element.checked);
-            if (hideId) {
-                var h = document.getElementById(hideId);
-                if (h) {
-                    h.classList.toggle("hidden-element");
+            if (checkId) {
+                var els = document.getElementById(checkId).getElementsByTagName("input");
+                for (var i = 0; i < els.length; ++i) {
+                    els[i].checked = element.checked;
                 }
             }
         };

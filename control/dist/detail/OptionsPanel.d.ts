@@ -5,4 +5,6 @@ export declare class OptionsControlPanel extends ControlPanel {
     constructor(parent: Control);
     private createCameraOptions();
     private createRendererOptions();
+    private static cameraAnimationFunction(alpha, beta);
+    private createAnimationOptions();
 }

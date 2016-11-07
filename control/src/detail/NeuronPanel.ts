@@ -121,14 +121,14 @@ export class NeuronControlPanel  extends ControlPanel {
     return ControlPanel.createBoxList("neuron_"+id+"_neurite_"+n.id+"_branchlist",boxes) ;
   }
 
-  private static cbox_callback(c:any, hideId?:string){
+  private static cbox_callback(c:any, checkId?:string){
    return (ev:Event) =>{
      var element = <HTMLInputElement>ev.srcElement;
      c.setEnabled(element.checked);
-     if(hideId){
-       let h = document.getElementById(hideId);
-       if(h){
-         h.classList.toggle("hidden-element");
+     if(checkId){
+       var els = document.getElementById(checkId).getElementsByTagName("input");
+       for(var i=0; i< els.length ; ++i) {
+         els[i].checked = element.checked;
        }
      }
    }
