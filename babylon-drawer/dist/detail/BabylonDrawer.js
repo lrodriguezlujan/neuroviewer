@@ -400,6 +400,9 @@ var BabylonDrawer = (function () {
         mesh.color = BABYLON.Color3.FromHexString(color);
         return mesh;
     };
+    BabylonDrawer.prototype.colorFormHex = function (color) {
+        return BABYLON.Color3.FromHexString(color);
+    };
     BabylonDrawer.prototype.drawLines = function (lines, color) {
         // Points to vector3
         var lines_v = [];

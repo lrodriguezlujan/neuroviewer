@@ -507,6 +507,10 @@ import {BabylonMaterialPalette} from "./BabylonPalette";
         return mesh;
     }
 
+    public colorFormHex(color:string){
+      return BABYLON.Color3.FromHexString(color);
+    }
+
     public drawLines(lines: Array<Array<Point3D>>, color: string) {
 
         // Points to vector3
