@@ -196,13 +196,14 @@ var ControlPanel = (function () {
     ControlPanel.createBoxList = function (id, elements) {
         var div = document.createElement("div");
         div.classList.add("list-group");
+        div.id = id;
         for (var _i = 0, elements_1 = elements; _i < elements_1.length; _i++) {
             var el = elements_1[_i];
             div.appendChild(el);
         }
         return div;
     };
-    ControlPanel.createBoxListItem = function (id, label, checked, cb, desc, nitems, badgeBgColor) {
+    ControlPanel.createBoxListItem = function (id, label, checked, box_cb, el_cb, desc, nitems, badgeBgColor) {
         var div = document.createElement("div");
         div.classList.add("input-group");
         div.id = id + "_inputgroup";
@@ -215,30 +216,49 @@ var ControlPanel = (function () {
         cbox.type = "checkbox";
         cbox.id = id;
         cbox.checked = checked;
-        cbox.onchange = cb;
+        cbox.onchange = box_cb;
         cb_span.appendChild(cbox);
         div.appendChild(cb_span);
         // Add label + collapse stuff
         var inner_div = document.createElement("div");
         inner_div.classList.add("form-control");
-        // Add text
-        inner_div.appendChild(document.createTextNode(label));
+        inner_div.ondblclick = el_cb;
+        inner_div.classList.add("list-inner-div");
         if (desc) {
             var expand = ControlPanel.createGlyphicon("glyphicon-plus");
+            expand.style.paddingRight = "5px";
+            expand.style.cursor = "hand";
+            expand.onclick = function (ev) {
+                ev.srcElement.classList.toggle("glyphicon-plus");
+                ev.srcElement.classList.toggle("glyphicon-minus");
+            };
+            expand.setAttribute("data-toggle", "collapse");
+            expand.setAttribute("data-target", "#" + desc.id);
+            expand.setAttribute("cursor", "copy");
+            desc.classList.add("collapse");
+            desc.classList.add("inner-list");
             inner_div.appendChild(expand);
-            inner_div.classList.add("collapsible_boxlist_item");
+            //inner_div.classList.add("collapsible_boxlist_item");
+            inner_div.classList.add("list-with-desc");
         }
-        if (nitems) {
+        // Add text
+        inner_div.appendChild(document.createTextNode(label));
+        if (nitems != null) {
             var badge = document.createElement("span");
             badge.classList.add("badge");
             badge.appendChild(document.createTextNode(nitems.toString()));
             if (badgeBgColor) {
                 badge.style.backgroundColor = badgeBgColor;
+                badge.style.color = "#EEE";
+                badge.style.border = "1px solid #ccc";
             }
             badge.style.cssFloat = "right";
             inner_div.appendChild(badge);
         }
         div.appendChild(inner_div);
+        if (desc) {
+            div.appendChild(desc);
+        }
         return div;
     };
     ControlPanel.createLabelTag = function (id, text) {

@@ -258,6 +258,7 @@ export class ControlPanel {
   protected static createBoxList(id:string, elements : Array<HTMLElement> ){
     let div = document.createElement("div");
     div.classList.add("list-group");
+    div.id = id;
 
     for( let el of elements ){
       div.appendChild(el);
@@ -266,7 +267,8 @@ export class ControlPanel {
     return div;
   }
 
-  protected static createBoxListItem(id: string, label:string, checked: boolean, cb : (ev:Event) => any, desc?:HTMLElement, nitems?:number, badgeBgColor?: string){
+  protected static createBoxListItem(id: string, label:string, checked: boolean, box_cb: (ev:Event) => any,
+                                     el_cb : (ev:Event) => any, desc?:HTMLElement, nitems?:number, badgeBgColor?: string){
     let div = document.createElement("div");
     div.classList.add("input-group");
     div.id = id+"_inputgroup";
@@ -281,13 +283,15 @@ export class ControlPanel {
     cbox.type="checkbox";
     cbox.id = id;
     cbox.checked=checked;
-    cbox.onchange=cb;
+    cbox.onchange=box_cb;
     cb_span.appendChild(cbox);
     div.appendChild(cb_span);
 
     // Add label + collapse stuff
     let inner_div = document.createElement("div");
     inner_div.classList.add("form-control");
+    inner_div.ondblclick = el_cb;
+    inner_div.classList.add("list-inner-div");
 
 
 
@@ -295,26 +299,45 @@ export class ControlPanel {
       let expand = ControlPanel.createGlyphicon("glyphicon-plus");
       expand.style.paddingRight = "5px";
       expand.style.cursor = "hand";
-      inner_div.appendChild(expand)
-      inner_div.classList.add("collapsible_boxlist_item");
+      expand.onclick = (ev:Event) => {
+        ev.srcElement.classList.toggle("glyphicon-plus");
+        ev.srcElement.classList.toggle("glyphicon-minus");
+      }
+      expand.setAttribute("data-toggle","collapse");
+      expand.setAttribute("data-target","#" + desc.id);
+      expand.setAttribute("cursor","copy");
+      desc.classList.add("collapse");
+      desc.classList.add("inner-list");
 
-      //TODO
+      inner_div.appendChild(expand)
+      //inner_div.classList.add("collapsible_boxlist_item");
+      inner_div.classList.add("list-with-desc");
     }
+
     // Add text
     inner_div.appendChild( document.createTextNode(label) );
 
-    if(nitems){
+    if(nitems != null){
       let badge = document.createElement("span");
       badge.classList.add("badge")
       badge.appendChild(document.createTextNode(nitems.toString()));
       if(badgeBgColor){
         badge.style.backgroundColor = badgeBgColor;
+        badge.style.color = "#EEE";
+        badge.style.border = "1px solid #ccc";
       }
       badge.style.cssFloat = "right";
       inner_div.appendChild(badge);
     }
 
+
+
     div.appendChild(inner_div);
+
+    if(desc){
+        div.appendChild(desc);
+    }
+
     return div;
   }
 

@@ -15,7 +15,7 @@ export class OptionsControlPanel  extends ControlPanel {
     this.createRendererOptions();
 
     // Default size and position
-    this.move(10,50);
+    this.move(10,10);
     this.resize(300);
   }
 

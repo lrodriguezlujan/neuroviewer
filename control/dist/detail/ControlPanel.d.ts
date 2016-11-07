@@ -28,7 +28,7 @@ export declare class ControlPanel {
     protected static createButton(id: string, text: string, cb: (ev: Event) => void, icon?: string): HTMLButtonElement;
     protected static createInputBox(id: string, type: string, cb: (ev: Event) => any, value?: any): HTMLInputElement;
     protected static createBoxList(id: string, elements: Array<HTMLElement>): HTMLDivElement;
-    protected static createBoxListItem(id: string, label: string, checked: boolean, cb: (ev: Event) => any, desc?: HTMLElement, nitems?: number, badgeBgColor?: string): HTMLDivElement;
+    protected static createBoxListItem(id: string, label: string, checked: boolean, box_cb: (ev: Event) => any, el_cb: (ev: Event) => any, desc?: HTMLElement, nitems?: number, badgeBgColor?: string): HTMLDivElement;
     protected static createLabelTag(id: string, text: string): HTMLLabelElement;
     protected static createSet(id: string): HTMLDivElement;
     protected static createGlyphicon(id: string): HTMLSpanElement;

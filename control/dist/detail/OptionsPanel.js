@@ -15,7 +15,7 @@ var OptionsControlPanel = (function (_super) {
         this.createCameraOptions();
         this.createRendererOptions();
         // Default size and position
-        this.move(10, 50);
+        this.move(10, 10);
         this.resize(300);
     }
     OptionsControlPanel.prototype.createCameraOptions = function () {
