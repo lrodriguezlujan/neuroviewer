@@ -28,6 +28,10 @@
       drawLine: (id: string, source: Point3D, target: Point3D, color: string) => DrawObject;
       dispose: () => void;
 
+      // Add loop function
+      addLoopFunction: ( fn: (d:Drawer) => void ) => void;
+      clearLoopFunctions: () => void;
+
       // optimize
       optimize: (level?:number,cb?:()=>any) => any;
 
@@ -55,6 +59,9 @@
       setCameraWheelSensibility: (v : number) => void;
 
       resetCamera : () => void;
+
+      // Rtoate camera (for arc rotate camera)
+      cameraAddRotation: (alphaDelta:number,betaDelta:number) => void;
 
       // Draw Control
       setCircularSegmentsCount: (v:number) => void;
