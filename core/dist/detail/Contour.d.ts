@@ -26,6 +26,7 @@ export declare class Contour {
     status: Status;
     private mesh;
     private enabled;
+    private drawer;
     /**
      * Contour constructor
      *
@@ -40,6 +41,7 @@ export declare class Contour {
      * @param  {type} s: Status description
      */
     setStatus(s: Status): void;
+    updateColor(): void;
     /**
      * Returns the i-th point in the contour
      *

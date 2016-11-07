@@ -9,6 +9,7 @@
       dispose: () => void;
       setEnabled: (value:boolean) => void;
       isEnabled: () => boolean;
+      color?: DrawColor;
   }; // Intended: BABYLON.AbstractMesh
 
   export enum CameraType{
@@ -62,10 +63,19 @@
       visibleGrid: () => boolean;
       normalizeScene: () => void;
 
+      // Get color from hex
+      colorFormHex: (color:string) => DrawColor;
+
   }; // Intended: NvDraw.BabylonDrawer
 
+  export interface DrawColor {
+    toHexString: () => string;
+  };
+
   export interface DrawMaterial {
-    diffuseColor?: any;
+    diffuseColor?: DrawColor,
+
+    markDirty(): any;
   };
 
   export interface DrawMaterialSet{

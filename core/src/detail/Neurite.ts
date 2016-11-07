@@ -39,8 +39,8 @@ import{Drawer, DrawMaterialSet, DrawObject} from "./NvCoreInterfaces";
   private firstBranch: Branch;
   private lineDrawObj : DrawObject;
 
-  private singleLine : boolean;
-  private enabled : boolean;
+  private singleLine = false;
+  private enabled = false;
   private status = Status.none;
 
 
@@ -89,6 +89,7 @@ import{Drawer, DrawMaterialSet, DrawObject} from "./NvCoreInterfaces";
       this.lineDrawObj.dispose();
 
     if(this.firstBranch){
+      this.firstBranch.dispose(true);
       // Get neurite as a line array
       let lines = this.firstBranch.asLineArray(true);
       let color = this.material.getStandardHexcolor();
@@ -166,13 +167,14 @@ import{Drawer, DrawMaterialSet, DrawObject} from "./NvCoreInterfaces";
    */
   public updateMaterial(mat:DrawMaterialSet, propagate = true){
     this.material = mat;
-    if(!this.lineDraw){
+    if(!this.singleLine){
       if(this.firstBranch && propagate){
         this.firstBranch.updateMaterial(true);
       }
     } else {
       if(this.lineDrawObj){
-        this.lineDrawObj.material.diffuseColor = materialColorPicker(this.material, this.status);
+        this.lineDrawObj.color = this.neuron.getDrawer().colorFormHex(materialColorPicker(this.material, this.status));
+        this.lineDrawObj.material.markDirty();
       }
     }
   }
@@ -186,7 +188,7 @@ import{Drawer, DrawMaterialSet, DrawObject} from "./NvCoreInterfaces";
    */
   public setStatus(status: Status, propagate = true ){
     this.status = status;
-    if (!this.lineDraw && this.firstBranch)
+    if ( (!this.singleLine) && this.firstBranch)
       this.firstBranch.setStatus(status,propagate);
 
     this.updateMaterial(this.material,false);
@@ -229,6 +231,7 @@ import{Drawer, DrawMaterialSet, DrawObject} from "./NvCoreInterfaces";
   }
 
   public dispose(){
+    this.enabled = false;
     if(this.firstBranch) this.firstBranch.dispose(true);
     if(this.lineDrawObj) this.lineDrawObj.dispose();
   }

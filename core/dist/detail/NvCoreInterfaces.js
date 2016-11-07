@@ -10,4 +10,5 @@ var CameraType = exports.CameraType;
 ;
 ;
 ;
+;
 //# sourceMappingURL=NvCoreInterfaces.js.map

@@ -41,6 +41,7 @@ export declare class Neuron {
     addNeurite(n: Neurite): void;
     attachDrawer(drawer: Drawer): void;
     private updateMaterials();
+    getDrawer(): Drawer;
     setStatus(s: Status): void;
     /**
      * Adds a property to the neuron

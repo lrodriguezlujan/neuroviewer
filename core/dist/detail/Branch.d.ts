@@ -77,7 +77,7 @@ export declare class BranchElement {
     /**
      * Gets current color
      */
-    currentColor(): any;
+    currentColor(): string;
     /**
      * Updates mesh material based on the status
      *

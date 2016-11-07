@@ -131,10 +131,13 @@ import {Point3D,Drawer, DrawObject, DrawMaterial} from "./NvCoreInterfaces";
      */
     public setStatus(status: Status ){
       this.status = status;
-      this.updateMaterial();
+
       // Change color
       if(this.linear && this.segmentMesh){
-        this.segmentMesh.material.diffuseColor = this.currentColor();
+        this.segmentMesh.color = this.branch.neurite.neuron.getDrawer().colorFormHex(this.currentColor());
+        this.segmentMesh.material.markDirty();
+      } else {
+        this.updateMaterial();
       }
     }
 
@@ -161,7 +164,7 @@ import {Point3D,Drawer, DrawObject, DrawMaterial} from "./NvCoreInterfaces";
      */
      public currentColor() {
        if(this.drawn && this.branch && this.branch.neurite){
-         return materialColorPicker(this.branch.neurite.material,this.status);
+         return  materialColorPicker(this.branch.neurite.material,this.status);
        } else {
          return "#FFFFFF";
        }
@@ -180,10 +183,12 @@ import {Point3D,Drawer, DrawObject, DrawMaterial} from "./NvCoreInterfaces";
 
         if(this.nodeMesh){
           this.nodeMesh.material = mat;
+          this.nodeMesh.material.markDirty();
         }
 
         if(this.segmentMesh)
           this.segmentMesh.material = mat;
+          this.segmentMesh.material.markDirty();
       }
     }
 
@@ -194,6 +199,7 @@ import {Point3D,Drawer, DrawObject, DrawMaterial} from "./NvCoreInterfaces";
      * @public
      */
     public dispose(){
+      this.enabled = false;
       if(this.nodeMesh)
         this.nodeMesh.dispose();
       if(this.segmentMesh)
@@ -426,6 +432,7 @@ export class Branch {
     }
     if(this.rootMesh && this.neurite){
       this.rootMesh.material = materialPicker(this.neurite.material,this.status);
+      this.rootMesh.material.markDirty();
     }
   }
 
@@ -438,16 +445,17 @@ export class Branch {
    */
   public setStatus(status: Status, propagate = true ){
     this.status = status;
-    if(propagate)
-      for(let el of this.nodes){
-        el.setStatus(status)
-
-        if(this.children){
-          for(let c of this.children){
-            c.setStatus(status,propagate)
-          }
-        }
+    for(let el of this.nodes){
+      el.setStatus(status)
     }
+
+    if(propagate)
+      if(this.children){
+        for(let c of this.children){
+          c.setStatus(status,propagate)
+      }
+    }
+
     if(this.rootMesh && this.neurite){
       this.rootMesh.material = materialPicker(this.neurite.material,this.status);
     }
@@ -500,6 +508,7 @@ export class Branch {
   }
 
   public dispose(recursive = true){
+    this.enabled = false;
     if(this.rootMesh) this.rootMesh.dispose();
     for(let el of this.nodes){
       el.dispose()

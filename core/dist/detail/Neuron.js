@@ -47,6 +47,9 @@ var Neuron = (function () {
             }
         }
     };
+    Neuron.prototype.getDrawer = function () {
+        return this.drawer;
+    };
     Neuron.prototype.setStatus = function (s) {
         this.status = s;
         if (this.soma) {
@@ -172,6 +175,7 @@ var Neuron = (function () {
         }
     };
     Neuron.prototype.dispose = function () {
+        this.enabled = false;
         for (var _i = 0, _a = this.neurites; _i < _a.length; _i++) {
             var n = _a[_i];
             n.dispose();

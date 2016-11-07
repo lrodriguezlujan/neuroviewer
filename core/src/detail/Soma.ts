@@ -102,8 +102,10 @@ export class Soma {
    *
    */
   private updateMaterial(){
-    if(this.mesh)
+    if(this.mesh){
       this.mesh.material = materialPicker(this.mat,this.status);
+      this.mesh.material.markDirty();
+    }
   }
 
 

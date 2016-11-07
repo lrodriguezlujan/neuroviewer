@@ -72,8 +72,10 @@ var Soma = (function () {
      *
      */
     Soma.prototype.updateMaterial = function () {
-        if (this.mesh)
+        if (this.mesh) {
             this.mesh.material = Status_1.materialPicker(this.mat, this.status);
+            this.mesh.material.markDirty();
+        }
     };
     /**
      * Draws the soma in the drawer

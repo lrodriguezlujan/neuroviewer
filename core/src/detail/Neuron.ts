@@ -75,6 +75,10 @@ import{Drawer, DrawMaterialSet, DrawObject} from "./NvCoreInterfaces";
       }
     }
 
+    public getDrawer() {
+      return this.drawer;
+    }
+
     public setStatus(s:Status){
       this.status = s;
         if(this.soma){
@@ -212,6 +216,7 @@ import{Drawer, DrawMaterialSet, DrawObject} from "./NvCoreInterfaces";
 
 
     public dispose(){
+      this.enabled = false;
       for( let n of this.neurites )
         n.dispose();
     }

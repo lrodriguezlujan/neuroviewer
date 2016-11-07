@@ -29,6 +29,8 @@ var Neurite = (function () {
         this.type = type;
         this.material = material;
         this.neuron = neuron;
+        this.singleLine = false;
+        this.enabled = false;
         this.status = Status_1.Status.none;
     }
     /**
@@ -60,6 +62,7 @@ var Neurite = (function () {
         if (this.lineDrawObj)
             this.lineDrawObj.dispose();
         if (this.firstBranch) {
+            this.firstBranch.dispose(true);
             // Get neurite as a line array
             var lines = this.firstBranch.asLineArray(true);
             var color = this.material.getStandardHexcolor();
@@ -128,14 +131,15 @@ var Neurite = (function () {
     Neurite.prototype.updateMaterial = function (mat, propagate) {
         if (propagate === void 0) { propagate = true; }
         this.material = mat;
-        if (!this.lineDraw) {
+        if (!this.singleLine) {
             if (this.firstBranch && propagate) {
                 this.firstBranch.updateMaterial(true);
             }
         }
         else {
             if (this.lineDrawObj) {
-                this.lineDrawObj.material.diffuseColor = Status_1.materialColorPicker(this.material, this.status);
+                this.lineDrawObj.color = this.neuron.getDrawer().colorFormHex(Status_1.materialColorPicker(this.material, this.status));
+                this.lineDrawObj.material.markDirty();
             }
         }
     };
@@ -148,7 +152,7 @@ var Neurite = (function () {
     Neurite.prototype.setStatus = function (status, propagate) {
         if (propagate === void 0) { propagate = true; }
         this.status = status;
-        if (!this.lineDraw && this.firstBranch)
+        if ((!this.singleLine) && this.firstBranch)
             this.firstBranch.setStatus(status, propagate);
         this.updateMaterial(this.material, false);
     };
@@ -182,6 +186,7 @@ var Neurite = (function () {
         this.firstBranch.updateID([0]);
     };
     Neurite.prototype.dispose = function () {
+        this.enabled = false;
         if (this.firstBranch)
             this.firstBranch.dispose(true);
         if (this.lineDrawObj)

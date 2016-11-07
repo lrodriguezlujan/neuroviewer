@@ -84,10 +84,13 @@ var BranchElement = (function () {
      */
     BranchElement.prototype.setStatus = function (status) {
         this.status = status;
-        this.updateMaterial();
         // Change color
         if (this.linear && this.segmentMesh) {
-            this.segmentMesh.material.diffuseColor = this.currentColor();
+            this.segmentMesh.color = this.branch.neurite.neuron.getDrawer().colorFormHex(this.currentColor());
+            this.segmentMesh.material.markDirty();
+        }
+        else {
+            this.updateMaterial();
         }
     };
     BranchElement.prototype.isEnabled = function () {
@@ -128,9 +131,11 @@ var BranchElement = (function () {
             var mat = Status_1.materialPicker(this.branch.neurite.material, this.status);
             if (this.nodeMesh) {
                 this.nodeMesh.material = mat;
+                this.nodeMesh.material.markDirty();
             }
             if (this.segmentMesh)
                 this.segmentMesh.material = mat;
+            this.segmentMesh.material.markDirty();
         }
     };
     /**
@@ -139,6 +144,7 @@ var BranchElement = (function () {
      * @public
      */
     BranchElement.prototype.dispose = function () {
+        this.enabled = false;
         if (this.nodeMesh)
             this.nodeMesh.dispose();
         if (this.segmentMesh)
@@ -332,6 +338,7 @@ var Branch = (function () {
         }
         if (this.rootMesh && this.neurite) {
             this.rootMesh.material = Status_1.materialPicker(this.neurite.material, this.status);
+            this.rootMesh.material.markDirty();
         }
     };
     /**
@@ -343,15 +350,15 @@ var Branch = (function () {
     Branch.prototype.setStatus = function (status, propagate) {
         if (propagate === void 0) { propagate = true; }
         this.status = status;
+        for (var _i = 0, _a = this.nodes; _i < _a.length; _i++) {
+            var el = _a[_i];
+            el.setStatus(status);
+        }
         if (propagate)
-            for (var _i = 0, _a = this.nodes; _i < _a.length; _i++) {
-                var el = _a[_i];
-                el.setStatus(status);
-                if (this.children) {
-                    for (var _b = 0, _c = this.children; _b < _c.length; _b++) {
-                        var c = _c[_b];
-                        c.setStatus(status, propagate);
-                    }
+            if (this.children) {
+                for (var _b = 0, _c = this.children; _b < _c.length; _b++) {
+                    var c = _c[_b];
+                    c.setStatus(status, propagate);
                 }
             }
         if (this.rootMesh && this.neurite) {
@@ -403,6 +410,7 @@ var Branch = (function () {
     };
     Branch.prototype.dispose = function (recursive) {
         if (recursive === void 0) { recursive = true; }
+        this.enabled = false;
         if (this.rootMesh)
             this.rootMesh.dispose();
         for (var _i = 0, _a = this.nodes; _i < _a.length; _i++) {

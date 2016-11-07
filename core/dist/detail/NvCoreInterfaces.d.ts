@@ -8,6 +8,7 @@ export interface DrawObject {
     dispose: () => void;
     setEnabled: (value: boolean) => void;
     isEnabled: () => boolean;
+    color?: DrawColor;
 }
 export declare enum CameraType {
     universal = 0,
@@ -43,9 +44,14 @@ export interface Drawer {
     showGrid: (v: boolean) => void;
     visibleGrid: () => boolean;
     normalizeScene: () => void;
+    colorFormHex: (color: string) => DrawColor;
+}
+export interface DrawColor {
+    toHexString: () => string;
 }
 export interface DrawMaterial {
-    diffuseColor?: any;
+    diffuseColor?: DrawColor;
+    markDirty(): any;
 }
 export interface DrawMaterialSet {
     standard: DrawMaterial;

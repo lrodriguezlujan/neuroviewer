@@ -7,4 +7,4 @@ export declare enum Status {
     highlighted = 4,
 }
 export declare function materialPicker(pal: DrawMaterialSet, s: Status): DrawMaterial;
-export declare function materialColorPicker(pal: DrawMaterialSet, s: Status): any;
+export declare function materialColorPicker(pal: DrawMaterialSet, s: Status): string;
