@@ -1,7 +1,7 @@
 {
   "name": "@neuroviewer/reader",
   "version": "0.0.1",
-  "description": "Neuroviewer data reading classes",
+  "description": "Neuroviewer data reading",
   "main": "index.js",
   "scripts": {
     "postinstall": "typings install",
@@ -13,7 +13,7 @@
     "dts" : "tsc -d"
   },
   "repository": {},
-  "keywords": [],
+  "keywords": ["neuron", "neuroviewer", "swc"],
   "author": "Luis Rodriguez-Lujan <luis.rodriguezl@upm.es>",
   "license": "MIT",
   "dependencies": {},

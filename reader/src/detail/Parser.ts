@@ -5,8 +5,15 @@ import {ReconstructionJSON, Reconstruction} from "@neuroviewer/core";
  */
 export interface ParserInterface{
 
-  readAsync:  (data: ReconstructionJSON | string, cb:( n:Reconstruction, e?:Error) => void) => void,
-  readSync:   (data: ReconstructionJSON | string) => Error,
+  /**
+   * Read function interface
+   * @type {Reconstruction}
+   */
+  read:  (data: ReconstructionJSON | string, cb:( n:Reconstruction, e?:Error) => void) => Reconstruction,
+
+  // Reconstruction object
   rec:     Reconstruction,
+
+  // Error
   error:      Error
 }
