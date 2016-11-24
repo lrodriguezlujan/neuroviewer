@@ -175,7 +175,7 @@ import {Point3D,Drawer, DrawObject, DrawMaterial} from "./NvCoreInterfaces";
      * Gets current color
      */
      public currentColor() {
-       if(this.drawn && this.branch && this.branch.neurite){
+       if(this.branch && this.branch.neurite){
          return  materialColorPicker(this.branch.neurite.material,this.status);
        } else {
          return "#FFFFFF";
