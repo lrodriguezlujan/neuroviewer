@@ -82,6 +82,12 @@ import{Drawer, DrawMaterialSet, DrawObject} from "./NvCoreInterfaces";
       this.firstBranch.draw(drawer,true, linear);
   }
 
+  /**
+   * Draws the neurite as a single line element
+   * This disables the ability to select branches, but has a great great
+   * impact in performance
+   * @param  {Drawer} drawer
+   */
   public lineDraw(drawer:Drawer){
     this.enabled = true;
     this.singleLine = true;
@@ -97,6 +103,10 @@ import{Drawer, DrawMaterialSet, DrawObject} from "./NvCoreInterfaces";
     }
   }
 
+  /**
+   * Get current neurite color as a hex string
+   * @return {String} Neurite color
+   */
   public getColor(){
     return this.material.getStandardHexcolor();
   }
@@ -110,6 +120,9 @@ import{Drawer, DrawMaterialSet, DrawObject} from "./NvCoreInterfaces";
       this.firstBranch.forEachElement(fn,true);
   }
 
+  /**
+   * Count number of branches in the neurite
+   */
   public branchCount(){
     if(this.firstBranch){
       return this.firstBranch.subtreeSize();
@@ -118,6 +131,9 @@ import{Drawer, DrawMaterialSet, DrawObject} from "./NvCoreInterfaces";
     }
   }
 
+  /**
+   * Returns all neurite branches in an Array
+   */
   public allBranches(){
     if(this.firstBranch){
       return this.firstBranch.subtree();
@@ -126,10 +142,18 @@ import{Drawer, DrawMaterialSet, DrawObject} from "./NvCoreInterfaces";
     }
   }
 
+  /**
+   * Checks enable status
+   */
   public isEnabled(){
     return this.enabled;
   }
 
+  /**
+   * Set enabled/disabled status
+   * @param  {boolean} v               [description]
+   * @param  {[type]}  recursive=false [description]
+   */
   public setEnabled(v:boolean, recursive = false){
     this.enabled=v;
     if(this.firstBranch){

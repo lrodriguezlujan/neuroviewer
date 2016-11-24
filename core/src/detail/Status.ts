@@ -1,5 +1,8 @@
 import {DrawMaterialSet, DrawMaterial} from "./NvCoreInterfaces";
 
+/**
+ * Possible element statuses
+ */
 export enum Status {
     none,
     invisible,
@@ -8,6 +11,11 @@ export enum Status {
     highlighted
 };
 
+/**
+ * Chose a material from a set based on the given status
+ * @param  {DrawMaterialSet} pal [description]
+ * @param  {Status}          s   [description]
+ */
 export function materialPicker(pal : DrawMaterialSet, s:Status){
   if( pal != null){
     switch(s){
@@ -27,6 +35,9 @@ export function materialPicker(pal : DrawMaterialSet, s:Status){
   }
 }
 
+/**
+ * Choose a material and then returns its Hex color string
+ */
 export function materialColorPicker(pal : DrawMaterialSet, s:Status){
   let m = materialPicker(pal,s);
   if(m != null){

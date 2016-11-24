@@ -54,6 +54,10 @@ import{Drawer, DrawMaterialSet, DrawObject} from "./NvCoreInterfaces";
       this.neurites.push(n);
     }
 
+    /**
+     * Attach a drawer class to the neuron
+     * @param  {Drawer} drawer Neuron drawer
+     */
     public attachDrawer( drawer : Drawer ){
       if(this.drawer){
         this.drawer.dispose();
@@ -64,6 +68,9 @@ import{Drawer, DrawMaterialSet, DrawObject} from "./NvCoreInterfaces";
       this.updateMaterials();
     }
 
+    /**
+     * Updates the material of every neuron element
+     */
     private updateMaterials(){
       if(this.soma){
         this.soma.setMaterial( this.drawer.palette.grey());
@@ -75,6 +82,9 @@ import{Drawer, DrawMaterialSet, DrawObject} from "./NvCoreInterfaces";
       }
     }
 
+    /**
+     * Get current drawer
+     */
     public getDrawer() {
       return this.drawer;
     }
@@ -214,13 +224,19 @@ import{Drawer, DrawMaterialSet, DrawObject} from "./NvCoreInterfaces";
     }
 
 
-
+    /**
+     * Frees the neuron and its allocated resources
+     */
     public dispose(){
       this.enabled = false;
       for( let n of this.neurites )
         n.dispose();
     }
 
+    /**
+     * Checks if the neuron has a cutbox defined
+     * @fixme This has changed!!! now cutbox_min and max are point
+     */
     public hasCutbox(){
       if (! this.properties) return false;
       else {
@@ -229,6 +245,9 @@ import{Drawer, DrawMaterialSet, DrawObject} from "./NvCoreInterfaces";
       }
     }
 
+    /**
+     * Draws the cutbox
+     */
     public drawCutbox(){
       if(this.hasCutbox()){
 
@@ -243,6 +262,9 @@ import{Drawer, DrawMaterialSet, DrawObject} from "./NvCoreInterfaces";
       }
     }
 
+    /**
+     * Executes a function for each brach
+     */
     public forEachElement( fn:(item:BranchElement) => void){
       for(let neurite  of this.neurites){
         neurite.forEachElement(fn);

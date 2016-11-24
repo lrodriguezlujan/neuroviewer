@@ -1,9 +1,15 @@
+/**
+ * Three dimensional point
+ */
   export interface Point3D {
       x: number;
       y: number;
       z: number;
   }
 
+/**
+ * Draw objects (usually meshes)
+ */
   export interface DrawObject {
       material: DrawMaterial;
       dispose: () => void;
@@ -12,11 +18,17 @@
       color?: DrawColor;
   }; // Intended: BABYLON.AbstractMesh
 
+/**
+ * Camera types
+ */
   export enum CameraType{
     universal,
     pivot
   };
 
+/**
+ * Drawer interface
+ */
   export interface Drawer {
       palette: DrawMaterialPalette;
       drawSphere: (id:string, position:Point3D, radius:number) => DrawObject;
@@ -75,16 +87,25 @@
 
   }; // Intended: NvDraw.BabylonDrawer
 
+/**
+ * Color abstract
+ */
   export interface DrawColor {
     toHexString: () => string;
   };
 
+/**
+ * Material abstract
+ */
   export interface DrawMaterial {
     diffuseColor?: DrawColor,
 
     markDirty(): any;
   };
 
+/**
+ * Material set
+ */
   export interface DrawMaterialSet{
       standard: DrawMaterial;
       hidden: DrawMaterial;
@@ -94,6 +115,9 @@
       getStandardHexcolor: () => string;
   };
 
+/**
+ * Material set pallete
+ */
   export interface DrawMaterialPalette{
       grey: () => DrawMaterialSet;
       get: (index:number) => DrawMaterialSet;
