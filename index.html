@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <script src="scripts/vendor/jquery.min.js"></script>
+
+    <script src="scripts/vendor/hand.min.js"></script>
+    <script src="scripts/vendor/babylon.js"></script>
+    <script src="scripts/vendor/babylon.gridMaterial.js"></script>
+
+    <script src="scripts/vendor/system.src.js"></script>
+
+    <script src="scripts/vendor/interact.min.js"></script>
+    <script src="scripts/vendor/bootstrap.min.js"></script>
+
+    <script src="system.config.js"></script>
+    <title>Tutorial</title>
+    <style>
+  html, body {
+    overflow: hidden;
+    width: 100%;
+    height: 100%;
+    margin: 0;
+    padding: 0;
+  }
+
+  #renderCanvas {
+    width: 100%;
+    height: 100%;
+    touch-action: none;
+  }
+</style>
+  <link rel="stylesheet" type="text/css" href="css/neuroviewer.control.css">
+  <link rel="stylesheet" type="text/css" href="css/bootstrap.min.css">
+  <link rel="stylesheet" type="text/css" href="css/awesome-bootstrap-checkbox.css">
+
+  </head>
+  <body>
+<div class="row" style="margin:0">
+<div class="col-sm-4">
+<form id="filein" name="filein" enctype="multipart/form-data" method="post">
+  <fieldset>
+    <h3>Load a SWC or a <a href="https://github.com/lrodriguezlujan/neurostr" title="NeuroSTR Github">neuroSTR</a> JSON file</h3>
+     <input type='file' id='fileinput' class="btn btn-default" style = "display: inline">
+     <input type='button' id='btnLoad' value='Load' onclick='loadFile();' class = "btn btn-primary" style = "display: inline; margin-left: 5rem">
+  </fieldset>
+</form>
+</div>
+
+<div class="col-sm-4">
+  <!-- Logos? -->
+  <h1><p style="text-align:center">  NeuroViewer Example App </p></h1>
+
+</div>
+
+<div class="col-sm-4" style = "padding-top: 3em;">
+  <a href="https://github.com/lrodriguezlujan/neuroviewer" title="NeuroViewer GitHub" style = "float:right; font-size:x-large">
+  <i class="fa fa-github"></i> NeuroViewer </a>
+</div>
+
+</div>
+
+<hr style = "margin-bottom:0"/>
+
+
+<canvas id="renderCanvas"></canvas>
+
+<script>
+
+// Draw canvas
+var canvas = document.getElementById("renderCanvas");
+// Drawer
+var drawer;
+// Controls
+var controls;
+// Current reconstruction
+var reconstruction;
+
+// Modules
+var core;
+var reader;
+var babylon;
+var control;
+
+System.import('@neuroviewer/core').then( function(m) {
+      core = m;
+      System.import('@neuroviewer/reader').then( function(m) {
+          reader = m;
+          System.import('@neuroviewer/babylon-drawer').then( function(m) {
+            babylon = m;
+            System.import('@neuroviewer/control').then( function(m) {
+              control = m;
+
+              drawer = new babylon.BabylonDrawer(canvas);
+              drawer.init();
+
+            });
+          });
+      });
+  });
+
+function loadFile(){
+  var input, file, fr, ext, parser;
+
+    if(reconstruction)
+      reconstruction.dispose();
+
+    if(controls)
+      controls.dispose();
+
+    if (typeof window.FileReader !== 'function') {
+      alert("The file API isn't supported on this browser yet.");
+      return;
+    }
+
+    input = document.getElementById('fileinput');
+    if (!input) {
+      alert("Um, couldn't find the fileinput element.");
+    }
+    else if (!input.files) {
+      alert("This browser doesn't seem to support the `files` property of file inputs.");
+    }
+    else if (!input.files[0]) {
+      alert("Please select a file before clicking 'Load'");
+    }
+    else {
+      file = input.files[0];
+      ext = file.name.split('.').pop();
+      parser = reader.parserByFileExtension(ext);
+      fr = new FileReader();
+
+      fr.onload = function receivedText(e) {
+        lines = e.target.result;
+        reconstruction = parser.read(lines,null);
+        reconstruction.attachDrawer(drawer);
+        reconstruction.singleElementDraw = true;
+        reconstruction.draw();
+
+        // Reset camera
+        drawer.resetCamera();
+
+        // Normalize scene
+        drawer.normalizeScene();
+
+        // Optimize
+        // drawer.optimize(0);
+
+        // Create grid
+        drawer.createGrid(babylon.default_config_grid);
+
+        // Create controls
+        controls = new control.Control(drawer,reconstruction);
+        controls.showOptions();
+        controls.showNeuron();
+      };
+
+      fr.readAsText(file);
+    }
+
+}
+
+
+
+</script>
+
+  </body>
+</html>
