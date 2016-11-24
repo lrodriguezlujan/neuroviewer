@@ -185,7 +185,7 @@ var SWCParser = (function () {
                             if (el.type != core_1.NeuriteType.soma)
                                 this.buildNeurite(br, el.type);
                             else
-                                this.buildNeurite(br, this.tmpArray[br.nodeID(0)].type);
+                                this.buildNeurite(br, this.tmpArray[br.nodeID(1)].type);
                         }
                     }
                 }

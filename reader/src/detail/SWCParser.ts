@@ -227,7 +227,7 @@ import {ParserInterface} from "./Parser";
                   if(el.type != NeuriteType.soma)
                     this.buildNeurite(br,el.type);
                   else
-                    this.buildNeurite(br,this.tmpArray[br.nodeID(0)].type);
+                    this.buildNeurite(br,this.tmpArray[br.nodeID(1)].type);
                 }
               }
             }
