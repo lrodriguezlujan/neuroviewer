@@ -126,7 +126,7 @@ var BranchElement = (function () {
      * Gets current color
      */
     BranchElement.prototype.currentColor = function () {
-        if (this.drawn && this.branch && this.branch.neurite) {
+        if (this.branch && this.branch.neurite) {
             return Status_1.materialColorPicker(this.branch.neurite.material, this.status);
         }
         else {
