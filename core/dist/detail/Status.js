@@ -1,4 +1,7 @@
 "use strict";
+/**
+ * Possible element statuses
+ */
 (function (Status) {
     Status[Status["none"] = 0] = "none";
     Status[Status["invisible"] = 1] = "invisible";
@@ -8,6 +11,11 @@
 })(exports.Status || (exports.Status = {}));
 var Status = exports.Status;
 ;
+/**
+ * Chose a material from a set based on the given status
+ * @param  {DrawMaterialSet} pal [description]
+ * @param  {Status}          s   [description]
+ */
 function materialPicker(pal, s) {
     if (pal != null) {
         switch (s) {
@@ -28,6 +36,9 @@ function materialPicker(pal, s) {
     }
 }
 exports.materialPicker = materialPicker;
+/**
+ * Choose a material and then returns its Hex color string
+ */
 function materialColorPicker(pal, s) {
     var m = materialPicker(pal, s);
     if (m != null) {

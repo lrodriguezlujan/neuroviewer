@@ -65,15 +65,26 @@ var Contour = (function () {
         this.enabled = true;
         this.mesh = drawer.drawContour(this.points, this.closed, this.face_color, this.back_color, this.fill);
     };
+    /**
+     * Returns the enabled/disabled status
+     * @return {boolean} True if the contour is visible
+     */
     Contour.prototype.isEnabled = function () {
         return this.enabled;
     };
+    /**
+     * Changes the enabled/disabled status
+     * @param  {boolean} v New status
+     */
     Contour.prototype.setEnabled = function (v) {
         this.enabled = v;
         if (this.mesh) {
             this.mesh.setEnabled(v);
         }
     };
+    /**
+     * Frees all allocated resources. disposes the meshes
+     */
     Contour.prototype.dispose = function () {
         this.enabled = false;
         this.mesh.dispose();

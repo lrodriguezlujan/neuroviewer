@@ -55,8 +55,19 @@ export declare class Contour {
      * @param  {Drawer} drawer drawer class
      */
     draw(drawer: Drawer): void;
+    /**
+     * Returns the enabled/disabled status
+     * @return {boolean} True if the contour is visible
+     */
     isEnabled(): boolean;
+    /**
+     * Changes the enabled/disabled status
+     * @param  {boolean} v New status
+     */
     setEnabled(v: boolean): void;
+    /**
+     * Frees all allocated resources. disposes the meshes
+     */
     dispose(): void;
     /**
      * Creates a soma class from a JS object

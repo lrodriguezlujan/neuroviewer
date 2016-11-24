@@ -28,6 +28,10 @@ var Neuron = (function () {
         n.neuron = this;
         this.neurites.push(n);
     };
+    /**
+     * Attach a drawer class to the neuron
+     * @param  {Drawer} drawer Neuron drawer
+     */
     Neuron.prototype.attachDrawer = function (drawer) {
         if (this.drawer) {
             this.drawer.dispose();
@@ -36,6 +40,9 @@ var Neuron = (function () {
         // Update materials
         this.updateMaterials();
     };
+    /**
+     * Updates the material of every neuron element
+     */
     Neuron.prototype.updateMaterials = function () {
         if (this.soma) {
             this.soma.setMaterial(this.drawer.palette.grey());
@@ -47,6 +54,9 @@ var Neuron = (function () {
             }
         }
     };
+    /**
+     * Get current drawer
+     */
     Neuron.prototype.getDrawer = function () {
         return this.drawer;
     };
@@ -174,6 +184,9 @@ var Neuron = (function () {
             }
         }
     };
+    /**
+     * Frees the neuron and its allocated resources
+     */
     Neuron.prototype.dispose = function () {
         this.enabled = false;
         for (var _i = 0, _a = this.neurites; _i < _a.length; _i++) {
@@ -181,6 +194,10 @@ var Neuron = (function () {
             n.dispose();
         }
     };
+    /**
+     * Checks if the neuron has a cutbox defined
+     * @fixme This has changed!!! now cutbox_min and max are point
+     */
     Neuron.prototype.hasCutbox = function () {
         if (!this.properties)
             return false;
@@ -189,6 +206,9 @@ var Neuron = (function () {
                 this.properties["cutbox_max_x"] && this.properties["cutbox_max_y"] && this.properties["cutbox_max_z"]);
         }
     };
+    /**
+     * Draws the cutbox
+     */
     Neuron.prototype.drawCutbox = function () {
         if (this.hasCutbox()) {
             var min = { x: this.properties["cutbox_min_x"], y: this.properties["cutbox_min_y"], z: this.properties["cutbox_min_z"] };
@@ -199,6 +219,9 @@ var Neuron = (function () {
             this.drawer.drawLineBox(min, len_x, len_y, len_z);
         }
     };
+    /**
+     * Executes a function for each brach
+     */
     Neuron.prototype.forEachElement = function (fn) {
         for (var _i = 0, _a = this.neurites; _i < _a.length; _i++) {
             var neurite = _a[_i];

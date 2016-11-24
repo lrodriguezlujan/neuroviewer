@@ -66,6 +66,10 @@ var BranchElement = (function () {
             this.updateMaterial();
         }
     };
+    /**
+     * Returns the current branch element (compartment) as a 3D Line
+     * @return {Array<Point3D>} Array with two points. The ends of the segments
+     */
     BranchElement.prototype.asLine = function () {
         if (this.prevNode) {
             return [{ x: this.prevNode.x, y: this.prevNode.y, z: this.prevNode.z },
@@ -93,6 +97,10 @@ var BranchElement = (function () {
             this.updateMaterial();
         }
     };
+    /**
+     * Checks if the branch element mesh is enabled (visible)
+     * @return {boolean} True if the element is enabled
+     */
     BranchElement.prototype.isEnabled = function () {
         if (this.segmentMesh) {
             return this.segmentMesh.isEnabled();
@@ -101,6 +109,10 @@ var BranchElement = (function () {
             return false;
         }
     };
+    /**
+     * Enables or disables the element meshes
+     * @param  {boolean} v Status
+     */
     BranchElement.prototype.setEnabled = function (v) {
         this.enabled = v;
         if (this.segmentMesh) {
@@ -225,9 +237,18 @@ var Branch = (function () {
         }
         return null;
     };
+    /**
+     * Returns the current status of the branch
+     * @return {boolean} Enabled/disabled status
+     */
     Branch.prototype.isEnabled = function () {
         return this.enabled;
     };
+    /**
+     * Changes the status of the current branch and its descendants
+     * @param  {boolean} v               New status
+     * @param  {boolean}  recursive=false If true, descendants are called
+     */
     Branch.prototype.setEnabled = function (v, recursive) {
         if (recursive === void 0) { recursive = false; }
         this.enabled = v;
@@ -271,6 +292,10 @@ var Branch = (function () {
             idstr += "-" + this.id[i];
         return idstr;
     };
+    /**
+     * Returns the total nomber of descendants of the given branch
+     * @return {number} Sbutree size
+     */
     Branch.prototype.subtreeSize = function () {
         var acum = 1;
         if (this.children) {
@@ -281,6 +306,10 @@ var Branch = (function () {
         }
         return acum;
     };
+    /**
+     * Returns all the descendant branches of the given branch
+     * @return {Array<Branch>} Subtree
+     */
     Branch.prototype.subtree = function () {
         var arr = [];
         arr.push(this);
@@ -307,6 +336,11 @@ var Branch = (function () {
             }
         }
     };
+    /**
+     * Returns the branch and its descendants as an array of lines
+     * @param  {boolean} recursive=true If true, daughter branches are also processed
+     * @return {Array}                 Array of 3D points. The 3D lines
+     */
     Branch.prototype.asLineArray = function (recursive) {
         if (recursive === void 0) { recursive = true; }
         var lines = [];

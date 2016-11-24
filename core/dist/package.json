@@ -13,7 +13,7 @@
     "dts" : "tsc -d"
   },
   "repository": {},
-  "keywords": [],
+  "keywords": ["neuroviewer", "neuron", "reconstruction"],
   "author": "Luis Rodriguez-Lujan <luis.rodriguezl@upm.es>",
   "license": "MIT",
   "dependencies": {},

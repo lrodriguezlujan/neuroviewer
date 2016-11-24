@@ -39,8 +39,18 @@ export declare class Neuron {
      * @param  {Neurite} n Neurite to add
      */
     addNeurite(n: Neurite): void;
+    /**
+     * Attach a drawer class to the neuron
+     * @param  {Drawer} drawer Neuron drawer
+     */
     attachDrawer(drawer: Drawer): void;
+    /**
+     * Updates the material of every neuron element
+     */
     private updateMaterials();
+    /**
+     * Get current drawer
+     */
     getDrawer(): Drawer;
     setStatus(s: Status): void;
     /**
@@ -85,9 +95,22 @@ export declare class Neuron {
     drawLinear(): void;
     isEnabled(): boolean;
     setEnabled(v: boolean, recursive?: boolean): void;
+    /**
+     * Frees the neuron and its allocated resources
+     */
     dispose(): void;
+    /**
+     * Checks if the neuron has a cutbox defined
+     * @fixme This has changed!!! now cutbox_min and max are point
+     */
     hasCutbox(): any;
+    /**
+     * Draws the cutbox
+     */
     drawCutbox(): void;
+    /**
+     * Executes a function for each brach
+     */
     forEachElement(fn: (item: BranchElement) => void): void;
     /**
      * Creates a neuron instance from a JS object

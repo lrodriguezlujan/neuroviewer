@@ -56,6 +56,12 @@ var Neurite = (function () {
         if (this.firstBranch)
             this.firstBranch.draw(drawer, true, linear);
     };
+    /**
+     * Draws the neurite as a single line element
+     * This disables the ability to select branches, but has a great great
+     * impact in performance
+     * @param  {Drawer} drawer
+     */
     Neurite.prototype.lineDraw = function (drawer) {
         this.enabled = true;
         this.singleLine = true;
@@ -69,6 +75,10 @@ var Neurite = (function () {
             this.lineDrawObj = drawer.drawLines(lines, color);
         }
     };
+    /**
+     * Get current neurite color as a hex string
+     * @return {String} Neurite color
+     */
     Neurite.prototype.getColor = function () {
         return this.material.getStandardHexcolor();
     };
@@ -79,6 +89,9 @@ var Neurite = (function () {
         if (this.firstBranch)
             this.firstBranch.forEachElement(fn, true);
     };
+    /**
+     * Count number of branches in the neurite
+     */
     Neurite.prototype.branchCount = function () {
         if (this.firstBranch) {
             return this.firstBranch.subtreeSize();
@@ -87,6 +100,9 @@ var Neurite = (function () {
             return 0;
         }
     };
+    /**
+     * Returns all neurite branches in an Array
+     */
     Neurite.prototype.allBranches = function () {
         if (this.firstBranch) {
             return this.firstBranch.subtree();
@@ -95,9 +111,17 @@ var Neurite = (function () {
             return [];
         }
     };
+    /**
+     * Checks enable status
+     */
     Neurite.prototype.isEnabled = function () {
         return this.enabled;
     };
+    /**
+     * Set enabled/disabled status
+     * @param  {boolean} v               [description]
+     * @param  {[type]}  recursive=false [description]
+     */
     Neurite.prototype.setEnabled = function (v, recursive) {
         if (recursive === void 0) { recursive = false; }
         this.enabled = v;

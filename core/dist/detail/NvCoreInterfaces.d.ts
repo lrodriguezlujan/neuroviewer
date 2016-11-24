@@ -1,8 +1,14 @@
+/**
+ * Three dimensional point
+ */
 export interface Point3D {
     x: number;
     y: number;
     z: number;
 }
+/**
+ * Draw objects (usually meshes)
+ */
 export interface DrawObject {
     material: DrawMaterial;
     dispose: () => void;
@@ -10,10 +16,16 @@ export interface DrawObject {
     isEnabled: () => boolean;
     color?: DrawColor;
 }
+/**
+ * Camera types
+ */
 export declare enum CameraType {
     universal = 0,
     pivot = 1,
 }
+/**
+ * Drawer interface
+ */
 export interface Drawer {
     palette: DrawMaterialPalette;
     drawSphere: (id: string, position: Point3D, radius: number) => DrawObject;
@@ -49,13 +61,22 @@ export interface Drawer {
     normalizeScene: () => void;
     colorFormHex: (color: string) => DrawColor;
 }
+/**
+ * Color abstract
+ */
 export interface DrawColor {
     toHexString: () => string;
 }
+/**
+ * Material abstract
+ */
 export interface DrawMaterial {
     diffuseColor?: DrawColor;
     markDirty(): any;
 }
+/**
+ * Material set
+ */
 export interface DrawMaterialSet {
     standard: DrawMaterial;
     hidden: DrawMaterial;
@@ -64,6 +85,9 @@ export interface DrawMaterialSet {
     highlight: DrawMaterial;
     getStandardHexcolor: () => string;
 }
+/**
+ * Material set pallete
+ */
 export interface DrawMaterialPalette {
     grey: () => DrawMaterialSet;
     get: (index: number) => DrawMaterialSet;

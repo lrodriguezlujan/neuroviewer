@@ -63,6 +63,10 @@ export declare class BranchElement {
      * @public
      */
     draw(drawer: Drawer, linear?: boolean): void;
+    /**
+     * Returns the current branch element (compartment) as a 3D Line
+     * @return {Array<Point3D>} Array with two points. The ends of the segments
+     */
     asLine(): Array<Point3D>;
     /**
      * Changes the element status and updates the material in the meshes
@@ -72,7 +76,15 @@ export declare class BranchElement {
      * @public
      */
     setStatus(status: Status): void;
+    /**
+     * Checks if the branch element mesh is enabled (visible)
+     * @return {boolean} True if the element is enabled
+     */
     isEnabled(): boolean;
+    /**
+     * Enables or disables the element meshes
+     * @param  {boolean} v Status
+     */
     setEnabled(v: boolean): void;
     /**
      * Gets current color
@@ -146,7 +158,16 @@ export declare class Branch {
      * @return {Node3D}
      */
     searchNode(nodeId: number): any;
+    /**
+     * Returns the current status of the branch
+     * @return {boolean} Enabled/disabled status
+     */
     isEnabled(): boolean;
+    /**
+     * Changes the status of the current branch and its descendants
+     * @param  {boolean} v               New status
+     * @param  {boolean}  recursive=false If true, descendants are called
+     */
     setEnabled(v: boolean, recursive?: boolean): void;
     /**
      * Executes a function for each element in the branch
@@ -164,7 +185,15 @@ export declare class Branch {
      * @return {string}  Branch id as string
      */
     idString(): string;
+    /**
+     * Returns the total nomber of descendants of the given branch
+     * @return {number} Sbutree size
+     */
     subtreeSize(): number;
+    /**
+     * Returns all the descendant branches of the given branch
+     * @return {Array<Branch>} Subtree
+     */
     subtree(): any[];
     /**
      * Update the id of the branch and its descendants
@@ -172,6 +201,11 @@ export declare class Branch {
      * @param  {Array<number>} id new ID
      */
     updateID(id: Array<number>): void;
+    /**
+     * Returns the branch and its descendants as an array of lines
+     * @param  {boolean} recursive=true If true, daughter branches are also processed
+     * @return {Array}                 Array of 3D points. The 3D lines
+     */
     asLineArray(recursive?: boolean): Array<Array<Point3D>>;
     /**
      * Updates the material of every element

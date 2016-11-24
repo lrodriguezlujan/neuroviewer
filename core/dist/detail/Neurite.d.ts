@@ -58,15 +58,39 @@ export declare class Neurite {
      * @param  {Drawer} drawer Class that draws the neurite
      */
     draw(drawer: Drawer, linear?: boolean): void;
+    /**
+     * Draws the neurite as a single line element
+     * This disables the ability to select branches, but has a great great
+     * impact in performance
+     * @param  {Drawer} drawer
+     */
     lineDraw(drawer: Drawer): void;
+    /**
+     * Get current neurite color as a hex string
+     * @return {String} Neurite color
+     */
     getColor(): string;
     /**
      * Executes a function for each element in the neurite
      */
     forEachElement(fn: (item: BranchElement) => void): void;
+    /**
+     * Count number of branches in the neurite
+     */
     branchCount(): number;
+    /**
+     * Returns all neurite branches in an Array
+     */
     allBranches(): any[];
+    /**
+     * Checks enable status
+     */
     isEnabled(): boolean;
+    /**
+     * Set enabled/disabled status
+     * @param  {boolean} v               [description]
+     * @param  {[type]}  recursive=false [description]
+     */
     setEnabled(v: boolean, recursive?: boolean): void;
     /**
      * Auxiliar method that translates int (SWC) to neurite type
