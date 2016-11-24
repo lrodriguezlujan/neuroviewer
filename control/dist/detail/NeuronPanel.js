@@ -106,7 +106,7 @@ var NeuronControlPanel = (function (_super) {
      */
     NeuronControlPanel.cbox_callback = function (c, checkId) {
         return function (ev) {
-            var element = ev.srcElement;
+            var element = (ev.srcElement || ev.target);
             c.setEnabled(element.checked);
             if (checkId) {
                 var els = document.getElementById(checkId).getElementsByTagName("input");
@@ -121,7 +121,7 @@ var NeuronControlPanel = (function (_super) {
      */
     NeuronControlPanel.element_callback = function (c) {
         return function (ev) {
-            var element = ev.srcElement;
+            var element = (ev.srcElement || ev.target);
             element.classList.toggle("selected-element");
             if (element.classList.contains("selected-element")) {
                 c.setStatus(core_1.Status.highlighted); // need get status or make it public
@@ -146,7 +146,7 @@ var NeuronControlPanel = (function (_super) {
      */
     NeuronControlPanel.element_callback_branch = function (c) {
         return function (ev) {
-            var element = ev.srcElement;
+            var element = (ev.srcElement || ev.target);
             element.classList.toggle("selected-element");
             if (element.classList.contains("selected-element")) {
                 c.setStatus(core_1.Status.highlighted, false); // need get status or make it public

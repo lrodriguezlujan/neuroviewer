@@ -114,8 +114,9 @@ export class ControlPanel {
 
     // Toggle icon
     icon.onclick = function(ev:Event){
-      ev.srcElement.classList.toggle("glyphicon-plus");
-      ev.srcElement.classList.toggle("glyphicon-minus");
+      let target = <HTMLElement>(ev.srcElement || ev.target);
+      target.classList.toggle("glyphicon-plus");
+      target.classList.toggle("glyphicon-minus");
     };
     this.headerDiv.appendChild(icon);
 
@@ -395,8 +396,9 @@ export class ControlPanel {
       expand.style.paddingRight = "5px";
       expand.style.cursor = "hand";
       expand.onclick = (ev:Event) => {
-        ev.srcElement.classList.toggle("glyphicon-plus");
-        ev.srcElement.classList.toggle("glyphicon-minus");
+        let target = <HTMLElement>(ev.srcElement || ev.target);
+        target.classList.toggle("glyphicon-plus");
+        target.classList.toggle("glyphicon-minus");
       }
       expand.setAttribute("data-toggle","collapse");
       expand.setAttribute("data-target","#" + desc.id);

@@ -141,7 +141,7 @@ export class NeuronControlPanel  extends ControlPanel {
    */
   private static cbox_callback(c:any, checkId?:string){
    return (ev:Event) =>{
-     var element = <HTMLInputElement>ev.srcElement;
+     var element = <HTMLInputElement>(ev.srcElement || ev.target);
      c.setEnabled(element.checked);
      if(checkId){
        var els = document.getElementById(checkId).getElementsByTagName("input");
@@ -157,7 +157,7 @@ export class NeuronControlPanel  extends ControlPanel {
   */
  private static element_callback(c:any){
   return (ev:Event) =>{
-    var element = <HTMLInputElement>ev.srcElement;
+    var element = <HTMLInputElement>(ev.srcElement || ev.target);
     element.classList.toggle("selected-element");
     if(element.classList.contains("selected-element")){
       c.setStatus(Status.highlighted); // need get status or make it public
@@ -182,7 +182,7 @@ export class NeuronControlPanel  extends ControlPanel {
  */
 private static element_callback_branch(c:any){
  return (ev:Event) =>{
-   var element = <HTMLInputElement>ev.srcElement;
+   var element = <HTMLInputElement>(ev.srcElement || ev.target);
    element.classList.toggle("selected-element");
    if(element.classList.contains("selected-element")){
      c.setStatus(Status.highlighted,false); // need get status or make it public

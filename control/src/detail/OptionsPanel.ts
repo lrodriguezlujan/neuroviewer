@@ -46,7 +46,7 @@ export class OptionsControlPanel  extends ControlPanel {
     }
 
     let selector_cb = (ev:Event) => {
-      var element = <HTMLInputElement>ev.srcElement;
+      var element = <HTMLInputElement>(ev.srcElement || ev.target);
       if (element.value == "pivot") {
         this.parent.drawer.setCameraType(CameraType.pivot);
       } else if (element.value == "universal") {
@@ -64,7 +64,7 @@ export class OptionsControlPanel  extends ControlPanel {
     // Add...stuff
 
     let speed_change_cb =  (ev:Event) => {
-      var element = <HTMLInputElement>ev.srcElement;
+      var element = <HTMLInputElement>(ev.srcElement || ev.target);
       this.parent.drawer.setCameraSpeed(parseFloat(element.value));
       console.log(parseFloat(element.value));
     };
@@ -73,7 +73,7 @@ export class OptionsControlPanel  extends ControlPanel {
     parent.appendChild(ControlPanel.createInputBox("camspeed","number", speed_change_cb, this.parent.drawer.getCameraSpeed()));
 
     let inertia_change_cb =  (ev:Event) => {
-      var element = <HTMLInputElement>ev.srcElement;
+      var element = <HTMLInputElement>(ev.srcElement || ev.target);
       this.parent.drawer.setCameraInertia(parseFloat(element.value));
       console.log(parseFloat(element.value));
     };
@@ -82,7 +82,7 @@ export class OptionsControlPanel  extends ControlPanel {
     parent.appendChild(ControlPanel.createInputBox("caminertia","number", inertia_change_cb, this.parent.drawer.getCameraInertia()));
 
     let pansens_change_cb =  (ev:Event) => {
-      var element = <HTMLInputElement>ev.srcElement;
+      var element = <HTMLInputElement>(ev.srcElement || ev.target);
       this.parent.drawer.setCameraPanSensibility(parseFloat(element.value));
       console.log(parseFloat(element.value));
     };
@@ -92,7 +92,7 @@ export class OptionsControlPanel  extends ControlPanel {
 
 
     let wheelsens_change_cb =  (ev:Event) => {
-      var element = <HTMLInputElement>ev.srcElement;
+      var element = <HTMLInputElement>(ev.srcElement || ev.target);
       this.parent.drawer.setCameraWheelSensibility(parseFloat(element.value));
       console.log(parseFloat(element.value));
     };
@@ -121,27 +121,27 @@ export class OptionsControlPanel  extends ControlPanel {
     let ignore_cb = (ev:Event) => {};
 
     let grid_cb = (ev:Event) => {
-      var element = <HTMLInputElement>ev.srcElement;
+      var element = <HTMLInputElement>(ev.srcElement || ev.target);
       this.parent.drawer.showGrid(element.checked);
     }
     parent.appendChild(ControlPanel.createSimpleCBInput("plot_grid","Render grid",this.parent.drawer.visibleGrid(),grid_cb));
 
     let linear_cb = (ev:Event) => {
-      var element = <HTMLInputElement>ev.srcElement;
+      var element = <HTMLInputElement>(ev.srcElement || ev.target);
       this.parent.reconstruction.linearDrawing = element.checked;
     }
 
     parent.appendChild(ControlPanel.createSimpleCBInput("plot_linear","Linear rendering",this.parent.reconstruction.linearDrawing,linear_cb));
 
     let node_cb = (ev:Event) => {
-      var element = <HTMLInputElement>ev.srcElement;
+      var element = <HTMLInputElement>(ev.srcElement || ev.target);
       this.parent.reconstruction.drawNodeSpheres = element.checked;
     }
 
     parent.appendChild(ControlPanel.createSimpleCBInput("plot_nodes","Render nodes",this.parent.reconstruction.drawNodeSpheres,node_cb));
 
     let single_cb = (ev:Event) => {
-      var element = <HTMLInputElement>ev.srcElement;
+      var element = <HTMLInputElement>(ev.srcElement || ev.target);
       this.parent.reconstruction.singleElementDraw = element.checked;
     }
 
@@ -149,14 +149,14 @@ export class OptionsControlPanel  extends ControlPanel {
 
 
     let detail_cb =  (ev:Event) => {
-      var element = <HTMLInputElement>ev.srcElement;
+      var element = <HTMLInputElement>(ev.srcElement || ev.target);
       this.parent.drawer.setCircularSegmentsCount(parseInt(element.value));
     };
     parent.appendChild(ControlPanel.createLabelTag("plot_segmentscircle","Segments per circle"));
     parent.appendChild(ControlPanel.createInputBox("plot_segmentscircle","number", detail_cb,this.parent.drawer.getCircularSegmentsCount()));
 
     let optimization_cb =  (ev:Event) => {
-      var element = <HTMLInputElement>ev.srcElement;
+      var element = <HTMLInputElement>(ev.srcElement || ev.target);
       this.parent.drawer.optimize(parseInt(element.value));
     };
 
@@ -208,7 +208,7 @@ export class OptionsControlPanel  extends ControlPanel {
     parent.appendChild(ControlPanel.createInputBox("camera_beta","number", null,0.01));
 
     let animation_cb = (ev:Event) => {
-      var element = <HTMLElement>ev.srcElement;
+      var element = <HTMLInputElement>(ev.srcElement || ev.target);
       element.classList.toggle("animate-play");
       if(element.classList.contains("animate-play")){
         // Start

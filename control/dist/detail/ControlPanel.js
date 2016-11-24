@@ -121,8 +121,9 @@ var ControlPanel = (function () {
         icon.setAttribute("cursor", "copy");
         // Toggle icon
         icon.onclick = function (ev) {
-            ev.srcElement.classList.toggle("glyphicon-plus");
-            ev.srcElement.classList.toggle("glyphicon-minus");
+            var target = (ev.srcElement || ev.target);
+            target.classList.toggle("glyphicon-plus");
+            target.classList.toggle("glyphicon-minus");
         };
         this.headerDiv.appendChild(icon);
         // Add style
@@ -325,8 +326,9 @@ var ControlPanel = (function () {
             expand.style.paddingRight = "5px";
             expand.style.cursor = "hand";
             expand.onclick = function (ev) {
-                ev.srcElement.classList.toggle("glyphicon-plus");
-                ev.srcElement.classList.toggle("glyphicon-minus");
+                var target = (ev.srcElement || ev.target);
+                target.classList.toggle("glyphicon-plus");
+                target.classList.toggle("glyphicon-minus");
             };
             expand.setAttribute("data-toggle", "collapse");
             expand.setAttribute("data-target", "#" + desc.id);
