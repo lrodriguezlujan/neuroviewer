@@ -40,7 +40,7 @@ var SWCParser = (function () {
      */
     SWCParser.prototype.process = function (data) {
         // Create empty neuron
-        this.initializeNeuron("");
+        this.initializeNeuron("Neuron");
         // Initialize array
         this.tmpArray = [];
         try {

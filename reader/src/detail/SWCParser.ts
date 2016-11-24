@@ -68,7 +68,7 @@ import {ParserInterface} from "./Parser";
       private process(data: Array<string>){
 
         // Create empty neuron
-        this.initializeNeuron("");
+        this.initializeNeuron("Neuron");
 
         // Initialize array
         this.tmpArray = [];
