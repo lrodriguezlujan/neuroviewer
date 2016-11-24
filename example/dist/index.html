@@ -133,7 +133,8 @@ function loadFile(){
         lines = e.target.result;
         reconstruction = parser.read(lines,null);
         reconstruction.attachDrawer(drawer);
-        reconstruction.singleElementDraw = true;
+        // reconstruction.singleElementDraw = true;
+        reconstruction.linearDrawing = true;
         reconstruction.draw();
 
         // Reset camera
