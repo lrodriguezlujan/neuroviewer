@@ -110,10 +110,18 @@ export class Contour {
                        this.fill);
   }
 
+  /**
+   * Returns the enabled/disabled status
+   * @return {boolean} True if the contour is visible
+   */
   public isEnabled(){
     return this.enabled;
   }
 
+  /**
+   * Changes the enabled/disabled status
+   * @param  {boolean} v New status
+   */
   public setEnabled(v:boolean){
     this.enabled=v;
     if(this.mesh){
@@ -121,6 +129,9 @@ export class Contour {
     }
   }
 
+  /**
+   * Frees all allocated resources. disposes the meshes
+   */
   public dispose(){
     this.enabled = false;
     this.mesh.dispose();
