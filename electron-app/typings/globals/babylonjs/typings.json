@@ -1,8 +1,0 @@
-{
-  "resolution": "main",
-  "tree": {
-    "src": "https://raw.githubusercontent.com/BabylonJS/Babylon.js/162be5aa68e3de4635dc94fb705163ce758f6e89/dist/babylon.2.4.d.ts",
-    "raw": "github:BabylonJS/Babylon.js/dist/babylon.2.4.d.ts#162be5aa68e3de4635dc94fb705163ce758f6e89",
-    "typings": "https://raw.githubusercontent.com/BabylonJS/Babylon.js/162be5aa68e3de4635dc94fb705163ce758f6e89/dist/babylon.2.4.d.ts"
-  }
-}
