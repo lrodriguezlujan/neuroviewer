@@ -1,6 +1,6 @@
 import { DrawMaterialSet, DrawMaterialPalette } from "@neuroviewer/core";
 /**
-* Palette Element
+* Palette Element for the babylon drawer
 */
 export declare class BabylonMaterialPaletteElement implements DrawMaterialSet {
     hidden: BABYLON.StandardMaterial;

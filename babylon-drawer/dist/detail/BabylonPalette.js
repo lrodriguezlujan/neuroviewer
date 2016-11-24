@@ -1,6 +1,6 @@
 "use strict";
 /**
-* Palette Element
+* Palette Element for the babylon drawer
 */
 var BabylonMaterialPaletteElement = (function () {
     function BabylonMaterialPaletteElement(name, color, scene) {

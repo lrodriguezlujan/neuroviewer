@@ -3,7 +3,7 @@ var babylonConfigs = require("./BabylonConfigs");
 var core_1 = require("@neuroviewer/core");
 var BabylonPalette_1 = require("./BabylonPalette");
 /**
-* Drawer class - scene management
+* Implements a Drawer that uses BABYLONJS
 */
 var BabylonDrawer = (function () {
     function BabylonDrawer(canvas, cfg) {

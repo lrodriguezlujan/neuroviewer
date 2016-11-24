@@ -3,7 +3,7 @@ import {Point3D, Drawer, CameraType} from "@neuroviewer/core";
 import {BabylonMaterialPalette} from "./BabylonPalette";
 
   /**
-  * Drawer class - scene management
+  * Implements a Drawer that uses BABYLONJS
   */
   export class BabylonDrawer implements Drawer {
 
