@@ -2,10 +2,15 @@ import {Drawer,CameraType} from "@neuroviewer/core";
 import {ControlPanel} from "./ControlPanel";
 import{Control} from "./NvControl";
 
+/**
+ * Drawer control panel
+ */
 export class OptionsControlPanel  extends ControlPanel {
 
+  // Name
   private static options_name = "Options";
 
+  // Constructor
   public constructor(parent: Control){
     super("options","Options",parent);
 
@@ -20,7 +25,9 @@ export class OptionsControlPanel  extends ControlPanel {
     this.resize(300);
   }
 
-
+  /**
+   * Camera options section
+   */
   private createCameraOptions(){
     let parent = ControlPanel.createSet("camera_section");
     parent.classList.add("collapse"); // Make section collapsible
@@ -98,6 +105,9 @@ export class OptionsControlPanel  extends ControlPanel {
 
   }
 
+  /**
+   * Render options section
+   */
   private createRendererOptions(){
     let parent = ControlPanel.createSet("render_section");
     parent.classList.add("collapse"); // Make section collapsible
@@ -171,12 +181,16 @@ export class OptionsControlPanel  extends ControlPanel {
     this.contentDiv.appendChild(parent);
   }
 
+  /** Animate button function to be added to the render loop */
   private static cameraAnimationFunction(alpha:number, beta:number){
     return (d:Drawer) => {
       d.cameraAddRotation(alpha,beta);
     }
   }
 
+  /**
+   * animation section
+   */
   private createAnimationOptions(){
     let parent = ControlPanel.createSet("animation_section");
     parent.classList.add("collapse"); // Make section collapsible

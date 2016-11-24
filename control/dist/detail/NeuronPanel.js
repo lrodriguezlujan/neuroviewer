@@ -6,22 +6,25 @@ var __extends = (this && this.__extends) || function (d, b) {
 };
 var core_1 = require("@neuroviewer/core");
 var ControlPanel_1 = require("./ControlPanel");
+/**
+ * Neuron management
+ */
 var NeuronControlPanel = (function (_super) {
     __extends(NeuronControlPanel, _super);
+    // Constructor
     function NeuronControlPanel(parent) {
         _super.call(this, "neuron", "Reconstruction", parent);
         // Mark panes as options panel
         this.panelDiv.classList.add("neuronPanel");
-        //this.createCameraOptions();
-        //this.createRendererOptions();
-        //
-        // // TEST
         this.createContourSection();
         this.createReconstructionSection();
         // Default size and position
         this.move(this.parent.drawer.getCanvasSize()[0] - 410, 10);
         this.resize(400);
     }
+    /**
+     * Creates contour section controls
+     */
     NeuronControlPanel.prototype.createContourSection = function () {
         if (this.parent.reconstruction.contours.length == 0)
             return;
@@ -40,6 +43,9 @@ var NeuronControlPanel = (function (_super) {
         this.contentDiv.appendChild(legend);
         this.contentDiv.appendChild(parent);
     };
+    /**
+     * Creates reconstruction section controls
+     */
     NeuronControlPanel.prototype.createReconstructionSection = function () {
         if (this.parent.reconstruction.neurons.length == 0)
             return;
@@ -58,6 +64,9 @@ var NeuronControlPanel = (function (_super) {
         this.contentDiv.appendChild(legend);
         this.contentDiv.appendChild(parent);
     };
+    /**
+     * Creates box list items for each neurite in the neuron
+     */
     NeuronControlPanel.createNeuriteBoxes = function (id, n) {
         var neurites = [];
         var neurite_base_id = "neuron_" + id + "_neurite_";
@@ -68,6 +77,9 @@ var NeuronControlPanel = (function (_super) {
         }
         return ControlPanel_1.ControlPanel.createBoxList("neuron_" + id + "_neuritelist", neurites);
     };
+    /**
+     * Neurite type to string
+     */
     NeuronControlPanel.neuriteTypeStr = function (t) {
         switch (t) {
             case core_1.NeuriteType.dendrite: return "dendrite";
@@ -76,6 +88,9 @@ var NeuronControlPanel = (function (_super) {
             default: return "unknown";
         }
     };
+    /**
+     * Creates box list items for each branch in the neurite
+     */
     NeuronControlPanel.createBranchBoxes = function (id, n) {
         var branches = n.allBranches();
         var boxes = [];
@@ -86,6 +101,9 @@ var NeuronControlPanel = (function (_super) {
         }
         return ControlPanel_1.ControlPanel.createBoxList("neuron_" + id + "_neurite_" + n.id + "_branchlist", boxes);
     };
+    /**
+     * Onchange checkbox listener (hides/shows)
+     */
     NeuronControlPanel.cbox_callback = function (c, checkId) {
         return function (ev) {
             var element = ev.srcElement;
@@ -98,6 +116,9 @@ var NeuronControlPanel = (function (_super) {
             }
         };
     };
+    /**
+     * Ondblclick checkbox listener (selects)
+     */
     NeuronControlPanel.element_callback = function (c) {
         return function (ev) {
             var element = ev.srcElement;
@@ -120,6 +141,9 @@ var NeuronControlPanel = (function (_super) {
             }
         };
     };
+    /**
+     * Ondblclick checkbox listener  for branches - no descend
+     */
     NeuronControlPanel.element_callback_branch = function (c) {
         return function (ev) {
             var element = ev.srcElement;
@@ -132,6 +156,7 @@ var NeuronControlPanel = (function (_super) {
             }
         };
     };
+    // Panel id
     NeuronControlPanel.neuron_name = "Reconstruction";
     return NeuronControlPanel;
 }(ControlPanel_1.ControlPanel));

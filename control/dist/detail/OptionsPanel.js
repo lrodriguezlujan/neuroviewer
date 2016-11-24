@@ -6,8 +6,12 @@ var __extends = (this && this.__extends) || function (d, b) {
 };
 var core_1 = require("@neuroviewer/core");
 var ControlPanel_1 = require("./ControlPanel");
+/**
+ * Drawer control panel
+ */
 var OptionsControlPanel = (function (_super) {
     __extends(OptionsControlPanel, _super);
+    // Constructor
     function OptionsControlPanel(parent) {
         _super.call(this, "options", "Options", parent);
         // Mark panes as options panel
@@ -19,6 +23,9 @@ var OptionsControlPanel = (function (_super) {
         this.move(10, 10);
         this.resize(300);
     }
+    /**
+     * Camera options section
+     */
     OptionsControlPanel.prototype.createCameraOptions = function () {
         var _this = this;
         var parent = ControlPanel_1.ControlPanel.createSet("camera_section");
@@ -80,6 +87,9 @@ var OptionsControlPanel = (function (_super) {
         this.contentDiv.appendChild(legend);
         this.contentDiv.appendChild(parent);
     };
+    /**
+     * Render options section
+     */
     OptionsControlPanel.prototype.createRendererOptions = function () {
         var _this = this;
         var parent = ControlPanel_1.ControlPanel.createSet("render_section");
@@ -138,11 +148,15 @@ var OptionsControlPanel = (function (_super) {
         this.contentDiv.appendChild(legend);
         this.contentDiv.appendChild(parent);
     };
+    /** Animate button function to be added to the render loop */
     OptionsControlPanel.cameraAnimationFunction = function (alpha, beta) {
         return function (d) {
             d.cameraAddRotation(alpha, beta);
         };
     };
+    /**
+     * animation section
+     */
     OptionsControlPanel.prototype.createAnimationOptions = function () {
         var _this = this;
         var parent = ControlPanel_1.ControlPanel.createSet("animation_section");
@@ -175,6 +189,7 @@ var OptionsControlPanel = (function (_super) {
         this.contentDiv.appendChild(legend);
         this.contentDiv.appendChild(parent);
     };
+    // Name
     OptionsControlPanel.options_name = "Options";
     return OptionsControlPanel;
 }(ControlPanel_1.ControlPanel));

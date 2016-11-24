@@ -9,10 +9,10 @@
     "tsc:w": "tsc -w",
     "clean": "gulp clean",
     "build": "npm run clean && npm run tsc",
-    "package": "npm run build && npm run dts && gulp copy",
+    "package": "npm run build && npm run dts && gulp copy:package",
     "dts": "tsc -d"
   },
-  "keywords": [],
+  "keywords": ["neuron", "reconstruction", "neuroviewer"],
   "author": "Luis Rodriguez-Lujan <luis.rodriguezl@upm.es>",
   "license": "MIT",
   "dependencies": {

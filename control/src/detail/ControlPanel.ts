@@ -1,14 +1,27 @@
 import{Control} from "./NvControl";
 
+/**
+ * Base control panel class
+ */
 export class ControlPanel {
 
+  // Panel visibility
   private visible = false;
 
+  // Control layer
   private   parentDiv: HTMLElement;
+
+  // Panel divs
   protected panelDiv: HTMLElement;
   protected headerDiv: HTMLElement;
   protected contentDiv: HTMLElement;
 
+/**
+ * Creates a panel
+ * @param  {string}  panelId   Panel internal id
+ * @param  {string}  panelName Panel name (title)
+ * @param  {Control} parent  Parent cotnrol layer
+ */
   public constructor(
     private panelId: string,
     private panelName: string,
@@ -28,27 +41,41 @@ export class ControlPanel {
       this.makeResizable();
     }
 
+  /**
+   * Moves the panel to the given position
+   */
   public move(x: number, y:number){
     this.panelDiv.style.left = x + "px";
     this.panelDiv.style.top = y + "px";
   }
 
+  /**
+   * Resizes the panel
+   */
   public resize(x: number, y?:number){
     this.panelDiv.style.width = x + "px";
-    //this.panelDiv.style.height = y + "px";
   }
 
+/**
+ * Makes the panel visible
+ */
   public show(){
     this.visible = true;
     this.panelDiv.style.visibility = null;
 
   }
 
+  /**
+   * Hides the panel
+   */
   public hide(){
     this.visible = false;
     this.panelDiv.style.visibility = "hidden";
   }
 
+  /**
+   * Triggers panel visibility
+   */
   public trigger(){
     this.visible = !this.visible;
     if(!this.visible)
@@ -56,14 +83,23 @@ export class ControlPanel {
     return this.visible;
   }
 
+  /**
+   * Adds a new element to the panel content
+   */
   public add(c : HTMLElement){
     this.contentDiv.appendChild(c);
   }
 
+  /**
+   * Removes the panel
+   */
   public dispose() {
     this.panelDiv.remove();
   }
 
+  /**
+   * Creates the panel header div
+   */
   protected createHeaderDiv(){
     // Create div
     this.headerDiv = document.createElement("div");
@@ -81,18 +117,17 @@ export class ControlPanel {
       ev.srcElement.classList.toggle("glyphicon-plus");
       ev.srcElement.classList.toggle("glyphicon-minus");
     };
-
-
     this.headerDiv.appendChild(icon);
 
     // Add style
     this.headerDiv.classList.add("controlHeader");
     this.headerDiv.appendChild(
       document.createTextNode(this.panelName));
-
-
   }
 
+  /**
+   * Creates the content div
+   */
   protected createContentDiv(){
     // Create div
     this.contentDiv = document.createElement("div");
@@ -103,6 +138,9 @@ export class ControlPanel {
     this.contentDiv.classList.add("collapse");
   }
 
+  /**
+   * Creates the entire panel. Header and content divs
+   */
   protected createPanelDiv(){
     // Create content and header div
     this.createHeaderDiv();
@@ -120,6 +158,9 @@ export class ControlPanel {
 
   }
 
+  /**
+   * Makes the panel draggable
+   */
   private makeDraggable(){
     interact(this.panelDiv)
     .draggable({
@@ -131,6 +172,9 @@ export class ControlPanel {
     })
   }
 
+  /**
+   * Listener function for drag events
+   */
   private dragMoveListener = (event:any)=>{
     var target = event.target,
     // keep the dragged position in the data-x/data-y attributes
@@ -145,11 +189,11 @@ export class ControlPanel {
     // update the posiion attributes
     target.setAttribute('data-x', x);
     target.setAttribute('data-y', y);
-
-    // console log
-    // console.log("POSITION: " + x + "," + y);
   }
 
+  /**
+   * Makes the panel resizable
+   */
   private makeResizable(){
    interact(this.panelDiv)
     .resizable({
@@ -171,6 +215,9 @@ export class ControlPanel {
     .on('resizemove',this.resizeMoveListener);
   }
 
+  /**
+   * Resize event listener
+   */
   private resizeMoveListener = (event: any)=>{
     var target = event.target,
             x = (parseFloat(target.getAttribute('data-x')) || 0),
@@ -194,7 +241,17 @@ export class ControlPanel {
         }
   }
 
-  // Static functions for the panels
+  // These are auxiliar functions to create panel content
+
+  /**
+   * Creates a radio input element
+   * @param  {string}  id       Radio input id
+   * @param  {string}  name     Radio (group) name
+   * @param  {string}  value    Radio value (label)
+   * @param  {boolean} selected Selected flag
+   * @param  {Event}   cb       Callback function on change
+   * @return {HTMLElement}      Element
+   */
   protected static createSimpleRadioInput(id:string, name:string, value:string, selected:boolean, cb : (ev:Event) => any){
     let input = document.createElement("input");
     input.type = "radio";
@@ -207,6 +264,14 @@ export class ControlPanel {
     return input;
   }
 
+  /**
+   * Creates a checbox input element
+   * @param  {string}  id       Checkbox id
+   * @param  {string}  name     Checkbox label
+   * @param  {boolean} selected Selected flag
+   * @param  {Event}   cb       Callback function onchange
+   * @return {HTMLElement}      Element
+   */
   protected static createSimpleCBInput(id:string, name:string, selected:boolean, cb : (ev:Event) => any){
 
     let div = document.createElement("div");
@@ -223,10 +288,14 @@ export class ControlPanel {
     return div;
   }
 
+  /**
+   * Creates a large button
+   * @param  {string} id   Button id
+   * @param  {string} text Button label
+   * @param  {Event}  cb   Onclick function
+   * @return {HTMLElement}      Element
+   */
   protected static createButton(id:string, text:string, cb: (ev:Event)=>void, icon?:string){
-    /*<button type="button" class="btn btn-default btn-lg">
-  <span class="glyphicon glyphicon-star" aria-hidden="true"></span> Star
-</button>*/
     let bt = document.createElement("button");
     bt.type = "button";
     bt.id = id;
@@ -244,6 +313,13 @@ export class ControlPanel {
     return bt;
   }
 
+  /**
+   * Creates an input element
+   * @param  {string} id   Input id
+   * @param  {string} type Type string
+   * @param  {Event}  cb   Onchange callback
+   * @return {HTMLElement}      Element
+   */
   protected static createInputBox(id:string, type:string,  cb : (ev:Event) => any, value?:any){
     let input = document.createElement("input");
     input.type = type;
@@ -255,6 +331,12 @@ export class ControlPanel {
     return input;
   }
 
+  /**
+   * Creates a list container
+   * @param  {string}             id       List id
+   * @param  {Array<HTMLElement>} elements List elements
+   * @return {HTMLElement}      Element
+   */
   protected static createBoxList(id:string, elements : Array<HTMLElement> ){
     let div = document.createElement("div");
     div.classList.add("list-group");
@@ -267,6 +349,18 @@ export class ControlPanel {
     return div;
   }
 
+  /**
+   * Creates hierarchical list element with checbox attached
+   * @param  {string}  id      List id
+   * @param  {string}  label   List top label
+   * @param  {boolean} checked Checked flag
+   * @param  {Event}   box_cb  Onchange callback
+   * @param  {Event}   el_cb   Ondblclick callback
+   * @param  {HTMLElement}   desc   Inner element
+   * @param  {number}   nitems   Number of inner items (badge number)
+   * @param  {string}   badgeBgColor   Badge hex color string
+    * @return {HTMLElement}      Element
+   */
   protected static createBoxListItem(id: string, label:string, checked: boolean, box_cb: (ev:Event) => any,
                                      el_cb : (ev:Event) => any, desc?:HTMLElement, nitems?:number, badgeBgColor?: string){
     let div = document.createElement("div");
@@ -342,6 +436,11 @@ export class ControlPanel {
     return div;
   }
 
+  /**
+   * Creates a label tag for an input
+   * @param  {string} id   Input element id
+   * @param  {string} text Label
+   */
   protected static createLabelTag(id:string, text:string){
     let label = document.createElement("label");
     label.htmlFor = id;
@@ -349,6 +448,10 @@ export class ControlPanel {
     return label;
   }
 
+  /**
+   * Creates a div section
+   * @param  {string} id Div id
+   */
   protected static createSet(id:string){
     let div = document.createElement("div");
     div.classList.add("section");
@@ -357,6 +460,10 @@ export class ControlPanel {
     return div;
   }
 
+  /**
+   * Creates a glyphicon
+   * @param  {string} id icon id
+   */
   protected static createGlyphicon(id:string){
     let span = document.createElement("span");
     span.classList.add("glyphicon");
@@ -365,12 +472,25 @@ export class ControlPanel {
     return span;
   }
 
+  /**
+   * Creates a legend element
+   * @param  {string} text Legend text
+   */
   protected static createLegend(text:string){
     let legend = document.createElement("legend") ;
     legend.appendChild(document.createTextNode(text));
     return legend;
   }
 
+  /**
+   * Creates a set of radio box input
+   * @param  {string}  id       Id
+   * @param  {string}  name     Group id
+   * @param  {string}  value    Group value
+   * @param  {string}  label    label text
+   * @param  {boolean} selected selected flag
+   * @param  {Event}   cb       Onchange callback
+   */
   protected static createRadioBoxInput(id:string, name:string, value:string, label:string, selected:boolean, cb : (ev:Event) => any, classes?:Array<string>){
     let parent = document.createElement("div");
     // this is mandatory
@@ -387,6 +507,13 @@ export class ControlPanel {
     return parent;
   }
 
+  /**
+   * Creates a radio box selector
+   * @param  {string}  label  Label
+   * @param  {string}  name   Set name
+   * @param  {string}} values Values (key . value)
+   * @param  {Event}   cb     Onchange callback
+   */
   protected static createRadioBoxSelector(label: string, name:string, values:{[key:string]:string}, cb : (ev:Event) => any, selected?: string){
     let parent = document.createElement("fieldset");
     parent.id = name+"_fs";

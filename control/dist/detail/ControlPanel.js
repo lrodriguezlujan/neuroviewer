@@ -1,10 +1,23 @@
 "use strict";
+/**
+ * Base control panel class
+ */
 var ControlPanel = (function () {
+    /**
+     * Creates a panel
+     * @param  {string}  panelId   Panel internal id
+     * @param  {string}  panelName Panel name (title)
+     * @param  {Control} parent  Parent cotnrol layer
+     */
     function ControlPanel(panelId, panelName, parent) {
         this.panelId = panelId;
         this.panelName = panelName;
         this.parent = parent;
+        // Panel visibility
         this.visible = false;
+        /**
+         * Listener function for drag events
+         */
         this.dragMoveListener = function (event) {
             var target = event.target, 
             // keep the dragged position in the data-x/data-y attributes
@@ -16,9 +29,10 @@ var ControlPanel = (function () {
             // update the posiion attributes
             target.setAttribute('data-x', x);
             target.setAttribute('data-y', y);
-            // console log
-            // console.log("POSITION: " + x + "," + y);
         };
+        /**
+         * Resize event listener
+         */
         this.resizeMoveListener = function (event) {
             var target = event.target, x = (parseFloat(target.getAttribute('data-x')) || 0), y = (parseFloat(target.getAttribute('data-y')) || 0);
             // update the element's style
@@ -44,34 +58,57 @@ var ControlPanel = (function () {
         this.makeDraggable();
         this.makeResizable();
     }
+    /**
+     * Moves the panel to the given position
+     */
     ControlPanel.prototype.move = function (x, y) {
         this.panelDiv.style.left = x + "px";
         this.panelDiv.style.top = y + "px";
     };
+    /**
+     * Resizes the panel
+     */
     ControlPanel.prototype.resize = function (x, y) {
         this.panelDiv.style.width = x + "px";
-        //this.panelDiv.style.height = y + "px";
     };
+    /**
+     * Makes the panel visible
+     */
     ControlPanel.prototype.show = function () {
         this.visible = true;
         this.panelDiv.style.visibility = null;
     };
+    /**
+     * Hides the panel
+     */
     ControlPanel.prototype.hide = function () {
         this.visible = false;
         this.panelDiv.style.visibility = "hidden";
     };
+    /**
+     * Triggers panel visibility
+     */
     ControlPanel.prototype.trigger = function () {
         this.visible = !this.visible;
         if (!this.visible)
             this.panelDiv.style.visibility = "hidden";
         return this.visible;
     };
+    /**
+     * Adds a new element to the panel content
+     */
     ControlPanel.prototype.add = function (c) {
         this.contentDiv.appendChild(c);
     };
+    /**
+     * Removes the panel
+     */
     ControlPanel.prototype.dispose = function () {
         this.panelDiv.remove();
     };
+    /**
+     * Creates the panel header div
+     */
     ControlPanel.prototype.createHeaderDiv = function () {
         // Create div
         this.headerDiv = document.createElement("div");
@@ -92,6 +129,9 @@ var ControlPanel = (function () {
         this.headerDiv.classList.add("controlHeader");
         this.headerDiv.appendChild(document.createTextNode(this.panelName));
     };
+    /**
+     * Creates the content div
+     */
     ControlPanel.prototype.createContentDiv = function () {
         // Create div
         this.contentDiv = document.createElement("div");
@@ -100,6 +140,9 @@ var ControlPanel = (function () {
         this.contentDiv.classList.add("controlContent");
         this.contentDiv.classList.add("collapse");
     };
+    /**
+     * Creates the entire panel. Header and content divs
+     */
     ControlPanel.prototype.createPanelDiv = function () {
         // Create content and header div
         this.createHeaderDiv();
@@ -112,6 +155,9 @@ var ControlPanel = (function () {
         this.panelDiv.appendChild(this.contentDiv);
         this.parentDiv.appendChild(this.panelDiv);
     };
+    /**
+     * Makes the panel draggable
+     */
     ControlPanel.prototype.makeDraggable = function () {
         interact(this.panelDiv)
             .draggable({
@@ -122,6 +168,9 @@ var ControlPanel = (function () {
             onmove: this.dragMoveListener
         });
     };
+    /**
+     * Makes the panel resizable
+     */
     ControlPanel.prototype.makeResizable = function () {
         interact(this.panelDiv)
             .resizable({
@@ -142,7 +191,16 @@ var ControlPanel = (function () {
         })
             .on('resizemove', this.resizeMoveListener);
     };
-    // Static functions for the panels
+    // These are auxiliar functions to create panel content
+    /**
+     * Creates a radio input element
+     * @param  {string}  id       Radio input id
+     * @param  {string}  name     Radio (group) name
+     * @param  {string}  value    Radio value (label)
+     * @param  {boolean} selected Selected flag
+     * @param  {Event}   cb       Callback function on change
+     * @return {HTMLElement}      Element
+     */
     ControlPanel.createSimpleRadioInput = function (id, name, value, selected, cb) {
         var input = document.createElement("input");
         input.type = "radio";
@@ -154,6 +212,14 @@ var ControlPanel = (function () {
         input.onchange = cb;
         return input;
     };
+    /**
+     * Creates a checbox input element
+     * @param  {string}  id       Checkbox id
+     * @param  {string}  name     Checkbox label
+     * @param  {boolean} selected Selected flag
+     * @param  {Event}   cb       Callback function onchange
+     * @return {HTMLElement}      Element
+     */
     ControlPanel.createSimpleCBInput = function (id, name, selected, cb) {
         var div = document.createElement("div");
         div.classList.add("checkbox");
@@ -167,10 +233,14 @@ var ControlPanel = (function () {
         div.appendChild(ControlPanel.createLabelTag(id, name));
         return div;
     };
+    /**
+     * Creates a large button
+     * @param  {string} id   Button id
+     * @param  {string} text Button label
+     * @param  {Event}  cb   Onclick function
+     * @return {HTMLElement}      Element
+     */
     ControlPanel.createButton = function (id, text, cb, icon) {
-        /*<button type="button" class="btn btn-default btn-lg">
-      <span class="glyphicon glyphicon-star" aria-hidden="true"></span> Star
-    </button>*/
         var bt = document.createElement("button");
         bt.type = "button";
         bt.id = id;
@@ -183,6 +253,13 @@ var ControlPanel = (function () {
         bt.onclick = cb;
         return bt;
     };
+    /**
+     * Creates an input element
+     * @param  {string} id   Input id
+     * @param  {string} type Type string
+     * @param  {Event}  cb   Onchange callback
+     * @return {HTMLElement}      Element
+     */
     ControlPanel.createInputBox = function (id, type, cb, value) {
         var input = document.createElement("input");
         input.type = type;
@@ -193,6 +270,12 @@ var ControlPanel = (function () {
             input.value = value;
         return input;
     };
+    /**
+     * Creates a list container
+     * @param  {string}             id       List id
+     * @param  {Array<HTMLElement>} elements List elements
+     * @return {HTMLElement}      Element
+     */
     ControlPanel.createBoxList = function (id, elements) {
         var div = document.createElement("div");
         div.classList.add("list-group");
@@ -203,6 +286,18 @@ var ControlPanel = (function () {
         }
         return div;
     };
+    /**
+     * Creates hierarchical list element with checbox attached
+     * @param  {string}  id      List id
+     * @param  {string}  label   List top label
+     * @param  {boolean} checked Checked flag
+     * @param  {Event}   box_cb  Onchange callback
+     * @param  {Event}   el_cb   Ondblclick callback
+     * @param  {HTMLElement}   desc   Inner element
+     * @param  {number}   nitems   Number of inner items (badge number)
+     * @param  {string}   badgeBgColor   Badge hex color string
+      * @return {HTMLElement}      Element
+     */
     ControlPanel.createBoxListItem = function (id, label, checked, box_cb, el_cb, desc, nitems, badgeBgColor) {
         var div = document.createElement("div");
         div.classList.add("input-group");
@@ -262,18 +357,31 @@ var ControlPanel = (function () {
         }
         return div;
     };
+    /**
+     * Creates a label tag for an input
+     * @param  {string} id   Input element id
+     * @param  {string} text Label
+     */
     ControlPanel.createLabelTag = function (id, text) {
         var label = document.createElement("label");
         label.htmlFor = id;
         label.appendChild(document.createTextNode(text));
         return label;
     };
+    /**
+     * Creates a div section
+     * @param  {string} id Div id
+     */
     ControlPanel.createSet = function (id) {
         var div = document.createElement("div");
         div.classList.add("section");
         div.id = id;
         return div;
     };
+    /**
+     * Creates a glyphicon
+     * @param  {string} id icon id
+     */
     ControlPanel.createGlyphicon = function (id) {
         var span = document.createElement("span");
         span.classList.add("glyphicon");
@@ -281,11 +389,24 @@ var ControlPanel = (function () {
         span.setAttribute("aria-hidden", "true");
         return span;
     };
+    /**
+     * Creates a legend element
+     * @param  {string} text Legend text
+     */
     ControlPanel.createLegend = function (text) {
         var legend = document.createElement("legend");
         legend.appendChild(document.createTextNode(text));
         return legend;
     };
+    /**
+     * Creates a set of radio box input
+     * @param  {string}  id       Id
+     * @param  {string}  name     Group id
+     * @param  {string}  value    Group value
+     * @param  {string}  label    label text
+     * @param  {boolean} selected selected flag
+     * @param  {Event}   cb       Onchange callback
+     */
     ControlPanel.createRadioBoxInput = function (id, name, value, label, selected, cb, classes) {
         var parent = document.createElement("div");
         // this is mandatory
@@ -302,6 +423,13 @@ var ControlPanel = (function () {
         parent.appendChild(ControlPanel.createLabelTag(id, label));
         return parent;
     };
+    /**
+     * Creates a radio box selector
+     * @param  {string}  label  Label
+     * @param  {string}  name   Set name
+     * @param  {string}} values Values (key . value)
+     * @param  {Event}   cb     Onchange callback
+     */
     ControlPanel.createRadioBoxSelector = function (label, name, values, cb, selected) {
         var parent = document.createElement("fieldset");
         parent.id = name + "_fs";

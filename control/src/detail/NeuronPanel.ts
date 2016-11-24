@@ -2,20 +2,20 @@ import {Status,Contour,Drawer,CameraType,Reconstruction,Neuron,Neurite,Branch,Ne
 import {ControlPanel} from "./ControlPanel";
 import{Control} from "./NvControl";
 
+/**
+ * Neuron management
+ */
 export class NeuronControlPanel  extends ControlPanel {
 
+  // Panel id
   private static neuron_name = "Reconstruction";
 
+  // Constructor
   public constructor(parent : Control){
     super("neuron","Reconstruction",parent);
 
     // Mark panes as options panel
     this.panelDiv.classList.add("neuronPanel");
-
-    //this.createCameraOptions();
-    //this.createRendererOptions();
-    //
-    // // TEST
 
     this.createContourSection();
     this.createReconstructionSection();
@@ -25,6 +25,9 @@ export class NeuronControlPanel  extends ControlPanel {
     this.resize(400);
   }
 
+  /**
+   * Creates contour section controls
+   */
   private createContourSection(){
 
     if(this.parent.reconstruction.contours.length == 0) return ;
@@ -53,6 +56,9 @@ export class NeuronControlPanel  extends ControlPanel {
     this.contentDiv.appendChild(parent);
   }
 
+  /**
+   * Creates reconstruction section controls
+   */
   private createReconstructionSection(){
     if(this.parent.reconstruction.neurons.length == 0) return ;
 
@@ -79,6 +85,9 @@ export class NeuronControlPanel  extends ControlPanel {
     this.contentDiv.appendChild(parent);
   }
 
+  /**
+   * Creates box list items for each neurite in the neuron
+   */
   private static createNeuriteBoxes(id: number, n:Neuron){
 
     let neurites = [];
@@ -97,6 +106,9 @@ export class NeuronControlPanel  extends ControlPanel {
     return ControlPanel.createBoxList("neuron_"+id+"_neuritelist",neurites) ;
   }
 
+/**
+ * Neurite type to string
+ */
   private static neuriteTypeStr(t: NeuriteType){
     switch(t){
       case NeuriteType.dendrite: return "dendrite";
@@ -106,6 +118,9 @@ export class NeuronControlPanel  extends ControlPanel {
     }
   }
 
+  /**
+   * Creates box list items for each branch in the neurite
+   */
   private static createBranchBoxes(id: number, n:Neurite){
 
     let branches = n.allBranches();
@@ -121,6 +136,9 @@ export class NeuronControlPanel  extends ControlPanel {
     return ControlPanel.createBoxList("neuron_"+id+"_neurite_"+n.id+"_branchlist",boxes) ;
   }
 
+  /**
+   * Onchange checkbox listener (hides/shows)
+   */
   private static cbox_callback(c:any, checkId?:string){
    return (ev:Event) =>{
      var element = <HTMLInputElement>ev.srcElement;
@@ -134,6 +152,9 @@ export class NeuronControlPanel  extends ControlPanel {
    }
  }
 
+ /**
+  * Ondblclick checkbox listener (selects)
+  */
  private static element_callback(c:any){
   return (ev:Event) =>{
     var element = <HTMLInputElement>ev.srcElement;
@@ -156,6 +177,9 @@ export class NeuronControlPanel  extends ControlPanel {
   }
 }
 
+/**
+ * Ondblclick checkbox listener  for branches - no descend
+ */
 private static element_callback_branch(c:any){
  return (ev:Event) =>{
    var element = <HTMLInputElement>ev.srcElement;
