@@ -1,0 +1,6 @@
+{
+  "globalDependencies": {
+    "babylon.gridMaterial": "github:BabylonJS/Babylon.js/materialsLibrary/dist/dts/babylon.gridMaterial.d.ts#7173e8c34a401961095796b7ca0c64e582524d36",
+    "babylonjs": "github:BabylonJS/Babylon.js/dist/babylon.2.4.d.ts#162be5aa68e3de4635dc94fb705163ce758f6e89"
+  }
+}

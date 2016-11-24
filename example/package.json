@@ -1,0 +1,35 @@
+{
+  "name": "neuroviewer_example",
+  "version": "0.0.1",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "serve": "live-server dist/",
+    "postinstall": "typings install",
+    "tsc": "tsc",
+    "tsc:w": "tsc -w",
+    "clean": "gulp clean",
+    "dist": "npm run clean && gulp copy"
+  },
+  "keywords": [],
+  "author": "Luis Rodriguez-Lujan <luis.rodriguezl@upm.es>",
+  "license": "MIT",
+  "dependencies": {
+    "@neuroviewer/babylon-drawer": "^0.0.1",
+    "@neuroviewer/control": "^0.0.1",
+    "@neuroviewer/core": "^0.0.1",
+    "@neuroviewer/reader": "^0.0.1",
+    "babylonjs": "^2.4.1",
+    "handjs": "^1.3.11",
+    "jquery": "^3.1.0"
+  },
+  "devDependencies": {
+    "concurrently": "^2.2.0",
+    "del": "^2.2.2",
+    "gulp": "^3.9.1",
+    "lite-server": "^2.2.2",
+    "run-sequence": "^1.2.2",
+    "typescript": "^2.0.0",
+    "typings": "^1.3.2"
+  }
+}
