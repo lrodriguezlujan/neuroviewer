@@ -9,7 +9,7 @@
     "tsc:w": "tsc -w",
     "clean": "gulp clean",
     "build": "npm run clean && npm run tsc",
-    "package": "npm run build && npm run dts && gulp copy:package",
+    "package": "npm run build && npm run dts && gulp copy",
     "dts": "tsc -d"
   },
   "keywords": ["neuron", "reconstruction", "neuroviewer"],
