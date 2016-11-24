@@ -21,7 +21,8 @@ var SWCParser = (function () {
         // Split the data in lines and process it line by line
         this.process(data.split(/\r\n|\n/));
         // Call the callback function
-        cb(this.rec, this.error);
+        if (cb)
+            cb(this.rec, this.error);
         // Return the reconstruction
         return this.rec;
     };
@@ -181,7 +182,10 @@ var SWCParser = (function () {
                         for (var _d = 0, _e = this.tmpBranches[el.node.id]; _d < _e.length; _d++) {
                             var br = _e[_d];
                             // Build a neurite with root branch br
-                            this.buildNeurite(br, el.type);
+                            if (el.type != core_1.NeuriteType.soma)
+                                this.buildNeurite(br, el.type);
+                            else
+                                this.buildNeurite(br, this.tmpArray[br.nodeID(0)].type);
                         }
                     }
                 }

@@ -4,6 +4,11 @@ function __export(m) {
 }
 var SWCParser_1 = require("./detail/SWCParser");
 var JSONParser_1 = require("./detail/JSONParser");
+/**
+ * Simple function that returns a parser based on the file extension
+ * @param  {string}          ext File extension
+ * @return {ParserInterface}     Parser
+ */
 function parserByFileExtension(ext) {
     var low = ext.toLowerCase();
     switch (low) {

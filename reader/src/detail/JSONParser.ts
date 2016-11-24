@@ -29,7 +29,8 @@ import {ParserInterface} from "./Parser";
         }
 
         // Call the callback function
-        cb(this.rec,this.error);
+        if(cb)
+          cb(this.rec,this.error);
 
         // Return
         return this.rec;

@@ -9,7 +9,7 @@ export interface ParserInterface{
    * Read function interface
    * @type {Reconstruction}
    */
-  read:  (data: ReconstructionJSON | string, cb:( n:Reconstruction, e?:Error) => void) => Reconstruction,
+  read:  (data: ReconstructionJSON | string, cb?:( n:Reconstruction, e?:Error) => void) => Reconstruction,
 
   // Reconstruction object
   rec:     Reconstruction,

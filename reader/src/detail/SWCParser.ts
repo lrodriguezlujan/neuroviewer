@@ -47,7 +47,8 @@ import {ParserInterface} from "./Parser";
         // Split the data in lines and process it line by line
         this.process(data.split(/\r\n|\n/));
         // Call the callback function
-        cb(this.rec,this.error);
+        if(cb)
+          cb(this.rec,this.error);
         // Return the reconstruction
         return this.rec;
       };
@@ -223,7 +224,10 @@ import {ParserInterface} from "./Parser";
               if(this.tmpBranches[el.node.id]){
                 for(let br of this.tmpBranches[el.node.id]){
                   // Build a neurite with root branch br
-                  this.buildNeurite(br,el.type);
+                  if(el.type != NeuriteType.soma)
+                    this.buildNeurite(br,el.type);
+                  else
+                    this.buildNeurite(br,this.tmpArray[br.nodeID(0)].type);
                 }
               }
             }

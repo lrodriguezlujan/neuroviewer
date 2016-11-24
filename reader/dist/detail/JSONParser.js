@@ -22,7 +22,8 @@ var JSONParser = (function () {
             this.process(data);
         }
         // Call the callback function
-        cb(this.rec, this.error);
+        if (cb)
+            cb(this.rec, this.error);
         // Return
         return this.rec;
     };
