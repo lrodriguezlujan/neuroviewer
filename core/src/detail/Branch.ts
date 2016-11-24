@@ -113,6 +113,10 @@ import {Point3D,Drawer, DrawObject, DrawMaterial} from "./NvCoreInterfaces";
         }
     }
 
+    /**
+     * Returns the current branch element (compartment) as a 3D Line
+     * @return {Array<Point3D>} Array with two points. The ends of the segments
+     */
     public asLine() : Array<Point3D> {
       if(this.prevNode){
         return [{x: this.prevNode.x, y: this.prevNode.y, z: this.prevNode.z},
@@ -141,6 +145,10 @@ import {Point3D,Drawer, DrawObject, DrawMaterial} from "./NvCoreInterfaces";
       }
     }
 
+    /**
+     * Checks if the branch element mesh is enabled (visible)
+     * @return {boolean} True if the element is enabled
+     */
     public isEnabled(){
       if(this.segmentMesh){
         return this.segmentMesh.isEnabled();
@@ -149,6 +157,10 @@ import {Point3D,Drawer, DrawObject, DrawMaterial} from "./NvCoreInterfaces";
       }
     }
 
+    /**
+     * Enables or disables the element meshes
+     * @param  {boolean} v Status
+     */
     public setEnabled(v:boolean){
       this.enabled=v;
       if(this.segmentMesh){
@@ -309,10 +321,19 @@ export class Branch {
     return null;
   }
 
+  /**
+   * Returns the current status of the branch
+   * @return {boolean} Enabled/disabled status
+   */
   public isEnabled(){
     return this.enabled;
   }
 
+  /**
+   * Changes the status of the current branch and its descendants
+   * @param  {boolean} v               New status
+   * @param  {boolean}  recursive=false If true, descendants are called
+   */
   public setEnabled(v:boolean, recursive = false){
     this.enabled=v;
     if(this.rootMesh)
@@ -361,6 +382,10 @@ export class Branch {
     return idstr;
   }
 
+  /**
+   * Returns the total nomber of descendants of the given branch
+   * @return {number} Sbutree size
+   */
   public subtreeSize(){
     let acum = 1;
     if(this.children){
@@ -371,6 +396,10 @@ export class Branch {
     return acum;
   }
 
+  /**
+   * Returns all the descendant branches of the given branch
+   * @return {Array<Branch>} Subtree
+   */
   public subtree(){
     let arr =[]
 
@@ -401,6 +430,11 @@ export class Branch {
     }
   }
 
+  /**
+   * Returns the branch and its descendants as an array of lines
+   * @param  {boolean} recursive=true If true, daughter branches are also processed
+   * @return {Array}                 Array of 3D points. The 3D lines
+   */
   public asLineArray(recursive = true) : Array<Array<Point3D>> {
     let lines :  Array<Array<Point3D>> = [];
 
